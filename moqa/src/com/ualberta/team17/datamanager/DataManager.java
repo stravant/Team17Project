@@ -1,13 +1,15 @@
 package com.ualberta.team17.datamanager;
 
+import java.util.Collection;
+
 import com.ualberta.team17.IQAModel;
+import com.ualberta.team17.IUnique;
+import com.ualberta.team17.datamanager.filters.DataFilter;
 
 public class DataManager {
-	public OrderedQueryResult doQuery(DataFilter filter, IModelComparator sortComparator) {
+	public IncrementalResult doQuery(Collection<IItemFilter> filter, IItemComparator sortComparator) {
 		return null;
 	}
 	
-	public void saveItem(IQAModel item) {
-		
-	}
+	/* And methods for adding new items */
 }

@@ -6,5 +6,5 @@ package com.ualberta.team17;
  */
 public interface IUnique {
 	public UniqueId getUniqueId();
-	public 
+	public ItemType getItemType();
 }

@@ -3,6 +3,7 @@ package com.ualberta.team17.datamanager;
 import java.util.Date;
 
 import com.ualberta.team17.IQAModel;
+import com.ualberta.team17.datamanager.filters.DataFilter;
 
 public class NetworkDataManager implements IDataSourceManager {
 
