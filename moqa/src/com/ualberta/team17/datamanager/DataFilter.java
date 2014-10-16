@@ -1,4 +1,4 @@
-package com.ualberta.team17.datamanager.filters;
+package com.ualberta.team17.datamanager;
 
 import com.ualberta.team17.IQAModel;
 import com.ualberta.team17.IUnique;

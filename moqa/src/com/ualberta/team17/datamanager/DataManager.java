@@ -4,11 +4,19 @@ import java.util.Collection;
 
 import com.ualberta.team17.IQAModel;
 import com.ualberta.team17.IUnique;
-import com.ualberta.team17.datamanager.filters.DataFilter;
+import com.ualberta.team17.usercontext.UserContext;
 
 public class DataManager {
-	public IncrementalResult doQuery(Collection<IItemFilter> filter, IItemComparator sortComparator) {
+	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
 		return null;
+	}
+	
+	public void setUserContext(UserContext ctx) {
+		
+	}
+	
+	public UserContext getUserContext() {
+		
 	}
 	
 	/* And methods for adding new items */

@@ -3,7 +3,6 @@ package com.ualberta.team17.datamanager;
 import java.util.Date;
 
 import com.ualberta.team17.IUnique;
-import com.ualberta.team17.datamanager.filters.DataFilter;
 
 public interface IDataSourceManager {
 	public void query(IItemFilter filter, IncrementalResult result);
