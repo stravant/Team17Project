@@ -1,7 +1,7 @@
 package com.ualberta.team17.datamanager;
 
 import com.ualberta.team17.IQAModel;
-import com.ualberta.team17.IUnique;
+import com.ualberta.team17.QAModel;
 import com.ualberta.team17.datamanager.IItemFilter;
 
 public abstract class DataFilter implements IItemFilter {
@@ -19,7 +19,7 @@ public abstract class DataFilter implements IItemFilter {
 		return null;
 	}
 	
-	public boolean accept(IUnique item) {
+	public boolean accept(QAModel item) {
 		return false;
 	}
 }

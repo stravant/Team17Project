@@ -7,11 +7,6 @@ import java.util.Date;
  */
 public class UpvoteItem extends AuthoredItem {
 	public UpvoteItem(UniqueId id, UniqueId parentId, String author, Date date) {
-		super(id, parentId, author, date);
-	}
-	
-	@Override
-	public ItemType getItemType() {
-		return ItemType.Comment;
+		super(ItemType.Upvote, id, parentId, author, date);
 	}
 }

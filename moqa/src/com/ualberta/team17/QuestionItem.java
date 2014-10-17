@@ -2,27 +2,17 @@ package com.ualberta.team17;
 
 import java.util.Date;
 
-public class QuestionItem extends QAItem {
-	transient int mUpvoteCount;
+public class QuestionItem extends AuthoredTextItem {	
+	private String mTitle;
 	
-	String mTitle;
-	
-	public QuestionItem(UniqueId id, UniqueId parentId, String author, Date date, String body, String title, int upvoteCount) {
-		super(id, parentId, author, date, body);
+	/* Ctor */
+	public QuestionItem(UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount, String title) {
+		super(ItemType.Question, id, parentId, author, date, body, upvoteCount);
 		mTitle = title;
-		mUpvoteCount = upvoteCount;
 	}
 	
-	public int getUpvoteCount() {
-		return mUpvoteCount;
-	}
-	
+	/* Getters */
 	public String getTitle() {
 		return mTitle;
-	}
-	
-	@Override
-	public ItemType getItemType() {
-		return ItemType.Question;
 	}
 }

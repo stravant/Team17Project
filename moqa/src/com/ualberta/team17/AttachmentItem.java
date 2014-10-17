@@ -3,25 +3,21 @@ package com.ualberta.team17;
 import java.util.Date;
 
 public class AttachmentItem extends AuthoredItem {
-	String mName;
-	String mData;
+	private String mName;
+	private String mData;
 	
+	/* Ctor */
 	public AttachmentItem(UniqueId id, UniqueId parentId, String author, Date date, String name, String data) {
-		super(id, parentId, author, date);
+		super(ItemType.Attachment, id, parentId, author, date);
 		mName = name;
 		mData = data;
 	}
 	
+	/* Getters */
 	public String getName() {
 		return mName;
 	}
-
 	public String getData() {
 		return mData;
-	}
-
-	@Override
-	public ItemType getItemType() {
-		return ItemType.Attachment;
 	}
 }

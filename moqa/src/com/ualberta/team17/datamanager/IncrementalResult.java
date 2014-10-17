@@ -2,7 +2,7 @@ package com.ualberta.team17.datamanager;
 
 import java.util.List;
 
-import com.ualberta.team17.IUnique;
+import com.ualberta.team17.QAModel;
 import com.ualberta.team17.ItemType;
 
 /*
@@ -29,7 +29,7 @@ public class IncrementalResult {
 		
 	}
 	
-	public void addObjects(List<IUnique> objects) {
+	public void addObjects(List<QAModel> objects) {
 		
 	}
 	
@@ -37,15 +37,15 @@ public class IncrementalResult {
 		return 0;
 	}
 	
-	public IUnique getCurrentResult(int index) {
+	public QAModel getCurrentResult(int index) {
 		return null;
 	}
 	
-	public List<IUnique> getCurrentResults() {
+	public List<QAModel> getCurrentResults() {
 		return null;
 	}
 	
-	public List<IUnique> getCurrentResultsOfType(ItemType type) {
+	public List<QAModel> getCurrentResultsOfType(ItemType type) {
 		return null;
 	}
 }
