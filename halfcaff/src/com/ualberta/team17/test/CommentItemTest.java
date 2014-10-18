@@ -3,58 +3,57 @@ package com.ualberta.team17.test;
 import java.util.Date;
 
 import com.ualberta.team17.QAModel;
-import com.ualberta.team17.QuestionItem;
+import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.view.IQAView;
 
 import junit.framework.TestCase;
 
-public class QuestionItemTest extends TestCase {
-	private QuestionItem testQuestion;
+public class CommentItemTest extends TestCase {
+	private CommentItem testComment;
 	boolean notified;
 	int notifyCount;
 	public void SetUp() {
-		testQuestion = new QuestionItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", 0, "title" );
+		testComment = new CommentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", 0);
 		notified = false;
 		notifyCount = 0;
 	}
 	
-	public void Test_QI1_Upvote()
+	public void Test_CI1_Upvote()
 	{
-		assertEquals( "No upvotes", testQuestion.getUpvoteCount(), 0 );
+		assertEquals("No upvotes", testComment.getUpvoteCount(), 0);
 		
-		testQuestion.upvote();
+		testComment.upvote();
 		
-		assertEquals( "One upvote", testQuestion.getUpvoteCount(), 1 );
+		assertEquals("One upvote", testComment.getUpvoteCount(), 1);
 	}
 	
-	public void Test_QI2_UpvoteNotifiesView()
+	public void Test_CI2_UpvoteNotifiesView()
 	{
 		IQAView dummyView = new IQAView() {
 			public void update(QAModel model) {
 				notified = true;
 			}
 		};
-		testQuestion.addView( dummyView );
-		testQuestion.upvote();
-		
-		assertTrue( "View was notified", notified );
+		testComment.addView(dummyView);
+		testComment.upvote();		
+		assertTrue( "View was notified", notified );			
 	}
 	
-	public void Test_QI3_DeleteView()
+	public void Test_CI3_DeleteView()
 	{		
 		IQAView dummyView = new IQAView() {
 			public void update(QAModel model) {
 				notified = true;
 			}
 		};
-		testQuestion.addView(dummyView);
-		testQuestion.deleteView(dummyView); 
-		testQuestion.upvote();		
+		testComment.addView(dummyView);
+		testComment.deleteView(dummyView); 
+		testComment.upvote();		
 		assertFalse("No views were nofified", notified);		
 	}
 	
-	public void Test_QI4_NotifyViews()
+	public void Test_CI4_NotifyViews()
 	{		
 		IQAView dummyViewA = new IQAView() {
 			public void update(QAModel model) {
@@ -72,10 +71,10 @@ public class QuestionItemTest extends TestCase {
 			}
 		};
 		
-		testQuestion.addView(dummyViewA);
-		testQuestion.addView(dummyViewB);
-		testQuestion.addView(dummyViewC);
-		testQuestion.notifyViews();
+		testComment.addView(dummyViewA);
+		testComment.addView(dummyViewB);
+		testComment.addView(dummyViewC);
+		testComment.notifyViews();
 		assertEquals("All views were notified", notifyCount, 3);
 	}
 }
