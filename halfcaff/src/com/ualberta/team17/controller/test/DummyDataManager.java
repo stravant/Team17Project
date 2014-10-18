@@ -7,6 +7,7 @@ import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
+import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataManager;
 import com.ualberta.team17.datamanager.IItemComparator;
@@ -30,9 +31,11 @@ public class DummyDataManager extends DataManager {
 		mContext = null;
 		items = new ArrayList<QAModel>();
 		
-		items.add( new QuestionItem(null, null, null, null, null, 0, null) );
-		items.add( new AnswerItem(null, null, null, null, null, 0) );
-		items.add( new CommentItem(null, null, null, null, null, 0) );
+		UniqueId questionId = new UniqueId();
+		
+		items.add( new QuestionItem(questionId, null, null, null, null, 0, null) );
+		items.add( new AnswerItem(null, questionId, null, null, null, 0) );
+		items.add( new CommentItem(null, questionId, null, null, null, 0) );
 	}
 	
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {

@@ -31,10 +31,9 @@ public class QAControllerTest extends TestCase {
 	}
 	
 	public void Test_QAC2_GetQuestionChildren() {
-		IncrementalResult result = controller.getObjects(new DataFilter(){}, new UpvoteComparator() );
-		QuestionItem question = (QuestionItem) result.getCurrentResultsOfType(ItemType.Question).get(0);
+		IncrementalResult childrenResult = controller.getQuestionChildren( parentQuestion, new UpvoteComparator() );
 		
-		IncrementalResult childrenResult = controller.getQuestionChildren( question, new UpvoteComparator() );
+		assertEquals( "Question has 2 children", childrenResult.getCurrentResultCount(), 2 );
 	}
 	
 	public void Test_QAC3_CreateQuestion() {
