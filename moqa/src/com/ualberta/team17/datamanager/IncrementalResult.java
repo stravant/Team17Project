@@ -21,11 +21,11 @@ public class IncrementalResult {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void addObserver(IncrementalObserver observer) {
+	public void addObserver(IIncrementalObserver observer) {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void addObserver(IncrementalObserver observer, ItemType type) {
+	public void addObserver(IIncrementalObserver observer, ItemType type) {
 		throw new UnsupportedOperationException();
 	}
 	
