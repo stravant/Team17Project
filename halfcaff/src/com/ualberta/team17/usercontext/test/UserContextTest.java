@@ -1,24 +1,25 @@
 package com.ualberta.team17.usercontext.test;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.ualberta.team17.UniqueId;
-import com.ualberta.team17.usercontext.UserContext;
+import com.ualberta.team17.datamanager.UserContext;
 
 import junit.framework.TestCase;
 
 public class UserContextTest extends TestCase {
+	private static final String UserContextId = "TestUser";
 	private UserContext context;
 	
 	public void SetUp() {
-		context = new UserContext();
+		context = new UserContext(UserContextId);
 	}
 	
 	public void Test_UC1_AddFavorites() {
 		UniqueId id = new UniqueId();
 		context.addFavorite( id );
 		
-		ArrayList<UniqueId> favorites = context.getFavorites();
+		List<UniqueId> favorites = context.getFavorites();
 		assertTrue("Favorites has id", favorites.contains(id));
 	}
 	
@@ -27,7 +28,7 @@ public class UserContextTest extends TestCase {
 		context.addFavorite( id );
 		context.addFavorite( id );
 		
-		ArrayList<UniqueId> favorites = context.getFavorites();
+		List<UniqueId> favorites = context.getFavorites();
 		assertEquals( "Favorites has length 1", favorites.size(), 1 );
 	}
 	
@@ -35,7 +36,7 @@ public class UserContextTest extends TestCase {
 		UniqueId id = new UniqueId();
 		context.addReply( id );
 		
-		ArrayList<UniqueId> replies = context.getReplies();
+		List<UniqueId> replies = context.getReplies();
 		assertTrue( "Replies has id", replies.contains(id));
 	}
 	
@@ -44,7 +45,7 @@ public class UserContextTest extends TestCase {
 		context.addReply( id );
 		context.addReply( id );
 		
-		ArrayList<UniqueId> replies = context.getReplies();
+		List<UniqueId> replies = context.getReplies();
 		assertEquals( "Replies has length 1", replies.size(), 1 );
 	}
 }
