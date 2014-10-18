@@ -14,11 +14,11 @@ public class AttachmentItemTest extends TestCase {
 	boolean notified;
 	int notifyCount;
 	public void setUp() {
-		testAttachment = new AttachmentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", "data");
+		testAttachment = new AttachmentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", null);
 		notified = false;
 		notifyCount = 0;
 	}
-	
+
 	public void test_AtI1_NotifyViews()
 	{		
 		IQAView dummyViewA = new IQAView() {
@@ -36,14 +36,14 @@ public class AttachmentItemTest extends TestCase {
 				notifyCount++;
 			}
 		};
-		
+
 		testAttachment.addView(dummyViewA);
 		testAttachment.addView(dummyViewB);
 		testAttachment.addView(dummyViewC);
 		testAttachment.notifyViews();
 		assertEquals("All views were notified", notifyCount, 3);
 	}
-	
+
 	public void test_AtI2_DeleteView()
 	{		
 		IQAView dummyView = new IQAView() {
@@ -51,11 +51,10 @@ public class AttachmentItemTest extends TestCase {
 				notified = true;
 			}
 		};
+
 		testAttachment.addView(dummyView);
 		testAttachment.deleteView(dummyView); 
 		testAttachment.notifyViews();		
 		assertFalse("No views were nofified", notified);		
 	}
-	
-	
 }
