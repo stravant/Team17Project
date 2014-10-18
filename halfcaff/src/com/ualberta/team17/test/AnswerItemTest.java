@@ -50,7 +50,7 @@ public class AnswerItemTest extends TestCase {
 		testAnswer.addView(dummyView);
 		testAnswer.deleteView(dummyView); 
 		testAnswer.upvote();		
-		assertFalse("No views were nofified", notified);		
+		assertFalse("No views were notified", notified);		
 	}
 	
 	public void Test_AI4_NotifyViews()
