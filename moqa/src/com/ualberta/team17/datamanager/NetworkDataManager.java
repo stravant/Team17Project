@@ -2,56 +2,48 @@ package com.ualberta.team17.datamanager;
 
 import java.util.Date;
 
-import com.ualberta.team17.IQAModel;
+import com.ualberta.team17.QAModel;
 
 public class NetworkDataManager implements IDataSourceManager {
 
 	@Override
 	public void query(DataFilter filter, IncrementalResult result) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public boolean saveItem(IQAModel item) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean saveItem(QAModel item) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean isAvailable() {
-		// TODO Auto-generated method stub
-		return false;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Date getLastDataSourceAvailableTime() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void addDataLoadedListener(IDataLoadedListener listener) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void notifyDataItemLoaded(IQAModel item) {
-		// TODO Auto-generated method stub
-		
+	public void notifyDataItemLoaded(QAModel item) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void addDataSourceAvailableListener(
 			IDataSourceAvailableListener listener) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void notifyDataSourceAvailable() {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 }
