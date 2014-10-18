@@ -8,8 +8,8 @@ import java.util.Random;
 import com.ualberta.team17.datamanager.UserContext;
 
 public class UniqueId {
-	private final static String DigestAlgorithm = "MD5";
-	private final static Integer UniqueIdLength = 32;
+	private final static String DIGEST_ALGORITHM = "MD5";
+	private final static Integer UNIQUE_ID_LENGTH = 32;
 	private String mId;
 
 	/**
@@ -21,17 +21,17 @@ public class UniqueId {
 
 		try {
 			// Initially try building the string from the user and date
-			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm);
+			MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGORITHM);
 			mId = messageDigest.digest(digestString.getBytes()).toString();
 		} catch (NoSuchAlgorithmException e) {
 			// Fall back to a random string
-			System.err.print(String.format("%s Algorithm not available for creating new UniqueId", DigestAlgorithm));
+			System.err.print(String.format("%s Algorithm not available for creating new UniqueId", DIGEST_ALGORITHM));
 			mId = GenerateRandomIdString(digestString);
 		}
 	}
 
 	public UniqueId(String id) {
-		mId = id.substring(0, UniqueIdLength);
+		mId = id.substring(0, UNIQUE_ID_LENGTH);
 	}
 
 	public UniqueId() {
@@ -57,7 +57,7 @@ public class UniqueId {
 			randomGenerator.setSeed(seed);
 		}
 
-		while (idString.length() < UniqueIdLength) {
+		while (idString.length() < UNIQUE_ID_LENGTH) {
 			idString += characters[randomGenerator.nextInt(characters.length)];
 		}
 

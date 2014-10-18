@@ -19,11 +19,11 @@ public class DataFilter {
 	}
 
 	public enum FilterComparison {
-		contains,
-		equals,
-		notequal,
-		lessthan,
-		greaterthan
+		CONTAINS,
+		EQUALS,
+		NOT_EQUAL,
+		LESS_THAN,
+		GREATER_THAN
 	}
 
 	public void setTypeFilter(ItemType type) {
