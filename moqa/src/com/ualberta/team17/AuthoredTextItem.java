@@ -7,7 +7,7 @@ import java.util.Date;
  * In addition to being an authored item, it has a body text. 
  * Also, can be upvoted.
  */
-public abstract class AuthoredTextItem extends AuthoredItem implements IUpvotable {
+public abstract class AuthoredTextItem extends AuthoredItem {
 	private String mBody;
 	private transient int mUpvoteCount;
 	
@@ -23,12 +23,10 @@ public abstract class AuthoredTextItem extends AuthoredItem implements IUpvotabl
 		return mBody;
 	}
 
-	@Override
 	public int getUpvoteCount() {
 		return mUpvoteCount;
 	}
 
-	@Override
 	public void upvote() {
 		mUpvoteCount++;
 		notifyViews();
