@@ -26,7 +26,7 @@ public class QuestionItemTest extends TestCase {
 		assertEquals( "One upvote", mQ1.getUpvoteCount(), 1 );
 	}
 	
-	public void TestNotifyView()
+	public void TestUpvoteNotifiesView()
 	{
 		IQAView dummyView = new IQAView() {
 			public void update(QAModel model) {
