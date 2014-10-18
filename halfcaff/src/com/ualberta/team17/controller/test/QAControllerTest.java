@@ -3,11 +3,9 @@ package com.ualberta.team17.controller.test;
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.CommentItem;
-import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
-import com.ualberta.team17.datamanager.DataManager;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 
@@ -25,7 +23,7 @@ public class QAControllerTest extends TestCase {
 	}
 	
 	public void Test_QAC1_GetObjects() {
-		IncrementalResult result = controller.getObjects(new DataFilter(){}, new UpvoteComparator() );
+		IncrementalResult result = controller.getObjects(new DataFilter(), new UpvoteComparator() );
 		
 		assertEquals("getObjects", result.getCurrentResultCount(), dataManager.getItemCount() );
 	}
