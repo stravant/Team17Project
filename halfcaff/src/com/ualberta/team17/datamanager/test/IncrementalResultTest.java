@@ -15,11 +15,11 @@ import junit.framework.TestCase;
 
 public class IncrementalResultTest extends TestCase {
 	private IncrementalResult result;
-	public void SetUp() {
+	public void setUp() {
 		result = new IncrementalResult( new UpvoteComparator() );
 	}
 	
-	public void Test_IR1_ObserverTest() {
+	public void test_IR1_ObserverTest() {
 		DummyIncrementalObserver obs = new DummyIncrementalObserver();
 		
 		result.addObserver(obs);
@@ -28,7 +28,7 @@ public class IncrementalResultTest extends TestCase {
 		assertTrue( "Observer notified", obs.wasNotified() );
 	}
 	
-	public void Test_IR2_GetCurrentResultCount() {
+	public void test_IR2_GetCurrentResultCount() {
 		assertEquals( "No results initially", result.getCurrentResultCount(), 0 );
 		
 		List<QAModel> itemsToAdd = new ArrayList<QAModel>();
@@ -39,7 +39,7 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals( "One result after adding", result.getCurrentResultCount(), 1);
 	}
 	
-	public void Test_IR3_GetCurrentResult() {
+	public void test_IR3_GetCurrentResult() {
 		QuestionItem item1 = new QuestionItem(new UniqueId(), null, null, null, null, 0, null);
 		QuestionItem item2 = new QuestionItem(new UniqueId(), null, null, null, null, 0, null);
 		
@@ -53,7 +53,7 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals( "Second result", result.getCurrentResult(1), item2);
 	}
 	
-	public void Test_IR4_GetCurrentResultsOfType() {
+	public void test_IR4_GetCurrentResultsOfType() {
 		QuestionItem item1 = new QuestionItem(new UniqueId(), null, null, null, null, 0, null);
 		AnswerItem item2 = new AnswerItem(new UniqueId(), null, null, null, null, 0);
 		QuestionItem item3 = new QuestionItem(new UniqueId(), null, null, null, null, 0, null);

@@ -11,11 +11,11 @@ public class UserContextTest extends TestCase {
 	private static final String UserContextId = "TestUser";
 	private UserContext context;
 	
-	public void SetUp() {
+	public void setUp() {
 		context = new UserContext(UserContextId);
 	}
 	
-	public void Test_UC1_AddFavorites() {
+	public void test_UC1_AddFavorites() {
 		UniqueId id = new UniqueId();
 		context.addFavorite( id );
 		
@@ -23,7 +23,7 @@ public class UserContextTest extends TestCase {
 		assertTrue("Favorites has id", favorites.contains(id));
 	}
 	
-	public void Test_UC2_AddFavoritesNoDuplicates() {
+	public void test_UC2_AddFavoritesNoDuplicates() {
 		UniqueId id = new UniqueId();
 		context.addFavorite( id );
 		context.addFavorite( id );
@@ -32,7 +32,7 @@ public class UserContextTest extends TestCase {
 		assertEquals( "Favorites has length 1", favorites.size(), 1 );
 	}
 	
-	public void Test_UC3_AddReply() {
+	public void test_UC3_AddReply() {
 		UniqueId id = new UniqueId();
 		context.addReply( id );
 		
@@ -40,7 +40,7 @@ public class UserContextTest extends TestCase {
 		assertTrue( "Replies has id", replies.contains(id));
 	}
 	
-	public void Test_UC4_AddReplyNoDuplicates() {
+	public void test_UC4_AddReplyNoDuplicates() {
 		UniqueId id = new UniqueId();
 		context.addReply( id );
 		context.addReply( id );
