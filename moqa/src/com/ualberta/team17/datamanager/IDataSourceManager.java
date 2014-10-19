@@ -5,7 +5,7 @@ import java.util.Date;
 import com.ualberta.team17.QAModel;
 
 public interface IDataSourceManager {
-	public void query(DataFilter filter, IncrementalResult result);
+	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result);
 	public boolean saveItem(QAModel item);
 	
 	public boolean isAvailable();
