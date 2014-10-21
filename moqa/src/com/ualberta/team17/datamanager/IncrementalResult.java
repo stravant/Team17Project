@@ -18,34 +18,34 @@ public class IncrementalResult {
 	// Finer grained locking control is needed.
 	
 	public IncrementalResult(IItemComparator sort) {
-		
+		throw new UnsupportedOperationException();
 	}
 	
-	public void addObserver(IncrementalObserver observer) {
-		
+	public void addObserver(IIncrementalObserver observer) {
+		throw new UnsupportedOperationException();
 	}
 	
-	public void addObserver(IncrementalObserver observer, ItemType type) {
-		
+	public void addObserver(IIncrementalObserver observer, ItemType type) {
+		throw new UnsupportedOperationException();
 	}
 	
 	public void addObjects(List<QAModel> objects) {
-		
+		throw new UnsupportedOperationException();
 	}
 	
 	public int getCurrentResultCount() {
-		return 0;
+		throw new UnsupportedOperationException();
 	}
 	
 	public QAModel getCurrentResult(int index) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 	
 	public List<QAModel> getCurrentResults() {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 	
 	public List<QAModel> getCurrentResultsOfType(ItemType type) {
-		return null;
+		throw new UnsupportedOperationException();
 	}
 }

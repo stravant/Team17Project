@@ -13,13 +13,13 @@ public class CommentItemTest extends TestCase {
 	private CommentItem testComment;
 	boolean notified;
 	int notifyCount;
-	public void SetUp() {
+	public void setUp() {
 		testComment = new CommentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", 0);
 		notified = false;
 		notifyCount = 0;
 	}
 	
-	public void Test_CI1_Upvote()
+	public void test_CI1_Upvote()
 	{
 		assertEquals("No upvotes", testComment.getUpvoteCount(), 0);
 		
@@ -28,7 +28,7 @@ public class CommentItemTest extends TestCase {
 		assertEquals("One upvote", testComment.getUpvoteCount(), 1);
 	}
 	
-	public void Test_CI2_UpvoteNotifiesView()
+	public void test_CI2_UpvoteNotifiesView()
 	{
 		IQAView dummyView = new IQAView() {
 			public void update(QAModel model) {
@@ -40,7 +40,7 @@ public class CommentItemTest extends TestCase {
 		assertTrue( "View was notified", notified );			
 	}
 	
-	public void Test_CI3_DeleteView()
+	public void test_CI3_DeleteView()
 	{		
 		IQAView dummyView = new IQAView() {
 			public void update(QAModel model) {
@@ -53,7 +53,7 @@ public class CommentItemTest extends TestCase {
 		assertFalse("No views were nofified", notified);		
 	}
 	
-	public void Test_CI4_NotifyViews()
+	public void test_CI4_NotifyViews()
 	{		
 		IQAView dummyViewA = new IQAView() {
 			public void update(QAModel model) {

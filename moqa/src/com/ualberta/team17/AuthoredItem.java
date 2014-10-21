@@ -30,9 +30,6 @@ public abstract class AuthoredItem extends QAModel {
 	public Date getDate() {
 		return mDate;
 	}
-	public UniqueId getItemId() {
-		return mItemId;
-	}
 	public UniqueId getParentItem() {
 		return mParentItem;
 	}

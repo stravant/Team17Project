@@ -12,8 +12,8 @@ import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataManager;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
-import com.ualberta.team17.usercontext.UserContext;
 
 /**
  * This class overrides DataManager to provide a limited

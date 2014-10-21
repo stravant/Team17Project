@@ -3,9 +3,9 @@ package com.ualberta.team17.datamanager.test;
 import java.util.List;
 
 import com.ualberta.team17.QAModel;
-import com.ualberta.team17.datamanager.IncrementalObserver;
+import com.ualberta.team17.datamanager.IIncrementalObserver;
 
-public class DummyIncrementalObserver implements IncrementalObserver {
+public class DummyIncrementalObserver implements IIncrementalObserver {
 	private boolean notified;
 	
 	public DummyIncrementalObserver() {

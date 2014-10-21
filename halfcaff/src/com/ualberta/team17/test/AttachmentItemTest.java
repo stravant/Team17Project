@@ -13,13 +13,13 @@ public class AttachmentItemTest extends TestCase {
 	private AttachmentItem testAttachment;
 	boolean notified;
 	int notifyCount;
-	public void SetUp() {
-		testAttachment = new AttachmentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", "data");
+	public void setUp() {
+		testAttachment = new AttachmentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", null);
 		notified = false;
 		notifyCount = 0;
 	}
-	
-	public void Test_AtI1_NotifyViews()
+
+	public void test_AtI1_NotifyViews()
 	{		
 		IQAView dummyViewA = new IQAView() {
 			public void update(QAModel model) {
@@ -36,26 +36,25 @@ public class AttachmentItemTest extends TestCase {
 				notifyCount++;
 			}
 		};
-		
+
 		testAttachment.addView(dummyViewA);
 		testAttachment.addView(dummyViewB);
 		testAttachment.addView(dummyViewC);
 		testAttachment.notifyViews();
 		assertEquals("All views were notified", notifyCount, 3);
 	}
-	
-	public void Test_AtI2_DeleteView()
+
+	public void test_AtI2_DeleteView()
 	{		
 		IQAView dummyView = new IQAView() {
 			public void update(QAModel model) {
 				notified = true;
 			}
 		};
+
 		testAttachment.addView(dummyView);
 		testAttachment.deleteView(dummyView); 
 		testAttachment.notifyViews();		
 		assertFalse("No views were nofified", notified);		
 	}
-	
-	
 }
