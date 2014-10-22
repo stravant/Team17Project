@@ -1,0 +1,6 @@
+{ "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "ecf5165525f1fde44c1ebbb55a0f2d1b" } }
+{ "mTitle": "This is the first question", "mBody": "This is the default question body", "mUpvoteCount": "0", "mParentItem": "0", "mAuthor": "michaelblouin", "mDate": "2014-10-18T22:52:36Z", "mType": "question", "mUniqueId": "ecf5165525f1fde44c1ebbb55a0f2d1b" }
+{ "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "703a31a2bf463ab46b7eba47a4801567" } }
+{ "mTitle": "This is the second question", "mBody": "This is the second question body", "mUpvoteCount": "10", "mParentItem": "0", "mAuthor": "testuser", "mDate": "2014-10-18T22:59:36Z", "mType": "question", "mUniqueId": "703a31a2bf463ab46b7eba47a4801567" }
+{ "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "c5ed8aff3dbcd324730bd046c6d254a8" } }
+{ "mTitle": "This is the third question", "mBody": "This is the third question body", "mUpvoteCount": "11", "mParentItem": "0", "mAuthor": "michaelblouin", "mDate": "2014-10-18T23:52:36Z", "mType": "question", "mUniqueId": "c5ed8aff3dbcd324730bd046c6d254a8" }
