@@ -3,7 +3,9 @@ package com.ualberta.team17.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ualberta.team17.R;
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
@@ -14,8 +16,15 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IncrementalResult;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 public class QuestionViewActivity extends Activity {
 	public final static String QUESTION_EXTRA = "QUESTION";
@@ -30,6 +39,8 @@ public class QuestionViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Intent questionIntent = this.getIntent();
+		
+		Log.e("onCreate", "TEST ERROR");
 		
 		mQuestion = (QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA);
 		if(mQuestion == null) {
@@ -65,7 +76,7 @@ public class QuestionViewActivity extends Activity {
 		
 	}
 	
-	private QABody createBodyItem(QAModel item) {
+	private QABody createBodyItem(AuthoredTextItem item) {
 		QABody body = new QABody(item);
 		IncrementalResult commentResult = qaController.getChildren(item, null);
 		CommentObserver commentObs = new CommentObserver(body);
@@ -77,7 +88,7 @@ public class QuestionViewActivity extends Activity {
 		@Override
 		public void itemsArrived(List<QAModel> items, int index) {
 			for(QAModel item : items) {
-				mQAItems.add(createBodyItem(item));
+				mQAItems.add(createBodyItem((AuthoredTextItem)item));
 			}
 		}
 	}
@@ -98,12 +109,33 @@ public class QuestionViewActivity extends Activity {
 	
 	private class QABody {
 		@SuppressWarnings("unused")
-		public QAModel parent;
+		public AuthoredTextItem parent;
 		public List<CommentItem> comments;
 		
-		public QABody(QAModel initParent) {
+		public QABody(AuthoredTextItem initParent) {
 			parent = initParent;
 			comments = new ArrayList<CommentItem>();
+		}
+	}
+	
+	private class QABodyAdapter extends ArrayAdapter<QABody> {
+		Context mContext;
+		
+		public QABodyAdapter(Context context, int textViewResourceId,
+				List<QABody> objects) {
+			super(context, textViewResourceId, objects);
+			mContext = context;
+		}
+		
+
+		public View getView( int position, View convertView, ViewGroup parent ) {
+			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+			
+			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
+			
+			bodyTextView.setText(mQAItems.get(position).parent.getBody());
+			return qaItemView;
 		}
 	}
 
