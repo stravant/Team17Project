@@ -3,6 +3,7 @@ package com.ualberta.team17.datamanager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.ualberta.team17.ItemType;
 
 public class ESSearchBuilder {
 	JsonObject queryObject;
@@ -25,7 +26,18 @@ public class ESSearchBuilder {
 		obj.addProperty(property, value);
 		return obj;
 	}
-	
+
+	private void addTypeFilter(JsonObject obj, String group, ItemType type) {
+		if (!obj.has(group)) {
+			obj.add(group, new JsonArray());
+		}
+
+		obj.getAsJsonArray(group).add(
+			getJsonObjectWithProperty("type",
+				getJsonObjectWithProperty("value", type.toString()))
+		);
+	}
+
 	private void addTermFilter(JsonObject obj, String group, DataFilter.FieldFilter filter) {
 		if (!obj.has(group)) {
 			obj.add(group, new JsonArray());
@@ -93,6 +105,10 @@ public class ESSearchBuilder {
 					addTermFilter(boolFilterObj, "must_not", filter);
 					break;
 			}
+		}
+
+		if (null != mFilter.getTypeFilter()) {
+			addTypeFilter(boolFilterObj, "must", mFilter.getTypeFilter());
 		}
 		
 		if (!filteredQueryObj.has("query")) {

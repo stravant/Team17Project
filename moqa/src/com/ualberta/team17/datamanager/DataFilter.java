@@ -28,6 +28,10 @@ public class DataFilter {
 		mTypeFilter = type;
 	}
 
+	public ItemType getTypeFilter() {
+		return mTypeFilter;
+	}
+
 	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode) {
 		mFieldFilters.add(new FieldFilter(field, filter, comparisonMode));
 	}
