@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class QuestionViewActivity extends Activity {
@@ -35,9 +36,17 @@ public class QuestionViewActivity extends Activity {
 	// this will get deleted once the global controller is figured out.
 	private QAController qaController;
 	
+	public QuestionViewActivity() {
+		mQuestion = null;
+		mQAItems = new ArrayList<QABody>();
+	}
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_questionview);
+		
 		Intent questionIntent = this.getIntent();
 		
 		Log.e("onCreate", "TEST ERROR");
@@ -65,6 +74,15 @@ public class QuestionViewActivity extends Activity {
 				mQAItems.add(questionBody);
 				mQAItems.add(answer1Body);
 				mQAItems.add(answer2Body);
+				
+				TextView title = (TextView) findViewById(R.id.titleView);
+				title.setText(mQuestion.getTitle());
+				
+				ListView qaList = (ListView) findViewById(R.id.qaItemView);
+				QABodyAdapter adapter = new QABodyAdapter(this, R.id.qaItemView, mQAItems);
+				
+				qaList.setAdapter(adapter);
+				adapter.notifyDataSetChanged();
 			}
 		}
 		else {
@@ -120,11 +138,13 @@ public class QuestionViewActivity extends Activity {
 	
 	private class QABodyAdapter extends ArrayAdapter<QABody> {
 		Context mContext;
+		List<QABody> mObjects;
 		
 		public QABodyAdapter(Context context, int textViewResourceId,
 				List<QABody> objects) {
 			super(context, textViewResourceId, objects);
 			mContext = context;
+			mObjects = objects;
 		}
 		
 
@@ -132,10 +152,46 @@ public class QuestionViewActivity extends Activity {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
 			
-			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
+			View test = findViewById(R.id.bodyText);
+			View test2 = qaItemView.findViewById(R.id.bodyText);
+			TextView bodyTextView = (TextView) test2;
+			TextView bodyTextView1 = (TextView) test;
 			
-			bodyTextView.setText(mQAItems.get(position).parent.getBody());
+			bodyTextView.setText(mObjects.get(position).parent.getBody());
+			
+			ListView commentListView = (ListView) qaItemView.findViewById(R.id.commentView);
+			CommentAdapter commentAdapter = new CommentAdapter(mContext, R.id.commentView, mQAItems.get(position).comments);
+			commentListView.setAdapter(commentAdapter);
+			commentAdapter.notifyDataSetChanged();
 			return qaItemView;
+		}
+	}
+	
+	private class CommentAdapter extends ArrayAdapter<CommentItem> {
+		Context mContext;
+		List<CommentItem> mComments;
+		
+		public CommentAdapter(Context context, int listViewResourceId, List<CommentItem> objects) {
+			super(context, listViewResourceId, objects);
+			mContext = context;
+			mComments = objects;
+		}
+		
+		public View getView(int position, View convertView, ViewGroup parent) {
+			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View commentView = inflater.inflate(R.layout.comment, parent, false);
+			
+			CommentItem comment = mComments.get(position);
+			TextView commentText = (TextView) commentView.findViewById(R.id.commentText);
+			
+			commentText.setText(comment.getBody());
+			commentText.getLayout();
+			if(commentView.getMinimumHeight() > commentView.getHeight()) {
+				commentText.setText("Too small!");
+			}
+			Log.i("asdf", new Integer(commentView.getMinimumHeight()).toString());
+			
+			return commentView;
 		}
 	}
 

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <EditText
+    <TextView
         android:id="@+id/bodyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,7 +13,7 @@
         android:ems="10" >
 
         <requestFocus />
-    </EditText>
+    </TextView>
 
     <Button
         android:id="@+id/upvoteButton"
@@ -34,12 +34,12 @@
         android:layout_toRightOf="@+id/upvoteButton"
         android:text="@string/favorite" />
 
-    <ExpandableListView
+    <ListView
         android:id="@+id/commentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/upvoteButton" >
-    </ExpandableListView>
+    </ListView>
 
 </RelativeLayout>
