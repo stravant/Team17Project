@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class ESSearchBuilder {
+	JsonObject queryObject;
 	DataFilter mFilter;
 	IItemComparator mComparator;
 	
@@ -49,45 +50,49 @@ public class ESSearchBuilder {
 	}
 	
 	public JsonObject getJsonQueryObject() {
+		if (null != queryObject) {
+			return queryObject;
+		}
+
 		// Build the Filter
 		JsonObject filteredQueryObj = new JsonObject();
 		JsonObject boolFilterObj = new JsonObject();
 
 		for (DataFilter.FieldFilter filter: mFilter.getFieldFilters()) {
 			switch (filter.getComparisonMode()) {
-			case QUERY_STRING:
-				if (!filteredQueryObj.has("query")) {
-					filteredQueryObj.add("query", new JsonObject());
-				}
-				
-				filteredQueryObj.getAsJsonObject("query").add("query_string", 
-						getJsonObjectWithProperty("query", filter.getFilter()));
-				break;
-				
-			case EQUALS:
-				addTermFilter(boolFilterObj, "must", filter);
-				break;
-				
-			case GREATER_THAN:
-				addRangeFilter(boolFilterObj, "must", filter, "gt");
-				break;
-				
-			case GREATER_THAN_OR_EQUAL:
-				addRangeFilter(boolFilterObj, "must", filter, "gte");
-				break;
-				
-			case LESS_THAN:
-				addRangeFilter(boolFilterObj, "must", filter, "lt");
-				break;
-				
-			case LESS_THAN_OR_EQUAL:
-				addRangeFilter(boolFilterObj, "must", filter, "lte");
-				break;
-				
-			case NOT_EQUAL:
-				addTermFilter(boolFilterObj, "must_not", filter);
-				break;
-		}
+				case QUERY_STRING:
+					if (!filteredQueryObj.has("query")) {
+						filteredQueryObj.add("query", new JsonObject());
+					}
+					
+					filteredQueryObj.getAsJsonObject("query").add("query_string", 
+							getJsonObjectWithProperty("query", filter.getFilter()));
+					break;
+					
+				case EQUALS:
+					addTermFilter(boolFilterObj, "must", filter);
+					break;
+					
+				case GREATER_THAN:
+					addRangeFilter(boolFilterObj, "must", filter, "gt");
+					break;
+					
+				case GREATER_THAN_OR_EQUAL:
+					addRangeFilter(boolFilterObj, "must", filter, "gte");
+					break;
+					
+				case LESS_THAN:
+					addRangeFilter(boolFilterObj, "must", filter, "lt");
+					break;
+					
+				case LESS_THAN_OR_EQUAL:
+					addRangeFilter(boolFilterObj, "must", filter, "lte");
+					break;
+					
+				case NOT_EQUAL:
+					addTermFilter(boolFilterObj, "must_not", filter);
+					break;
+			}
 		}
 		
 		if (!filteredQueryObj.has("query")) {
@@ -95,8 +100,9 @@ public class ESSearchBuilder {
 		}
 
 		filteredQueryObj.add("filter", getJsonObjectWithProperty("bool", boolFilterObj));
-		
-		return getJsonObjectWithProperty("filtered", filteredQueryObj);
+
+		queryObject = getJsonObjectWithProperty("filtered", filteredQueryObj);
+		return queryObject;
 	}
 
 	@Override

@@ -1,6 +1,10 @@
 package com.ualberta.team17;
 
+import java.io.IOException;
 import java.util.Date;
+
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 /*
  * A QAItem represents a question or answer in the service.
@@ -31,4 +35,18 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 		mUpvoteCount++;
 		notifyViews();
 	}	
+
+	public static abstract class GsonTypeAdapter<T extends AuthoredTextItem> extends QAModel.GsonTypeAdapter<T> {
+		@Override
+		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
+			if (super.parseField(item, name, reader)) {
+				return true;
+			} else if (name.equals("body")) {
+				item.mBody = reader.nextString();
+				return true;
+			}
+
+			return false;
+		}
+	}
 }

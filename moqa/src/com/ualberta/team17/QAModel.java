@@ -1,8 +1,11 @@
 package com.ualberta.team17;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
 import com.ualberta.team17.view.IQAView;
 
 /*
@@ -39,5 +42,30 @@ public abstract class QAModel {
 	}
 	public final ItemType getItemType() {
 		return mType;
+	}
+
+	public static abstract class GsonTypeAdapter<T extends QAModel> extends TypeAdapter<T> {
+		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
+			if (name.equals("id")) {
+				item.mUniqueId = new UniqueId(reader.nextString());
+				return true;
+			}
+
+			return false;
+		}
+
+		public T readInto(T item, JsonReader reader) throws IOException {
+			reader.beginObject();
+
+			while (reader.hasNext()) {
+				String name = reader.nextName();
+				if (parseField(item, name, reader)) {
+					continue;
+				}
+			}
+
+			reader.endObject();
+			return item;
+		}
 	}
 }

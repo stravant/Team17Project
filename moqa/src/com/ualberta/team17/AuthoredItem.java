@@ -1,6 +1,11 @@
 package com.ualberta.team17;
 
+import java.io.IOException;
 import java.util.Date;
+
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 /*
  * An AuthoredItem is a item that a user posted to the service at some date.
@@ -40,5 +45,25 @@ public abstract class AuthoredItem extends QAModel {
 	}
 	public void setStoragePolicy(StoragePolicy policy) {
 		mStoragePolicy = policy;
+	}
+
+	public static abstract class GsonTypeAdapter<T extends AuthoredItem> extends QAModel.GsonTypeAdapter<T> {
+		@Override
+		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
+			if (super.parseField(item, name, reader)) {
+				return true;
+			} else if (name.equals("parent")) {
+				item.mParentItem = new UniqueId(reader.nextString());
+				return true;
+			} else if (name.equals("author")) {
+				item.mAuthor = reader.nextString();
+				return true;
+			} else if (name.equals("date")) {
+				item.mDate = new Date(reader.nextLong());
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
