@@ -121,8 +121,10 @@ public class QuestionViewActivity extends Activity {
 			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
 			
 			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
+			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
 			
 			bodyTextView.setText(mObjects.get(position).parent.getBody());
+			authorTextView.setText(mObjects.get(position).parent.getAuthor());
 			
 			// TODO: Implement comments
 			// TODO: Implement favorite/upvote buttons.
