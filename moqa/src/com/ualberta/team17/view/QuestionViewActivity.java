@@ -23,7 +23,16 @@ import android.widget.TextView;
 
 public class QuestionViewActivity extends Activity {
 	public final static String QUESTION_EXTRA = "QUESTION";
+	
+	// Debug stuff - can be deleted later
 	private final static boolean DEBUG = true;
+	private final static String LIPSUM = "Lorem ipsum dolor sit amet, consectetur " +
+			"adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna " +
+			"aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " +
+			"nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " +
+			"reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
+			"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia " +
+			"deserunt mollit anim id est laborum.";
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQAItems;
@@ -45,9 +54,12 @@ public class QuestionViewActivity extends Activity {
 		if(mQuestion == null) {
 			// TODO: implement Question Creation.
 			if(DEBUG) {
-				mQuestion = new QuestionItem(new UniqueId(), null, "Test Author", null, "Test Body", 0, "Test Title");
-				AnswerItem answer1 = new AnswerItem(new UniqueId(), null, "ans1author", null, "ans1", 0);
-				AnswerItem answer2 = new AnswerItem(new UniqueId(), null, "ans2author", null, "ans2", 0);
+				mQuestion = new QuestionItem(new UniqueId(), null, "Question Author",
+						null, "Question: " + LIPSUM, 0, "Question Title");
+				AnswerItem answer1 = new AnswerItem(new UniqueId(), null, "ans1 Author",
+						null, "Answer 1: " + LIPSUM, 0);
+				AnswerItem answer2 = new AnswerItem(new UniqueId(), null, "ans2 Author",
+						null, "Answer 2: " + LIPSUM, 0);
 				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1", 0);
 				CommentItem comment2 = new CommentItem(new UniqueId(), null, "c2a", null, "comment2", 0);
 				CommentItem comment3 = new CommentItem(new UniqueId(), null, "c3a", null, "comment3", 0);
