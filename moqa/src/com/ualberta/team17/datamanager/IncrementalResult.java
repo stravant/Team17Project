@@ -29,6 +29,9 @@ public class IncrementalResult {
 	// Comparator to use on the items when inserting them.
 	private IItemComparator mSort;
 	
+	// List of observers
+	private ArrayList<ObserverEntry> mObserverList = new ArrayList<ObserverEntry>();
+	
 	/*
 	 * Internal class to attach a desired item type to be notified on to a
 	 * IIncrementalObserver.
@@ -76,9 +79,6 @@ public class IncrementalResult {
 			}
 		}
 	}
-	
-	// List of observers
-	private ArrayList<ObserverEntry> mObserverList = new ArrayList<ObserverEntry>();
 	
 	// Constructor
 	public IncrementalResult(IItemComparator sort) {
@@ -134,24 +134,27 @@ public class IncrementalResult {
 			// Find out where to add it via binary search
 			int foundIndex = Collections.binarySearch(mResultList, model, mSort);
 			//Log.i("test", "FoundIndex: " + foundIndex);
-			if (foundIndex >= 0) throw new AssertionError("Attempt to double-insert an item into an IncrementalResult");
-			int insertIndex = (-foundIndex) - 1;
-			
-			// If it follows the last item inserted in a logical block, then add it to the notify list
-			if (insertIndex == lastInsertAt + 1) {
-				++lastInsertAt;
-				notifyList.add(model);
+			if (foundIndex >= 0) {
+				// Already has the item, nothing to do
 			} else {
-				// Otherwise, notify on the current notify list, and start a new notify list with
-				// the current item in it.
-				if (!notifyList.isEmpty())
-					notifyObservers(notifyList, insertListStart);
-				notifyList.clear();
-				notifyList.add(model);
-				lastInsertAt = insertIndex;
-				insertListStart = lastInsertAt;
+				int insertIndex = (-foundIndex) - 1;
+				
+				// If it follows the last item inserted in a logical block, then add it to the notify list
+				if (insertIndex == lastInsertAt + 1) {
+					++lastInsertAt;
+					notifyList.add(model);
+				} else {
+					// Otherwise, notify on the current notify list, and start a new notify list with
+					// the current item in it.
+					if (!notifyList.isEmpty())
+						notifyObservers(notifyList, insertListStart);
+					notifyList.clear();
+					notifyList.add(model);
+					lastInsertAt = insertIndex;
+					insertListStart = lastInsertAt;
+				}
+				mResultList.add(insertIndex, model);
 			}
-			mResultList.add(insertIndex, model);
 		}
 		
 		// Notify on the remaining notify list if there's any remaining items

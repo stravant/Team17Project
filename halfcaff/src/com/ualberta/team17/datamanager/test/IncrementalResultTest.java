@@ -44,15 +44,16 @@ public class IncrementalResultTest extends TestCase {
 			add(new OrderedQAItem(ItemType.Question, 1));
 		}});
 		
-		assertEquals("Two items added -> one notification", obs.getNotificationCount(), 1);
+		assertEquals("Two items added -> one notification", 1, obs.getNotificationCount());
 		
 		result.addObjects(new ArrayList<QAModel>(){{
 			add(new OrderedQAItem(ItemType.Answer, 2));
 		}});
 		
-		assertEquals("One further item added -> one further notification", obs.getNotificationCount(), 2);
+		assertEquals("One further item added -> one further notification", 2, obs.getNotificationCount());
 	}
 	
+	@SuppressWarnings("serial")
 	public void test_IR3_OutOfOrderInsert() {
 		final OrderedQAItem q1 = new OrderedQAItem(ItemType.Question, 0);
 		final OrderedQAItem q2 = new OrderedQAItem(ItemType.Question, 1);
@@ -64,7 +65,7 @@ public class IncrementalResultTest extends TestCase {
 			add(q2);
 		}});
 		
-		assertEquals("Thee items added with last out of order -> two notifications", obs.getNotificationCount(), 2);
+		assertEquals("Three items added with last out of order -> two notifications", 2, obs.getNotificationCount());
 		
 		assertEquals(0, obs.getNotification(0).Index);
 		assertEquals(2, obs.getNotification(0).List.size());
@@ -74,6 +75,22 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals(1, obs.getNotification(1).List.size());
 		assertEquals(q2, obs.getNotification(1).List.get(0));
 	}
+	
+	@SuppressWarnings("serial")
+	public void test_IR4_TestDoubleInsert() {
+		final OrderedQAItem q1 = new OrderedQAItem(ItemType.Question, 0);
+		final OrderedQAItem q2 = new OrderedQAItem(ItemType.Question, 1);
+		
+		result.addObjects(new ArrayList<QAModel>(){{
+			add(q1);
+			add(q1); //double add q1
+			add(q2);
+		}});
+		
+		assertEquals("Two identical items, and one other item added -> one notification.", 1, obs.getNotificationCount());
+		assertEquals("That notification should only have two items, not three.", 2, obs.getNotification(0).List.size());
+		assertEquals("The result should now have only the two unique items in it.", 2, result.getCurrentResults().size());
+	}	
 	
 //	public void test_IR2_GetCurrentResultCount() {
 //		assertEquals( "No results initially", result.getCurrentResultCount(), 0 );
