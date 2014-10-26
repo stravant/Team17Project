@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -135,10 +136,22 @@ public class QuestionViewActivity extends Activity {
 			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
 			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
 			
+			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
+			
 			bodyTextView.setText(mObjects.get(position).parent.getBody());
 			authorTextView.setText(mObjects.get(position).parent.getAuthor());
 			
-			// TODO: Implement comments
+			for (int i=0; i<mObjects.size()-1; i++){
+				TextView comment = new TextView(mContext); //Right context?
+				comment.setText(mObjects.get(position).comments.get(i).getBody());
+				
+				TextView commentAuthor = new TextView(mContext);
+				commentAuthor.setText(mObjects.get(position).comments.get(i).getAuthor());
+				
+				//not sure if we want author or body first
+				commentsView.addView(comment);
+				commentsView.addView(commentAuthor);
+			}			
 			// TODO: Implement favorite/upvote buttons.
 			return qaItemView;
 		}
