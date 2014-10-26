@@ -141,7 +141,7 @@ public class QuestionViewActivity extends Activity {
 			bodyTextView.setText(mObjects.get(position).parent.getBody());
 			authorTextView.setText(mObjects.get(position).parent.getAuthor());
 			
-			for (int i=0; i<mObjects.size()-1; i++){
+			for (int i=0; i<mObjects.get(position).comments.size()-1; i++){
 				TextView comment = new TextView(mContext); //Right context?
 				comment.setText(mObjects.get(position).comments.get(i).getBody());
 				
