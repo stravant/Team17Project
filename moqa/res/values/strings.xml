@@ -1,5 +1,8 @@
 <resources>
 
     <string name="app_name">Team17Project</string>
+    <string name="upvote">Upvote</string>
+    <string name="favorite">Favorite</string>
+    <string name="reply">Reply</string>
 
 </resources>
