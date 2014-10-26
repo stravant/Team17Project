@@ -24,8 +24,8 @@ import android.widget.TextView;
 public class QuestionViewActivity extends Activity {
 	public final static String QUESTION_EXTRA = "QUESTION";
 	
-	// Debug stuff - can be deleted later
-	private final static boolean DEBUG = true;
+	// Test stuff - can be deleted later
+	private final static boolean GENERATE_TEST_DATA = true;
 	private final static String LIPSUM = "Lorem ipsum dolor sit amet, consectetur " +
 			"adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna " +
 			"aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " +
@@ -36,62 +36,6 @@ public class QuestionViewActivity extends Activity {
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQAItems;
-	
-	public QuestionViewActivity() {
-		mQuestion = null;
-		mQAItems = new ArrayList<QABody>();
-	}
-	
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_questionview);
-		
-		Intent questionIntent = this.getIntent();
-		
-		mQuestion = (QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA);
-		if(mQuestion == null) {
-			// TODO: implement Question Creation.
-			if(DEBUG) {
-				mQuestion = new QuestionItem(new UniqueId(), null, "Question Author",
-						null, "Question: " + LIPSUM, 0, "Question Title");
-				AnswerItem answer1 = new AnswerItem(new UniqueId(), null, "ans1 Author",
-						null, "Answer 1: " + LIPSUM, 0);
-				AnswerItem answer2 = new AnswerItem(new UniqueId(), null, "ans2 Author",
-						null, "Answer 2: " + LIPSUM, 0);
-				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1", 0);
-				CommentItem comment2 = new CommentItem(new UniqueId(), null, "c2a", null, "comment2", 0);
-				CommentItem comment3 = new CommentItem(new UniqueId(), null, "c3a", null, "comment3", 0);
-				
-				QABody questionBody = new QABody(mQuestion);
-				questionBody.comments.add(comment1);
-				
-				QABody answer1Body = new QABody(answer1);
-				answer1Body.comments.add(comment2);
-				answer1Body.comments.add(comment3);
-				
-				QABody answer2Body = new QABody(answer2);
-				
-				mQAItems.add(questionBody);
-				mQAItems.add(answer1Body);
-				mQAItems.add(answer2Body);
-				
-				TextView title = (TextView) findViewById(R.id.titleView);
-				title.setText(mQuestion.getTitle());
-				
-				ListView qaList = (ListView) findViewById(R.id.qaItemView);
-				QABodyAdapter adapter = new QABodyAdapter(this, R.id.qaItemView, mQAItems);
-				
-				qaList.setAdapter(adapter);
-				adapter.notifyDataSetChanged();
-			}
-		}
-		else {
-			// TODO: Implement interactions with the controller to get Answers/Comments.
-		}
-		
-	}
 	
 	/**
 	 * This class holds a Question/Answer and its child Comments.
@@ -143,4 +87,70 @@ public class QuestionViewActivity extends Activity {
 			return qaItemView;
 		}
 	}
+	
+	/**
+	 * Constructor
+	 */
+	public QuestionViewActivity() {
+		mQuestion = null;
+		mQAItems = new ArrayList<QABody>();
+	}
+	
+	/**
+	 * Initializes data depending on what is passed in the intent. Creates adapters and
+	 * listeners for all data interactions that will happen.
+	 */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_questionview);
+		
+		Intent questionIntent = this.getIntent();
+		
+		mQuestion = (QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA);
+		if(mQuestion == null) {
+			// TODO: implement Question Creation.
+			
+			// Generate our own data to test displaying before the other modules work.
+			if(GENERATE_TEST_DATA) {
+				mQuestion = new QuestionItem(new UniqueId(), null, "Question Author",
+						null, "Question: " + LIPSUM, 0, "Question Title");
+				AnswerItem answer1 = new AnswerItem(new UniqueId(), null, "ans1 Author",
+						null, "Answer 1: " + LIPSUM, 0);
+				AnswerItem answer2 = new AnswerItem(new UniqueId(), null, "ans2 Author",
+						null, "Answer 2: " + LIPSUM, 0);
+				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1", 0);
+				CommentItem comment2 = new CommentItem(new UniqueId(), null, "c2a", null, "comment2", 0);
+				CommentItem comment3 = new CommentItem(new UniqueId(), null, "c3a", null, "comment3", 0);
+				
+				QABody questionBody = new QABody(mQuestion);
+				questionBody.comments.add(comment1);
+				
+				QABody answer1Body = new QABody(answer1);
+				answer1Body.comments.add(comment2);
+				answer1Body.comments.add(comment3);
+				
+				QABody answer2Body = new QABody(answer2);
+				
+				mQAItems.add(questionBody);
+				mQAItems.add(answer1Body);
+				mQAItems.add(answer2Body);
+				
+				TextView title = (TextView) findViewById(R.id.titleView);
+				title.setText(mQuestion.getTitle());
+				
+				ListView qaList = (ListView) findViewById(R.id.qaItemView);
+				QABodyAdapter adapter = new QABodyAdapter(this, R.id.qaItemView, mQAItems);
+				
+				qaList.setAdapter(adapter);
+				adapter.notifyDataSetChanged();
+			}
+		}
+		else {
+			// TODO: Implement interactions with the controller to get Answers/Comments.
+		}
+		
+	}
+	
+	
 }
