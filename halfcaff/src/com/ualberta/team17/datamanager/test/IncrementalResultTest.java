@@ -91,7 +91,11 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals("That notification should only have two items, not three.", 2, obs.getNotification(0).List.size());
 		assertEquals("The result should now have only the two unique items in it.", 2, result.getCurrentResults().size());
 	}	
-	
+
+	/*
+	 * Check that items with identical references are ignored, but items with identical 
+	 * values under our sort are not ignored.
+	 */
 	@SuppressWarnings("serial")
 	public void test_IR5_TestEqualItems() {
 		final OrderedQAItem q1 = new OrderedQAItem(ItemType.Question, 0);
@@ -100,8 +104,8 @@ public class IncrementalResultTest extends TestCase {
 		
 		result.addObjects(new ArrayList<QAModel>(){{
 			add(q1);
-			add(q1);
-			add(q2);
+			add(q1); // reference is same -> ignore duplicate q1
+			add(q2); // same under sort used, but difference refs -> don't ignore
 			add(q3);
 		}});
 		
@@ -113,32 +117,43 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals(q3, notification.get(2));	
 	}
 	
-//	public void test_IR2_GetCurrentResultCount() {
-//		assertEquals( "No results initially", result.getCurrentResultCount(), 0 );
-//		
-//		List<QAModel> itemsToAdd = new ArrayList<QAModel>();
-//		itemsToAdd.add(new QuestionItem(new UniqueId(), null, null, null, null, 0, null));
-//		
-//		result.addObjects(itemsToAdd);
-//		
-//		assertEquals( "One result after adding", result.getCurrentResultCount(), 1);
-//	}
+	/*
+	 * Check that items with the same different references, but the same hash code
+	 * are correctly treated as the same item, and only inserted once into the
+	 * result.
+	 */
+	@SuppressWarnings("serial")
+	public void test_IR6_TestHashcodeEqualItems() {
+		class OrderedQAItemWithHashCode extends OrderedQAItem {
+			int mHashCode;
+			public OrderedQAItemWithHashCode(ItemType type, int seq, int hashCode) {
+				super(type, seq);
+				mHashCode = hashCode;
+			}
+			@Override
+			public int hashCode() {
+				return mHashCode;
+			}
+		}
+		
+		final OrderedQAItem q1 = new OrderedQAItemWithHashCode(ItemType.Question, 0, 0);
+		final OrderedQAItem q2 = new OrderedQAItemWithHashCode(ItemType.Question, 0, 1);
+		final OrderedQAItem q3 = new OrderedQAItemWithHashCode(ItemType.Question, 0, 1);
+		result.addObjects(new ArrayList<QAModel>(){{
+			add(q1);
+			add(q1); // double add -> reference is same -> ignore
+			add(q2);
+			add(q3); // hash code is same -> ignore
+		}});
+		
+		assertEquals(1, obs.getNotificationCount());
+		List<QAModel> notification = obs.getNotification(0).List;
+		assertEquals(2, notification.size());
+		assertEquals(q1, notification.get(0));
+		assertEquals(q2, notification.get(1));
+	}
 	
-//	public void test_IR3_GetCurrentResult() {
-//		QuestionItem item1 = new QuestionItem(new UniqueId(), null, null, null, null, 0, null);
-//		QuestionItem item2 = new QuestionItem(new UniqueId(), null, null, null, null, 0, null);
-//		
-//		List<QAModel> itemsToAdd = new ArrayList<QAModel>();
-//		itemsToAdd.add(item1);
-//		itemsToAdd.add(item2);
-//		
-//		result.addObjects(itemsToAdd);
-//		
-//		assertEquals("First result", result.getCurrentResult(0), item1);
-//		assertEquals("Second result", result.getCurrentResult(1), item2);
-//	}
-	
-	public void test_IR4_GetCurrentResultsOfType() {
+	public void test_IR7_GetCurrentResultsOfType() {
 		OrderedQAItem item1 = new OrderedQAItem(ItemType.Question, 0);
 		OrderedQAItem item2 = new OrderedQAItem(ItemType.Answer,   1);
 		OrderedQAItem item3 = new OrderedQAItem(ItemType.Question, 2);
