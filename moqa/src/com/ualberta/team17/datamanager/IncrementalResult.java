@@ -101,7 +101,6 @@ public class IncrementalResult {
 			// Otherwise, compare them with the comparator, and 
 			int result = mBaseComparator.compare(lhs, rhs);
 			if (result == 0) {
-				if (lhs.hashCode() == rhs.hashCode()) throw new AssertionError("IncrementalResult can't handle on-reference equal objects with identical hashCodes.");
 				return (lhs.hashCode() < rhs.hashCode()) ? -1 : 1;	
 			} else {
 				return result;
