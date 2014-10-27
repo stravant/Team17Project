@@ -2,6 +2,7 @@ package com.ualberta.team17.datamanager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -80,9 +81,37 @@ public class IncrementalResult {
 		}
 	}
 	
+	/*
+	 * Internal sort wrapper class that disambiguates non-reference equal items
+	 * when the comparator that we are passed returns "equal" for them.
+	 */
+	private class DisambiguatingComparator implements IItemComparator {
+		private IItemComparator mBaseComparator;
+		
+		public DisambiguatingComparator(IItemComparator sort) {
+			mBaseComparator = sort;
+		}
+
+		@Override
+		public int compare(QAModel lhs, QAModel rhs) {
+			// First, for reference equality, return equal
+			if (lhs == rhs)
+				return 0;
+			
+			// Otherwise, compare them with the comparator, and 
+			int result = mBaseComparator.compare(lhs, rhs);
+			if (result == 0) {
+				if (lhs.hashCode() == rhs.hashCode()) throw new AssertionError("IncrementalResult can't handle on-reference equal objects with identical hashCodes.");
+				return (lhs.hashCode() < rhs.hashCode()) ? -1 : 1;	
+			} else {
+				return result;
+			}
+		}
+	}
+	
 	// Constructor
 	public IncrementalResult(IItemComparator sort) {
-		mSort = sort;
+		mSort = new DisambiguatingComparator(sort);
 	}
 	
 	// Helper, used by addObserver

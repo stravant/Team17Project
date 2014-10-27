@@ -92,6 +92,27 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals("The result should now have only the two unique items in it.", 2, result.getCurrentResults().size());
 	}	
 	
+	@SuppressWarnings("serial")
+	public void test_IR5_TestEqualItems() {
+		final OrderedQAItem q1 = new OrderedQAItem(ItemType.Question, 0);
+		final OrderedQAItem q2 = new OrderedQAItem(ItemType.Question, 0);
+		final OrderedQAItem q3 = new OrderedQAItem(ItemType.Question, 1);
+		
+		result.addObjects(new ArrayList<QAModel>(){{
+			add(q1);
+			add(q1);
+			add(q2);
+			add(q3);
+		}});
+		
+		assertEquals(1, obs.getNotificationCount());
+		List<QAModel> notification = obs.getNotification(0).List;
+		assertEquals(3, notification.size());
+		assertEquals(q1, notification.get(0));
+		assertEquals(q2, notification.get(1));
+		assertEquals(q3, notification.get(2));	
+	}
+	
 //	public void test_IR2_GetCurrentResultCount() {
 //		assertEquals( "No results initially", result.getCurrentResultCount(), 0 );
 //		
