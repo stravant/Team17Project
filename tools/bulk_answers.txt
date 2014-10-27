@@ -1,10 +1,10 @@
 { "create" : { "_index" : "moqatest", "_type" : "answer", "_id" : "a254a9ad7a9f22bd495596e4ce29f633" } }
-{ "mBody": "How's this for an answer?", "mUpvoteCount": "0", "mParentItem": "ecf5165525f1fde44c1ebbb55a0f2d1b", "mAuthor": "testuser", "mDate": "2014-10-18T22:57:36Z", "mType": "answer", "mUniqueId": "a254a9ad7a9f22bd495596e4ce29f633" }
+{ "body": "How's this for an answer?", "mUpvoteCount": "0", "parent": "ecf5165525f1fde44c1ebbb55a0f2d1b", "author": "testuser", "date": "2014-10-18T22:57:36Z", "type": "answer", "id": "a254a9ad7a9f22bd495596e4ce29f633" }
 { "create" : { "_index" : "moqatest", "_type" : "answer", "_id" : "b2a7c2e2e477495eb77bdfca23dcc13a" } }
-{ "mTitle": "This is the second answer", "mBody": "This is the second question body", "mUpvoteCount": "10", "mParentItem": "ecf5165525f1fde44c1ebbb55a0f2d1b", "mAuthor": "marklangen", "mDate": "2014-10-18T23:59:36Z", "mType": "answer", "mUniqueId": "b2a7c2e2e477495eb77bdfca23dcc13a" }
+{ "mTitle": "This is the second answer", "body": "This is the second question body", "mUpvoteCount": "10", "parent": "ecf5165525f1fde44c1ebbb55a0f2d1b", "author": "marklangen", "date": "2014-10-18T23:59:36Z", "type": "answer", "id": "b2a7c2e2e477495eb77bdfca23dcc13a" }
 { "create" : { "_index" : "moqatest", "_type" : "answer", "_id" : "0412590248c3e36958414e9af6000d6f" } }
-{ "mBody": "Here, I answer my own question", "mUpvoteCount": "11", "mParentItem": "c5ed8aff3dbcd324730bd046c6d254a8", "mAuthor": "michaelblouin", "mDate": "2014-10-18T23:57:41Z", "mType": "answer", "mUniqueId": "0412590248c3e36958414e9af6000d6f" }
+{ "body": "Here, I answer my own question", "mUpvoteCount": "11", "parent": "c5ed8aff3dbcd324730bd046c6d254a8", "author": "michaelblouin", "date": "2014-10-18T23:57:41Z", "type": "answer", "id": "0412590248c3e36958414e9af6000d6f" }
 { "create" : { "_index" : "moqatest", "_type" : "answer", "_id" : "ba0baf9d538a14f982c09c6f6c1f4666" } }
-{ "mBody": "Here, I answer my own question again", "mUpvoteCount": "0", "mParentItem": "c5ed8aff3dbcd324730bd046c6d254a8", "mAuthor": "michaelblouin", "mDate": "2014-10-18T23:58:41Z", "mType": "answer", "mUniqueId": "ba0baf9d538a14f982c09c6f6c1f4666" }
+{ "body": "Here, I answer my own question again", "mUpvoteCount": "0", "parent": "c5ed8aff3dbcd324730bd046c6d254a8", "author": "michaelblouin", "date": "2014-10-18T23:58:41Z", "type": "answer", "id": "ba0baf9d538a14f982c09c6f6c1f4666" }
 { "create" : { "_index" : "moqatest", "_type" : "answer", "_id" : "0db7fac6e3ceb0add59ab9cd030ffd7c" } }
-{ "mBody": "Here, I answer my own question again and again", "mUpvoteCount": "1", "mParentItem": "c5ed8aff3dbcd324730bd046c6d254a8", "mAuthor": "michaelblouin", "mDate": "2014-10-18T23:59:41Z", "mType": "answer", "mUniqueId": "0db7fac6e3ceb0add59ab9cd030ffd7c" }
+{ "body": "Here, I answer my own question again and again", "mUpvoteCount": "1", "parent": "c5ed8aff3dbcd324730bd046c6d254a8", "author": "michaelblouin", "date": "2014-10-18T23:59:41Z", "type": "answer", "id": "0db7fac6e3ceb0add59ab9cd030ffd7c" }
