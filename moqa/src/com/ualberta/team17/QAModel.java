@@ -44,6 +44,20 @@ public abstract class QAModel {
 		return mType;
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (null == other || !(other instanceof QAModel)) {
+			return false;
+		}
+
+		return getUniqueId().equals(((QAModel)other).getUniqueId());
+	}
+
+	@Override
+	public int hashCode() {
+		return getUniqueId().hashCode();
+	}
+
 	public static abstract class GsonTypeAdapter<T extends QAModel> extends TypeAdapter<T> {
 		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
 			if (name.equals("id")) {
@@ -62,6 +76,8 @@ public abstract class QAModel {
 				if (parseField(item, name, reader)) {
 					continue;
 				}
+
+				reader.skipValue();
 			}
 
 			reader.endObject();
