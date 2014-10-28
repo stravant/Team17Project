@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,7 @@ public class QuestionViewActivity extends Activity {
 						null, "Answer 1: " + LIPSUM, 0);
 				AnswerItem answer2 = new AnswerItem(new UniqueId(), null, "ans2 Author",
 						null, "Answer 2: " + LIPSUM, 0);
-				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1", 0);
+				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1... I wanted a longer comment so yeah... words and things and stuff", 0);
 				CommentItem comment2 = new CommentItem(new UniqueId(), null, "c2a", null, "comment2", 0);
 				CommentItem comment3 = new CommentItem(new UniqueId(), null, "c3a", null, "comment3", 0);
 				
@@ -112,9 +113,35 @@ public class QuestionViewActivity extends Activity {
 	}
 	
 	/**
+	 * This method adds a QABody items to our current array of QABody items
+	 * 
+	 * @author Joel
+	 *
+	 */
+	private void addQABodyItem(QABody item) {
+		mQAItems.add(item);
+	}
+	
+	private void addQABodyItem(AuthoredTextItem item) {
+		QABody qaBodyItem = new QABody(item);
+		addQABodyItem(qaBodyItem);
+	}
+	
+	/**
+	 * This method adds a comment to our current array of comments for a specified QABody item
+	 * 
+	 * @author Joel
+	 *
+	 */	
+	private void addCommentItem(QABody item, CommentItem comment) {
+		int position = mQAItems.indexOf(item);
+		mQAItems.get(position).comments.add(comment);
+	}
+	
+	/**
 	 * Adapter for QABody. Connects the body of the Question/Answer
 	 * with the bodyText field and Comments with the comments field.
-	 * @author Corey
+	 * @author Corey + Joel
 	 *
 	 */
 	private class QABodyAdapter extends ArrayAdapter<QABody> {
@@ -141,14 +168,14 @@ public class QuestionViewActivity extends Activity {
 			bodyTextView.setText(mObjects.get(position).parent.getBody());
 			authorTextView.setText(mObjects.get(position).parent.getAuthor());
 			
-			for (int i=0; i<mObjects.get(position).comments.size()-1; i++){
-				TextView comment = new TextView(mContext); //Right context?
+			for (int i=0; i<mObjects.get(position).comments.size(); i++){
+				TextView comment = new TextView(mContext);
 				comment.setText(mObjects.get(position).comments.get(i).getBody());
 				
 				TextView commentAuthor = new TextView(mContext);
-				commentAuthor.setText(mObjects.get(position).comments.get(i).getAuthor());
+				commentAuthor.setText("-" + mObjects.get(position).comments.get(i).getAuthor());	
+				commentAuthor.setGravity(Gravity.RIGHT);
 				
-				//not sure if we want author or body first
 				commentsView.addView(comment);
 				commentsView.addView(commentAuthor);
 			}			
