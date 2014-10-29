@@ -1,5 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">Team17Project</string>
+    <string name="title_activity_question_list">QuestionListActivity</string>
+    <string name="action_new_question">New Question</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_search">Search</string>
+    <string name="upvote">Upvotes</string>
+    <string name="comment">Comments</string>
+    <string name="default_str">default string</string>
+    <string name="default_num">0</string>
 
 </resources>
