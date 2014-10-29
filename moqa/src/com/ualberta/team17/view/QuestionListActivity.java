@@ -56,7 +56,7 @@ public class QuestionListActivity extends Activity {
 			answers = new ArrayList<AnswerItem>();
 		}
 	}
-	
+
 	/**
 	 * The adapter for QBody. Binds the title of the question, the upvote count
 	 * and the comment count (the number of answers).
@@ -95,6 +95,7 @@ public class QuestionListActivity extends Activity {
 			
 			return convertView;
 		}
+
 		// TODO implement comment and upvote graphics
 	}
 	
@@ -134,7 +135,7 @@ public class QuestionListActivity extends Activity {
 		
 		//TODO add support for answers as well.
 	}
-	
+
 	/**
 	 * Handles the event when a listview item is clicked.
 	 * TODO Sort out how to pass QuestionItem to QuestionViewActivity
@@ -162,9 +163,6 @@ public class QuestionListActivity extends Activity {
 		return true;
 	}
 
-	/**
-	 * Responds to the toolbar click events. This is temporary.
-	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
