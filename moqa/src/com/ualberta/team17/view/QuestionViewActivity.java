@@ -110,33 +110,7 @@ public class QuestionViewActivity extends Activity {
 			parent = initParent;
 			comments = new ArrayList<CommentItem>();
 		}
-	}
-	
-	/**
-	 * This method adds a QABody items to our current array of QABody items
-	 * 
-	 * @author Joel
-	 *
-	 */
-	private void addQABodyItem(QABody item) {
-		mQAItems.add(item);
-	}
-	
-	private void addQABodyItem(AuthoredTextItem item) {
-		QABody qaBodyItem = new QABody(item);
-		addQABodyItem(qaBodyItem);
-	}
-	
-	/**
-	 * This method adds a comment to our current array of comments for a specified QABody item
-	 * 
-	 * @author Joel
-	 *
-	 */	
-	private void addCommentItem(QABody item, CommentItem comment) {
-		int position = mQAItems.indexOf(item);
-		mQAItems.get(position).comments.add(comment);
-	}
+	}	
 	
 	/**
 	 * Adapter for QABody. Connects the body of the Question/Answer
