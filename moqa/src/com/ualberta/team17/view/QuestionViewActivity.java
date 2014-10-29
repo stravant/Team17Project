@@ -26,8 +26,8 @@ import android.widget.TextView;
 public class QuestionViewActivity extends Activity {
 	public final static String QUESTION_EXTRA = "QUESTION";
 	
-	// Debug stuff - can be deleted later
-	private final static boolean DEBUG = true;
+	// Test stuff - can be deleted later
+	private final static boolean GENERATE_TEST_DATA = true;
 	private final static String LIPSUM = "Lorem ipsum dolor sit amet, consectetur " +
 			"adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna " +
 			"aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " +
@@ -39,12 +39,18 @@ public class QuestionViewActivity extends Activity {
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQAItems;
 	
+	/**
+	 * Constructor
+	 */
 	public QuestionViewActivity() {
 		mQuestion = null;
 		mQAItems = new ArrayList<QABody>();
 	}
 	
-	
+	/**
+	 * Initializes data depending on what is passed in the intent. Creates adapters and
+	 * listeners for all data interactions that will happen.
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,7 +61,9 @@ public class QuestionViewActivity extends Activity {
 		mQuestion = (QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA);
 		if(mQuestion == null) {
 			// TODO: implement Question Creation.
-			if(DEBUG) {
+			
+			// Generate our own data to test displaying before the other modules work.
+			if(GENERATE_TEST_DATA) {
 				mQuestion = new QuestionItem(new UniqueId(), null, "Question Author",
 						null, "Question: " + LIPSUM, 0, "Question Title");
 				AnswerItem answer1 = new AnswerItem(new UniqueId(), null, "ans1 Author",
@@ -93,8 +101,8 @@ public class QuestionViewActivity extends Activity {
 			// TODO: Implement interactions with the controller to get Answers/Comments.
 		}
 		
-	}
-	
+	}	
+
 	/**
 	 * This class holds a Question/Answer and its child Comments.
 	 * 
