@@ -24,6 +24,9 @@ public class IncrementalResultTest extends TestCase {
 		result.addObserver(obs);
 	}
 	
+	/*
+	 * Check basic insertion of objects
+	 */
 	@SuppressWarnings("serial")
 	public void test_IR1_BasicObjectInsertion() {
 		result.addObjects(new ArrayList<QAModel>(){{}});
@@ -37,6 +40,10 @@ public class IncrementalResultTest extends TestCase {
 		assertTrue("Item was added", obs.wasNotified());
 	}
 	
+	/*
+	 * Check that different add invocations generate separate, and the correct 
+	 * number of notifications.
+	 */
 	@SuppressWarnings("serial")
 	public void test_IR2_TestNotificationCount() {
 		result.addObjects(new ArrayList<QAModel>(){{
@@ -53,6 +60,11 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals("One further item added -> one further notification", 2, obs.getNotificationCount());
 	}
 	
+	/*
+	 * Check that items being passed to the addObjects out of order end up 
+	 * in the right order in the notification and result, and are grouped
+	 * together optimally.
+	 */
 	@SuppressWarnings("serial")
 	public void test_IR3_OutOfOrderInsert() {
 		final OrderedQAItem q1 = new OrderedQAItem(ItemType.Question, 0);
@@ -76,6 +88,10 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals(q2, obs.getNotification(1).List.get(0));
 	}
 	
+	/*
+	 * Check that double insertion of an item into the a result ignores the
+	 * second copy of the item, only adding it to the result once.
+	 */
 	@SuppressWarnings("serial")
 	public void test_IR4_TestDoubleInsert() {
 		final OrderedQAItem q1 = new OrderedQAItem(ItemType.Question, 0);
@@ -153,6 +169,9 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals(q2, notification.get(1));
 	}
 	
+	/*
+	 * Check that filtered notifications and gets work.
+	 */
 	public void test_IR7_GetCurrentResultsOfType() {
 		OrderedQAItem item1 = new OrderedQAItem(ItemType.Question, 0);
 		OrderedQAItem item2 = new OrderedQAItem(ItemType.Answer,   1);

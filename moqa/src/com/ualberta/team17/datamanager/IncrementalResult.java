@@ -2,40 +2,52 @@ package com.ualberta.team17.datamanager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
-
-import android.util.Log;
 
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.ItemType;
 
-/*
- * A synchronization / collection object that represents the results of a query.
- * The worker tasks involved in the query will add results to the IncrementalResult
- * as they are found. When results are added in this way, the a set of observers will
- * be notified.
+/**
+ * A synchronized ordered collection object that represents the results of a
+ * query to the application's data source(s).
+ * Results may arrive in any order, and the IncrementalResult notifies observers
+ * that results have arrived, and in what position in the result when they do
+ * arrive.
+ * The IncrementalResult also supports type filtering. If a query would result in
+ * multiple types of results being returned, both the getter and notification
+ * functions of the IncremencalResult come in type-filtered variants as well.
  */
 public class IncrementalResult {
-	/* ReentrantLock to avoid problems with an Observer calling back 
-	 * to getCurrentResult/s within the notify call.
-	 * Possibly can just be a normal lock.
+	/**
+	 * Main Lock used by an IncrementalResult for synchronization purposes.
+	 * While locked, no reads or writes can be done to the IncrementalResult. 
 	 */
 	private ReentrantLock mModifyMutex = new ReentrantLock();
 	
-	// The list of items that have been added to this result.
+	/**
+	 * The main list of items, storing what items have been added to this
+	 * IncrementalResult.
+	 */
 	private ArrayList<QAModel> mResultList = new ArrayList<QAModel>();
 	
-	// Comparator to use on the items when inserting them.
+	/**
+	 * The comparator that this IncrementalResult should sort it's results
+	 * using.
+	 */
 	private IItemComparator mSort;
 	
-	// List of observers
+	/**
+	 * The observers of this IncrementalResult, to be notified when items
+	 * are added. A ObserverEntries instead of raw IIncrementalObservers are 
+	 * used, so as to store both the observer and what type of item it wants 
+	 * to observe if any.
+	 */
 	private ArrayList<ObserverEntry> mObserverList = new ArrayList<ObserverEntry>();
 	
-	/*
-	 * Internal class to attach a desired item type to be notified on to a
-	 * IIncrementalObserver.
+	/**
+	 * Internal class used to record both an IIncrementalObserver that is
+	 * observing us, and if/what items if wants to filter being notified on. 
 	 */
 	private class ObserverEntry {
 		private IIncrementalObserver mObserver;
@@ -81,9 +93,11 @@ public class IncrementalResult {
 		}
 	}
 	
-	/*
+	/**
 	 * Internal sort wrapper class that disambiguates non-reference equal items
-	 * when the comparator that we are passed returns "equal" for them.
+	 * when the comparator that we are passed returns "equal" for them, since
+	 * we need them to be non-equal for the purposes of inserting them into our
+	 * internal result array. 
 	 */
 	private class DisambiguatingComparator implements IItemComparator {
 		private IItemComparator mBaseComparator;
@@ -110,20 +124,29 @@ public class IncrementalResult {
 		}
 	}
 	
-	// Constructor
+	/**
+	 * Constructor, from a comparator.
+	 */
 	public IncrementalResult(IItemComparator sort) {
 		mSort = new DisambiguatingComparator(sort);
 	}
 	
-	// Helper, used by addObserver
+	/**
+	 * Notify an observer of already existing items, to be called when
+	 * adding a new observer while we already have results.
+	 * @param entry The ObserverEntry to notify of the current results.
+	 */
 	private void notifyOfCurrentResults(ObserverEntry entry) {
 		if (!mResultList.isEmpty())
 			entry.tryNotify(mResultList, 0);
 	}
 	
-	/*
+	/**
 	 * Adds an observer, and calls it's notify method immediately for
-	 * every currently present result.
+	 * every currently present result before returning.
+	 * Once added, the observer will be notified when any items are added
+	 * to the IncrementalResult.
+	 * @param observer The observer to notify.
 	 */
 	public void addObserver(IIncrementalObserver observer) {
 		mModifyMutex.lock();
@@ -132,6 +155,14 @@ public class IncrementalResult {
 		notifyOfCurrentResults(entry);
 		mModifyMutex.unlock();
 	}
+	
+	/**
+	 * Adds an observer, but only notifies it of results with a given item 
+	 * type rather than all results. 
+	 * @see addObserver(IIncrementalObserver obs)
+	 * @param observer The observer to notify
+	 * @param type     The type of items to notify the observer on
+	 */
 	public void addObserver(IIncrementalObserver observer, ItemType type) {
 		mModifyMutex.lock();
 		ObserverEntry entry = new ObserverEntry(observer, type);
@@ -141,12 +172,24 @@ public class IncrementalResult {
 	}
 	
 	// Notify the observers that a(n) item(s) arrived.
+	/**
+	 * Helper function to notify the observers that a contiguous group of items 
+	 * has arrived at a given index in the result list.
+	 * @param objects The objects that arrived
+	 * @param atIndex What index the block of objects is at in the result list
+	 */
 	private void notifyObservers(List<QAModel> objects, int atIndex) {
 		for (ObserverEntry entry: mObserverList) {
 			entry.tryNotify(objects, atIndex);
 		}
 	}
 	
+	/**
+	 * Main public interface used by producers to add objects to the IncrementalResult.
+	 * The objects may be passed in in any order, the IncrementalResult will
+	 * handle sorting them and grouping notifications together in a nice way.
+	 * @param objects The objects to add
+	 */
 	public void addObjects(List<QAModel> objects) {
 		mModifyMutex.lock();
 		
@@ -194,7 +237,12 @@ public class IncrementalResult {
 		mModifyMutex.unlock();
 	}
 	
-	// Get a list of the current results of the given type
+	/**
+	 * Get the current list of results, only including items of a specific
+	 * type, in sorted order.
+	 * @param type The type of items to include
+	 * @return The items of that type
+	 */
 	public List<QAModel> getCurrentResultsOfType(ItemType type) {
 		mModifyMutex.lock();
 		ArrayList<QAModel> results = new ArrayList<QAModel>();
@@ -207,7 +255,10 @@ public class IncrementalResult {
 		return results;
 	}
 	
-	// Gets a copy of the current result list
+	/**
+	 * Get all of the current results, in sorted order.
+	 * @return All of the items currently in the result
+	 */
 	public List<QAModel> getCurrentResults() {
 		return new ArrayList<QAModel>(mResultList);
 	}
