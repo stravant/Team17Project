@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,6 +23,15 @@ import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.datamanager.DataFilter;
 
+/**
+ * This class displays the list of requested questions and answers. It receives an intent
+ * from QuestionTaxonomyActivity and sends intents to QuestionViewActivity. It also supports
+ * sorting of the data on display. Search functionality is also present, although it is not 
+ * implemented in this class.
+ * 
+ * @author Jared
+ *
+ */
 public class QuestionListActivity extends Activity {
 	
 	private static final boolean GENERATE_TEST_DATA = true; //Test
@@ -32,6 +40,13 @@ public class QuestionListActivity extends Activity {
 	private DataFilter mDataFilter;
 	private List<QBody> mQuestions;
 	
+	/**
+	 * This class holds a question and its child answers.
+	 * TODO Implement support for answer browsing
+	 * 
+	 * @author Jared
+	 *
+	 */
 	private class QBody {
 		public QuestionItem parent;
 		public List<AnswerItem> answers;
@@ -42,6 +57,13 @@ public class QuestionListActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * The adapter for QBody. Binds the title of the question, the upvote count
+	 * and the comment count (the number of answers).
+	 * 
+	 * @author Jared
+	 *
+	 */
 	private class QuestionListAdapter extends ArrayAdapter<QBody> {
 		Context mContext;
 		List<QBody> mObjects;
@@ -73,8 +95,13 @@ public class QuestionListActivity extends Activity {
 			
 			return convertView;
 		}
+		// TODO implement comment and upvote graphics
 	}
 	
+	/**
+	 * Initializes data depending on what is passed in the intent. Creates adapters and
+	 * listeners for all data interactions that will happen.
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,7 +134,15 @@ public class QuestionListActivity extends Activity {
 		
 		//TODO add support for answers as well.
 	}
-
+	
+	/**
+	 * Handles the event when a listview item is clicked.
+	 * TODO Sort out how to pass QuestionItem to QuestionViewActivity
+	 * @param av
+	 * @param view
+	 * @param i
+	 * @param l
+	 */
 	private void handleListViewItemClick(AdapterView<?> av, View view, int i, long l) {
 		QBody body = mQuestions.get(i);
 		QuestionItem question = body.parent;
@@ -116,13 +151,20 @@ public class QuestionListActivity extends Activity {
 		startActivity(intent);
 	}
 	
+	/**
+	 * Creates the toolbar at the top of the app. This is temporary.
+	 * TODO change all actions to be triggered by buttons and remove this toolbar.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.question_list, menu);
+		getMenuInflater().inflate(R.menu.question_list_actions, menu);
 		return true;
 	}
 
+	/**
+	 * Responds to the toolbar click events. This is temporary.
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
@@ -141,18 +183,35 @@ public class QuestionListActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
+	/**
+	 * Creates an intent that is passed to QuestionViewActivity.
+	 * This allows for a new question to be created.
+	 * TODO implement createNewQuestion().
+	 */
 	private void createNewQuestion() {
 		
 	}
 	
+	/**
+	 * Opens a pop up that will apply a sort to the data currently in this listview.
+	 * TODO implement applySort().
+	 */
 	private void applySort() {
 		
 	}
 	
+	/**
+	 * Activates search.
+	 * TODO implement search().
+	 */
 	private void search() {
 		
 	}
 	
+	/**
+	 * Generates test data for filling the listview with. Temporary.
+	 * @return an ArrayList<QBody> for display purposes in the view.
+	 */
 	private ArrayList<QBody> getTestData() {
 		ArrayList<QBody> questions = new ArrayList<QBody>();
 		
