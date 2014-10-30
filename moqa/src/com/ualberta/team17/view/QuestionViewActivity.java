@@ -14,10 +14,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -52,12 +54,12 @@ public class QuestionViewActivity extends Activity {
 			parent = initParent;
 			comments = new ArrayList<CommentItem>();
 		}
-	}
+	}	
 	
 	/**
 	 * Adapter for QABody. Connects the body of the Question/Answer
 	 * with the bodyText field and Comments with the comments field.
-	 * @author Corey
+	 * @author Corey + Joel
 	 *
 	 */
 	private class QABodyAdapter extends ArrayAdapter<QABody> {
@@ -79,10 +81,22 @@ public class QuestionViewActivity extends Activity {
 			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
 			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
 			
+			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
+			
 			bodyTextView.setText(mObjects.get(position).parent.getBody());
 			authorTextView.setText(mObjects.get(position).parent.getAuthor());
 			
-			// TODO: Implement comments
+			for (int i=0; i<mObjects.get(position).comments.size(); i++){
+				TextView comment = new TextView(mContext);
+				comment.setText(mObjects.get(position).comments.get(i).getBody());
+				
+				TextView commentAuthor = new TextView(mContext);
+				commentAuthor.setText("-" + mObjects.get(position).comments.get(i).getAuthor());	
+				commentAuthor.setGravity(Gravity.RIGHT);
+				
+				commentsView.addView(comment);
+				commentsView.addView(commentAuthor);
+			}			
 			// TODO: Implement favorite/upvote buttons.
 			return qaItemView;
 		}
@@ -119,7 +133,7 @@ public class QuestionViewActivity extends Activity {
 						null, "Answer 1: " + LIPSUM, 0);
 				AnswerItem answer2 = new AnswerItem(new UniqueId(), null, "ans2 Author",
 						null, "Answer 2: " + LIPSUM, 0);
-				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1", 0);
+				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1... I wanted a longer comment so yeah... words and things and stuff", 0);
 				CommentItem comment2 = new CommentItem(new UniqueId(), null, "c2a", null, "comment2", 0);
 				CommentItem comment3 = new CommentItem(new UniqueId(), null, "c3a", null, "comment3", 0);
 				
@@ -150,7 +164,5 @@ public class QuestionViewActivity extends Activity {
 			// TODO: Implement interactions with the controller to get Answers/Comments.
 		}
 		
-	}
-	
-	
+	}		
 }
