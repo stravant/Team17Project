@@ -24,7 +24,7 @@ public class IncrementalResultTest extends TestCase {
 		result.addObserver(obs);
 	}
 	
-	/*
+	/**
 	 * Check basic insertion of objects
 	 */
 	@SuppressWarnings("serial")
@@ -40,7 +40,8 @@ public class IncrementalResultTest extends TestCase {
 		assertTrue("Item was added", obs.wasNotified());
 	}
 	
-	/*
+	/**
+	 * 
 	 * Check that different add invocations generate separate, and the correct 
 	 * number of notifications.
 	 */
@@ -60,7 +61,7 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals("One further item added -> one further notification", 2, obs.getNotificationCount());
 	}
 	
-	/*
+	/**
 	 * Check that items being passed to the addObjects out of order end up 
 	 * in the right order in the notification and result, and are grouped
 	 * together optimally.
@@ -88,7 +89,7 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals(q2, obs.getNotification(1).List.get(0));
 	}
 	
-	/*
+	/**
 	 * Check that double insertion of an item into the a result ignores the
 	 * second copy of the item, only adding it to the result once.
 	 */
@@ -108,7 +109,7 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals("The result should now have only the two unique items in it.", 2, result.getCurrentResults().size());
 	}	
 
-	/*
+	/**
 	 * Check that items with identical references are ignored, but items with identical 
 	 * values under our sort are not ignored.
 	 */
@@ -133,7 +134,7 @@ public class IncrementalResultTest extends TestCase {
 		assertEquals(q3, notification.get(2));	
 	}
 	
-	/*
+	/**
 	 * Check that items with the same different references, but the same hash code
 	 * are correctly treated as the same item, and only inserted once into the
 	 * result.
