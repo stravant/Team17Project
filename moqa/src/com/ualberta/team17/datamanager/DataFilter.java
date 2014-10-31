@@ -9,6 +9,8 @@ import com.ualberta.team17.QAModel;
 public class DataFilter {
 	private ItemType mTypeFilter;
 	private List<FieldFilter> mFieldFilters;
+	private Integer mMaxResults;
+	private Integer mResultsPage;
 
 	public DataFilter() {
 		mFieldFilters = new ArrayList<FieldFilter>();
@@ -42,6 +44,22 @@ public class DataFilter {
 	
 	public Boolean accept(QAModel item) {
 		throw new UnsupportedOperationException();
+	}
+
+	public Integer getMaxResults() {
+		return mMaxResults;
+	}
+
+	public void setMaxResults(Integer maxResults) {
+		mMaxResults = maxResults;
+	}
+
+	public Integer getPage() {
+		return mResultsPage;
+	}
+
+	public void setPage(Integer page) {
+		mResultsPage = page;
 	}
 	
 	public class FieldFilter {
