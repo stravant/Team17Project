@@ -9,8 +9,6 @@ import com.google.gson.Gson;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.config.discovery.NodeChecker;
 import io.searchbox.client.config.idle.IdleConnectionReaper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -19,14 +17,12 @@ import java.util.Map;
  * @author cihat.keser
  */
 public class JestClientFactory {
-    final static Logger log = LoggerFactory.getLogger(JestClientFactory.class);
     private DroidClientConfig droidClientConfig;
 
     public JestClient getObject() {
         JestDroidClient client = new JestDroidClient();
 
         if (droidClientConfig != null) {
-            log.debug("Creating HTTP client based on configuration");
             HttpClient httpclient;
             client.setServers(droidClientConfig.getServerList());
             boolean isMultiThreaded = droidClientConfig.isMultiThreaded();
@@ -48,11 +44,9 @@ public class JestClientFactory {
                     cm.setMaxPerRoute(route, maxPerRoute.get(route));
                 }
                 httpclient = new DefaultHttpClient(cm);
-                log.debug("Multi Threaded http client created");
 
                 // schedule idle connection reaping if configured
                 if (droidClientConfig.getMaxConnectionIdleTime() > 0) {
-                    log.info("Idle connection reaping enabled...");
 
                     IdleConnectionReaper reaper = new IdleConnectionReaper(droidClientConfig, new DroidReapableConnectionManager(cm));
                     client.setIdleConnectionReaper(reaper);
@@ -62,7 +56,6 @@ public class JestClientFactory {
 
             } else {
                 httpclient = new DefaultHttpClient();
-                log.debug("Default http client is created without multi threaded option");
             }
 
             httpclient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, droidClientConfig.getConnTimeout());
@@ -77,16 +70,12 @@ public class JestClientFactory {
             client.setHttpClient(httpclient);
             //set discovery (should be set after setting the httpClient on jestClient)
             if (droidClientConfig.isDiscoveryEnabled()) {
-                log.info("Node Discovery Enabled...");
                 NodeChecker nodeChecker = new NodeChecker(droidClientConfig, client);
                 client.setNodeChecker(nodeChecker);
                 nodeChecker.startAsync();
                 nodeChecker.awaitRunning();
-            } else {
-                log.info("Node Discovery Disabled...");
             }
         } else {
-            log.debug("There is no configuration to create http client. Going to create simple client with default values");
             client.setHttpClient(new DefaultHttpClient());
             LinkedHashSet<String> servers = new LinkedHashSet<String>();
             servers.add("http://localhost:9200");

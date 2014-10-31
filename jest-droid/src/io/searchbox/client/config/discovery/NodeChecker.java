@@ -7,8 +7,6 @@ import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.config.ClientConfig;
 import io.searchbox.cluster.NodesInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashSet;
 import java.util.Map.Entry;
@@ -18,7 +16,6 @@ import java.util.Map.Entry;
  */
 public class NodeChecker extends AbstractScheduledService {
 
-    final static Logger logger = LoggerFactory.getLogger(NodeChecker.class);
     //actual client config instance
     JestClient client;
     ClientConfig clientConfig;
@@ -36,7 +33,6 @@ public class NodeChecker extends AbstractScheduledService {
         try {
             result = client.execute(action);
         } catch (Exception e) {
-            logger.error("Error executing NodesInfo!", e);
             // do not elevate the exception since that will stop the scheduled calls.
             // throw new RuntimeException("Error executing NodesInfo!", e);
         }
@@ -60,7 +56,6 @@ public class NodeChecker extends AbstractScheduledService {
                 }
             }
 
-            logger.info("Discovered Http Hosts: {}", httpHosts);
             client.setServers(httpHosts);
         }
     }

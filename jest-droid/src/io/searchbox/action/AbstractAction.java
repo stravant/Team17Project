@@ -14,8 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -32,7 +30,6 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class AbstractAction<T extends JestResult> implements Action<T> {
 
-    final static Logger log = LoggerFactory.getLogger(AbstractAction.class);
     public static String CHARSET = "utf-8";
     private final ConcurrentMap<String, Object> headerMap = new ConcurrentHashMap<String, Object>();
     private final Multimap<String, Object> parameterMap = HashMultimap.create();
@@ -71,7 +68,6 @@ public abstract class AbstractAction<T extends JestResult> implements Action<T> 
 
         if ((statusCode / 100) == 2) {
             result.setSucceeded(true);
-            log.debug("Request and operation succeeded");
         } else {
             result.setSucceeded(false);
             // provide the generic HTTP status code error, if one hasn't already come in via the JSON response...
@@ -81,7 +77,6 @@ public abstract class AbstractAction<T extends JestResult> implements Action<T> 
             if (result.getErrorMessage() == null) {
                 result.setErrorMessage(statusCode + " " + (reasonPhrase == null ? "null" : reasonPhrase));
             }
-            log.debug("Response is failed");
         }
         return result;
     }
@@ -91,7 +86,7 @@ public abstract class AbstractAction<T extends JestResult> implements Action<T> 
             try {
                 return new JsonParser().parse(jsonTxt).getAsJsonObject();
             } catch (Exception e) {
-                log.error("An exception occurred while converting json string to map object");
+                
             }
         }
         return new JsonObject();
@@ -107,7 +102,7 @@ public abstract class AbstractAction<T extends JestResult> implements Action<T> 
                     Object name = field.get(source);
                     return name == null ? null : name.toString();
                 } catch (IllegalAccessException e) {
-                    log.error("Unhandled exception occurred while getting annotated id from source");
+                    
                 }
             }
         }
@@ -136,7 +131,6 @@ public abstract class AbstractAction<T extends JestResult> implements Action<T> 
             } catch (UnsupportedEncodingException e) {
                 // unless CHARSET is overridden with a wrong value in a subclass,
                 // this exception won't be thrown.
-                log.error("Error occurred while adding parameters to uri.", e);
             }
         }
         return finalUri;
@@ -178,7 +172,6 @@ public abstract class AbstractAction<T extends JestResult> implements Action<T> 
         } catch (UnsupportedEncodingException e) {
             // unless CHARSET is overridden with a wrong value in a subclass,
             // this exception won't be thrown.
-            log.error("Error occurred while adding index/type to uri", e);
         }
 
         String uri = sb.toString();

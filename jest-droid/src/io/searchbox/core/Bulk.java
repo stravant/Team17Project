@@ -6,8 +6,6 @@ import io.searchbox.action.BulkableAction;
 import io.searchbox.action.GenericResultAbstractAction;
 import io.searchbox.params.Parameters;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -26,7 +24,6 @@ import java.util.*;
  */
 public class Bulk extends GenericResultAbstractAction {
 
-    final static Logger log = LoggerFactory.getLogger(Bulk.class);
     protected Collection<BulkableAction> bulkableActions;
 
     public Bulk(Builder builder) {
@@ -86,7 +83,7 @@ public class Bulk extends GenericResultAbstractAction {
                         }
                     }
                 } catch (NullPointerException e) {
-                    log.debug("Could not retrieve '" + parameter + "' parameter from action.", e);
+                    
                 }
             }
 

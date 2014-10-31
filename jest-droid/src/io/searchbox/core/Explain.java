@@ -2,8 +2,6 @@ package io.searchbox.core;
 
 import com.google.gson.Gson;
 import io.searchbox.action.GenericResultAbstractDocumentTargetedAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Dogukan Sonmez
@@ -11,7 +9,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Explain extends GenericResultAbstractDocumentTargetedAction {
 
-    final static Logger log = LoggerFactory.getLogger(Explain.class);
     private Object query;
 
     private Explain(Builder builder) {
@@ -34,7 +31,6 @@ public class Explain extends GenericResultAbstractDocumentTargetedAction {
     protected String buildURI() {
         StringBuilder sb = new StringBuilder(super.buildURI());
         sb.append("/_explain");
-        log.debug("Created URI for explain action is :" + sb.toString());
         return sb.toString();
     }
 

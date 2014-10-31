@@ -3,8 +3,6 @@ package io.searchbox.core;
 import com.google.gson.Gson;
 import io.searchbox.action.AbstractMultiTypeActionBuilder;
 import io.searchbox.action.GenericResultAbstractAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Dogukan Sonmez
@@ -12,7 +10,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteByQuery extends GenericResultAbstractAction {
 
-    final static Logger log = LoggerFactory.getLogger(DeleteByQuery.class);
     private String query;
 
     public DeleteByQuery(Builder builder) {
@@ -26,7 +23,6 @@ public class DeleteByQuery extends GenericResultAbstractAction {
     public String buildURI() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.buildURI()).append("/_query");
-        log.debug("Created URI for delete by query action is : {}", sb.toString());
         return sb.toString();
     }
 

@@ -43,7 +43,7 @@ public abstract class AbstractDocumentTargetedAction<T extends JestResult> exten
             try {
                 sb.append("/").append(URLEncoder.encode(id, CHARSET));
             } catch (UnsupportedEncodingException e) {
-                log.error("Error occurred while adding document id to uri.", e);
+                
             }
         }
         return sb.toString();

@@ -18,8 +18,6 @@ import io.searchbox.client.AbstractJestClient;
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.client.JestResultHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -32,7 +30,6 @@ import java.util.concurrent.ExecutionException;
  */
 public class JestDroidClient extends AbstractJestClient implements JestClient {
 
-    final static Logger log = LoggerFactory.getLogger(JestDroidClient.class);
     private HttpClient httpClient;
     private Charset entityEncoding = Charset.forName("utf-8");
 
@@ -80,19 +77,14 @@ public class JestDroidClient extends AbstractJestClient implements JestClient {
 
         if (methodName.equalsIgnoreCase("POST")) {
             httpUriRequest = new HttpPost(url);
-            log.debug("POST method created based on client request");
         } else if (methodName.equalsIgnoreCase("PUT")) {
             httpUriRequest = new HttpPut(url);
-            log.debug("PUT method created based on client request");
         } else if (methodName.equalsIgnoreCase("DELETE")) {
             httpUriRequest = new HttpDeleteWithEntity(url);
-            log.debug("DELETE method created based on client request");
         } else if (methodName.equalsIgnoreCase("GET")) {
             httpUriRequest = new HttpGetWithEntity(url);
-            log.debug("GET method created based on client request");
         } else if (methodName.equalsIgnoreCase("HEAD")) {
             httpUriRequest = new HttpHead(url);
-            log.debug("HEAD method created based on client request");
         }
 
         if (httpUriRequest != null && httpUriRequest instanceof HttpEntityEnclosingRequestBase && data != null) {

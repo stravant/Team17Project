@@ -6,8 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.searchbox.annotations.JestId;
 import io.searchbox.core.search.facet.Facet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -25,7 +23,6 @@ import java.util.Map.Entry;
 public class JestResult {
 
     public static final String ES_METADATA_ID = "es_metadata_id";
-    private final static Logger log = LoggerFactory.getLogger(JestResult.class);
 
     protected JsonObject jsonObject;
     protected String jsonString;
@@ -189,14 +186,14 @@ public class JestResult {
                             field.set(obj, getAs(id, fieldType));
                         }
                     } catch (IllegalAccessException e) {
-                        log.error("Unhandled exception occurred while getting annotated id from source");
+                        
                     }
                     break;
                 }
             }
 
         } catch (Exception e) {
-            log.error("Unhandled exception occurred while converting source to the object ." + type.getCanonicalName(), e);
+            
         }
         return obj;
     }

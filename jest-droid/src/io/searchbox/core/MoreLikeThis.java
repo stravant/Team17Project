@@ -2,8 +2,6 @@ package io.searchbox.core;
 
 import com.google.gson.Gson;
 import io.searchbox.action.GenericResultAbstractDocumentTargetedAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Dogukan Sonmez
@@ -11,7 +9,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MoreLikeThis extends GenericResultAbstractDocumentTargetedAction {
 
-    final static Logger log = LoggerFactory.getLogger(MoreLikeThis.class);
     private Object query;
 
     private MoreLikeThis(Builder builder) {
@@ -25,7 +22,6 @@ public class MoreLikeThis extends GenericResultAbstractDocumentTargetedAction {
     protected String buildURI() {
         StringBuilder sb = new StringBuilder(super.buildURI());
         sb.append("/_mlt");
-        log.debug("Created URI for update action is :" + sb.toString());
         return sb.toString();
     }
 

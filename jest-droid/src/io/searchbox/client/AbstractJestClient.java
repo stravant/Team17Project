@@ -9,8 +9,6 @@ import io.searchbox.client.config.discovery.NodeChecker;
 import io.searchbox.client.config.exception.NoServerConfiguredException;
 import io.searchbox.client.config.idle.IdleConnectionReaper;
 import io.searchbox.client.util.PaddedAtomicReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -20,7 +18,6 @@ import java.util.Set;
  */
 public abstract class AbstractJestClient implements JestClient {
 
-    final static Logger log = LoggerFactory.getLogger(AbstractJestClient.class);
     public static final String ELASTIC_SEARCH_DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ssZ";
     private final PaddedAtomicReference<ServerList> listOfServers = new PaddedAtomicReference<ServerList>();
     protected Gson gson = new GsonBuilder()
@@ -54,7 +51,6 @@ public abstract class AbstractJestClient implements JestClient {
             listOfServers.set(serverList);
         } catch (NoServerConfiguredException noServers) {
             listOfServers.set(null);
-            log.warn("No servers are currently available for the client to talk to.");
         }
     }
 
