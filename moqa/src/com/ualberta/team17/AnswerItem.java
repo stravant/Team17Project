@@ -14,7 +14,7 @@ public class AnswerItem extends AuthoredTextItem {
 		super(ItemType.Answer, id, parentId, author, date, body, upvoteCount);
 	}
 
-	public static class GsonTypeAdapter extends AuthoredItem.GsonTypeAdapter<AnswerItem> {
+	public static class GsonTypeAdapter extends AuthoredTextItem.GsonTypeAdapter<AnswerItem> {
 		@Override
 		public AnswerItem read(JsonReader reader) throws IOException {
 			return readInto(new AnswerItem(null, null, null, null, null, 0), reader);

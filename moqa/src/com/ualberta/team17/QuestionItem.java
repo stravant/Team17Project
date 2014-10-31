@@ -7,6 +7,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 public class QuestionItem extends AuthoredTextItem {	
+	public static final String FIELD_TITLE = "title";
+
 	private String mTitle;
 	
 	/* Ctor */
@@ -25,7 +27,7 @@ public class QuestionItem extends AuthoredTextItem {
 		public boolean parseField(QuestionItem item, String name, JsonReader reader) throws IOException {
 			if (super.parseField(item, name, reader)) {
 				return true;
-			} else if (name.equals("title")) {
+			} else if (name.equals(QuestionItem.FIELD_TITLE)) {
 				item.mTitle = reader.nextString();
 				return true;
 			}

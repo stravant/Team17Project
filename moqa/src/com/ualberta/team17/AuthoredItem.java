@@ -1,6 +1,8 @@
 package com.ualberta.team17;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.google.gson.TypeAdapter;
@@ -12,6 +14,10 @@ import com.google.gson.stream.JsonWriter;
  * Optionally, the item was posted in reply to another item on the service.
  */
 public abstract class AuthoredItem extends QAModel {
+	public static final String FIELD_AUTHOR = "author";
+	public static final String FIELD_PARENT = "parent";
+	public static final String FIELD_DATE = "date";
+
 	private UniqueId mParentItem;
 	private String mAuthor;
 	private Date mDate;
@@ -48,18 +54,28 @@ public abstract class AuthoredItem extends QAModel {
 	}
 
 	public static abstract class GsonTypeAdapter<T extends AuthoredItem> extends QAModel.GsonTypeAdapter<T> {
+		private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
 		@Override
 		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
 			if (super.parseField(item, name, reader)) {
 				return true;
-			} else if (name.equals("parent")) {
-				item.mParentItem = new UniqueId(reader.nextString());
+			} else if (name.equals(AuthoredItem.FIELD_PARENT)) {
+				String parent = reader.nextString();
+
+				if (null != parent && !parent.equals("0"))
+					item.mParentItem = new UniqueId(parent);
+
 				return true;
-			} else if (name.equals("author")) {
+			} else if (name.equals(AuthoredItem.FIELD_AUTHOR)) {
 				item.mAuthor = reader.nextString();
 				return true;
-			} else if (name.equals("date")) {
-				item.mDate = new Date(reader.nextLong());
+			} else if (name.equals(AuthoredItem.FIELD_DATE)) {
+				try {
+					item.mDate = dateFormat.parse(reader.nextString());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 				return true;
 			}
 

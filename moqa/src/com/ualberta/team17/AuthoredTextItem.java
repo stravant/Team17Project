@@ -12,6 +12,8 @@ import com.google.gson.stream.JsonWriter;
  * Also, can be upvoted.
  */
 public abstract class AuthoredTextItem extends AuthoredItem {
+	public static final String FIELD_BODY = "body";
+
 	private String mBody;
 	private transient int mUpvoteCount;
 	
@@ -36,12 +38,12 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 		notifyViews();
 	}	
 
-	public static abstract class GsonTypeAdapter<T extends AuthoredTextItem> extends QAModel.GsonTypeAdapter<T> {
+	public static abstract class GsonTypeAdapter<T extends AuthoredTextItem> extends AuthoredItem.GsonTypeAdapter<T> {
 		@Override
 		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
 			if (super.parseField(item, name, reader)) {
 				return true;
-			} else if (name.equals("body")) {
+			} else if (name.equals(AuthoredTextItem.FIELD_BODY)) {
 				item.mBody = reader.nextString();
 				return true;
 			}
