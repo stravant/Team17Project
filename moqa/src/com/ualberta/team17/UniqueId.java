@@ -29,9 +29,21 @@ public class UniqueId {
 			mId = GenerateRandomIdString(digestString);
 		}
 	}
-
+	
+	/**
+	 * Constructor that takes constructs a unique ID by digesting a string
+	 * @param id
+	 */
 	public UniqueId(String id) {
-		mId = id.substring(0, UNIQUE_ID_LENGTH);
+		try {
+			// Initially try building the string from the passed id
+			MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGORITHM);
+			mId = messageDigest.digest(id.getBytes()).toString();
+		} catch (NoSuchAlgorithmException e) {
+			// Fall back to a random string
+			System.err.print(String.format("%s Algorithm not available for creating new UniqueId", DIGEST_ALGORITHM));
+			mId = GenerateRandomIdString(id);
+		}
 	}
 
 	public UniqueId() {
