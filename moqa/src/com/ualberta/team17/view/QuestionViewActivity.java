@@ -36,8 +36,117 @@ public class QuestionViewActivity extends Activity {
 			"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia " +
 			"deserunt mollit anim id est laborum.";
 	
-	private QuestionItem mQuestion;
-	private ArrayList<QABody> mQAItems;
+	/*private QuestionItem mQuestion;
+	private ArrayList<QABody> mQAItems;*/
+	private QuestionContent mContent;
+	
+	/**
+	 * This class holds all of the content of a Question and all
+	 * relevant answers and comments.
+	 * 
+	 * It is responsible for ownership of all Question/Answer/Comment
+	 * items.
+	 * 
+	 * It will make it easier to test the view by dependency injection.
+	 * 
+	 * @author Corey
+	 */
+	public class QuestionContent {
+		private QuestionItem mQuestion;
+		private ArrayList<QABody> mQABodies;
+		
+		public QuestionContent() {
+			mQuestion = null;
+			mQABodies = new ArrayList<QABody>();
+		}
+		
+		public QuestionContent(QuestionItem question) {
+			mQuestion = question;
+			mQABodies = new ArrayList<QABody>();
+			
+			if(question != null) {
+				mQABodies.add(new QABody(mQuestion));
+			}
+		}
+		
+		/**
+		 * Getter for the QuestionItem.
+		 * @return The question.
+		 */
+		public QuestionItem getQuestion() {
+			return mQuestion;
+		}
+		
+		/**
+		 * Getter for the QABodies.
+		 * @return The list of QABodies.
+		 */
+		public List<QABody> getQABodies() {
+			return mQABodies;
+		}
+		
+		/**
+		 * Sets the question.
+		 * 
+		 * Also removes the old question from the list of QABodies and adds the new one.
+		 * @param question The question to use.
+		 */
+		public void setQuestion(QuestionItem question) {
+			if(mQuestion != null) {
+				mQABodies.remove(mQuestion);
+			}
+			
+			mQuestion = question;
+			if(question != null) {
+				mQABodies.add(new QABody(mQuestion));
+			}
+		}
+		
+		/**
+		 * Adds all answers passed to it to the QABody list
+		 * 
+		 * @param answers A list of AnswerItems.
+		 */
+		public void addAnswers(AnswerItem... answers) {
+			for(AnswerItem answer : answers) {
+				QABody answerBody = new QABody(answer);
+				mQABodies.add(answerBody);
+			}
+		}
+		
+		/**
+		 * Adds all comments to their corresponding parent
+		 * Question/Answer by the id.
+		 * 
+		 * @param comments A list of CommentItems.
+		 */
+		public void addComments(CommentItem... comments) {
+			for(CommentItem comment : comments) {
+				QABody parentBody = findById(comment.getParentItem());
+				if(parentBody != null) {
+					parentBody.comments.add(comment);
+				}
+				else {
+					// maybe some kind of error
+				}
+			}
+		}
+		
+		/**
+		 * Finds a QABody by its unique id. Returns null if not found.
+		 * 
+		 * @param id The id to search for.
+		 * @return The matching QABody.
+		 */
+		private QABody findById(UniqueId id) {
+			for(QABody body : mQABodies) {
+				if(id == body.parent.mUniqueId) {
+					return body;
+				}
+			}
+			return null;
+		}
+	}
 	
 	/**
 	 * This class holds a Question/Answer and its child Comments.
@@ -106,8 +215,9 @@ public class QuestionViewActivity extends Activity {
 	 * Constructor
 	 */
 	public QuestionViewActivity() {
-		mQuestion = null;
-		mQAItems = new ArrayList<QABody>();
+		/*mQuestion = null;
+		mQAItems = new ArrayList<QABody>();*/
+		mContent = new QuestionContent();
 	}
 	
 	/**
@@ -121,40 +231,31 @@ public class QuestionViewActivity extends Activity {
 		
 		Intent questionIntent = this.getIntent();
 		
-		mQuestion = (QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA);
-		if(mQuestion == null) {
+		mContent.setQuestion((QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA));
+		if(mContent.getQuestion() == null) {
 			// TODO: implement Question Creation.
 			
 			// Generate our own data to test displaying before the other modules work.
 			if(GENERATE_TEST_DATA) {
-				mQuestion = new QuestionItem(new UniqueId(), null, "Question Author",
+				QuestionItem question = new QuestionItem(new UniqueId(), null, "Question Author",
 						null, "Question: " + LIPSUM, 0, "Question Title");
-				AnswerItem answer1 = new AnswerItem(new UniqueId(), null, "ans1 Author",
+				AnswerItem answer1 = new AnswerItem(new UniqueId(), question.mUniqueId, "ans1 Author",
 						null, "Answer 1: " + LIPSUM, 0);
-				AnswerItem answer2 = new AnswerItem(new UniqueId(), null, "ans2 Author",
+				AnswerItem answer2 = new AnswerItem(new UniqueId(), question.mUniqueId, "ans2 Author",
 						null, "Answer 2: " + LIPSUM, 0);
-				CommentItem comment1 = new CommentItem(new UniqueId(), null, "c1a", null, "comment1... I wanted a longer comment so yeah... words and things and stuff", 0);
-				CommentItem comment2 = new CommentItem(new UniqueId(), null, "c2a", null, "comment2", 0);
-				CommentItem comment3 = new CommentItem(new UniqueId(), null, "c3a", null, "comment3", 0);
+				CommentItem comment1 = new CommentItem(new UniqueId(), question.mUniqueId, "c1a", null, "comment1... I wanted a longer comment so yeah... words and things and stuff", 0);
+				CommentItem comment2 = new CommentItem(new UniqueId(), answer1.mUniqueId, "c2a", null, "comment2", 0);
+				CommentItem comment3 = new CommentItem(new UniqueId(), answer1.mUniqueId, "c3a", null, "comment3", 0);
 				
-				QABody questionBody = new QABody(mQuestion);
-				questionBody.comments.add(comment1);
-				
-				QABody answer1Body = new QABody(answer1);
-				answer1Body.comments.add(comment2);
-				answer1Body.comments.add(comment3);
-				
-				QABody answer2Body = new QABody(answer2);
-				
-				mQAItems.add(questionBody);
-				mQAItems.add(answer1Body);
-				mQAItems.add(answer2Body);
+				mContent.setQuestion(question);
+				mContent.addAnswers(answer1, answer2);
+				mContent.addComments(comment1, comment2, comment3);
 				
 				TextView title = (TextView) findViewById(R.id.titleView);
-				title.setText(mQuestion.getTitle());
+				title.setText(mContent.getQuestion().getTitle());
 				
 				ListView qaList = (ListView) findViewById(R.id.qaItemView);
-				QABodyAdapter adapter = new QABodyAdapter(this, R.id.qaItemView, mQAItems);
+				QABodyAdapter adapter = new QABodyAdapter(this, R.id.qaItemView, mContent.getQABodies());
 				
 				qaList.setAdapter(adapter);
 				adapter.notifyDataSetChanged();
