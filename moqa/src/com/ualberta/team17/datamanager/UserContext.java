@@ -1,8 +1,13 @@
 package com.ualberta.team17.datamanager;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.content.Context;
 
 import com.ualberta.team17.UniqueId;
 
@@ -67,7 +72,8 @@ public class UserContext implements Serializable {
 	 * @param itemId
 	 */
 	public void addFavorite(UniqueId itemId) {
-		mUserFavorites.add(itemId);
+		if (!mUserFavorites.contains(itemId))
+			mUserFavorites.add(itemId);
 	}
 	
 	/**
@@ -83,6 +89,48 @@ public class UserContext implements Serializable {
 	 * @param itemId
 	 */
 	public void addReply(UniqueId itemId) {
-		mUserReplies.add(itemId);
+		if (!mUserReplies.contains(itemId))
+			mUserReplies.add(itemId);
+	}
+	
+	
+	/**
+	 * Get the name of the file that we are using to store the
+	 * settings in
+	 * @return The name of the file
+	 */
+	private String getDataLocationName() {
+		// Use the user's Id as the location
+		return getUserId().toString();
+	}
+	
+	/**
+	 * Get the file a handle to the source of settings data
+	 * @param ctx The context to get the source from
+	 * @return A file, that is the location to read from
+	 *  given the current Context and UserContext. 
+	 *  If the user hasn't saved any data yet, return null
+	 */
+	public FileInputStream getLocalDataSource(Context ctx, String category) {
+		try {
+			return ctx.openFileInput(getDataLocationName() + "_" + category);
+		} catch (FileNotFoundException e) {
+			// File was not found, we return null, letting the caller
+			// create a file if they want to.
+			return null;
+		}
+	}
+	
+	/**
+	 * Destination to save changes to, given the current Context and UserContext
+	 * @return A file, that is the location to write
+	 *  to given the current Context and UserContext
+	 */
+	public FileOutputStream getLocalDataDestination(Context ctx, String category) {
+		try {
+			return ctx.openFileOutput(getDataLocationName() + "_" + category, Context.MODE_PRIVATE);
+		} catch (FileNotFoundException e) {
+			throw new Error("Fatal Error: Can't write to application directory");
+		}
 	}
 }
