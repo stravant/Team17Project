@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -32,6 +37,16 @@ public class LocalDataManager implements IDataSourceManager {
 	private List<QAModel> mData;
 	
 	/**
+	 * Do we need to do a save on the data?
+	 */
+	private boolean mDataDirty = false;
+	
+	/**
+	 * A lock on our data
+	 */
+	private ReentrantLock mDataLock = new ReentrantLock();
+	
+	/**
 	 * When were we last available?
 	 */
 	private Date mLastAvailable;
@@ -42,9 +57,39 @@ public class LocalDataManager implements IDataSourceManager {
 	private List<IDataSourceAvailableListener> mAvailableListeners = new ArrayList<IDataSourceAvailableListener>();
 	
 	/**
+	 * Lock on availability listeners
+	 */
+	private ReentrantLock mAvailableListenersLock = new ReentrantLock();
+	
+	/**
 	 * Our DataLoaded listeners
 	 */
 	private List<IDataLoadedListener> mDataLoadedListeners = new ArrayList<IDataLoadedListener>();
+	
+	/**
+	 * Data Loaded listeners lock
+	 */
+	private ReentrantLock mDataLoadedListenersLock = new ReentrantLock();
+	
+	/**
+	 * How often to do a batched save if one is needed
+	 */
+	private static final long SAVE_INTERVAL = 2000; // 2 seconds
+	
+	/**
+	 * A worker pool to handle delayed+batched saving
+	 */
+	private static final ScheduledExecutorService mSaveWorkerPool = Executors.newSingleThreadScheduledExecutor();
+	
+	/**
+	 * The currently scheduled save task
+	 */
+	private ScheduledFuture<?> mCurrentSaveWorker;
+	
+	/**
+	 * Next time that the worker pool
+	 */
+	private long mLastSaveTimeMillis;
 	
 	/**
 	 * The local data tag that the LocalDataManager uses
@@ -104,8 +149,25 @@ public class LocalDataManager implements IDataSourceManager {
 		// Currently: Since Linux epoch to start
 		mLastAvailable = new Date(0);
 		
+		// Saving
+		mLastSaveTimeMillis = Calendar.getInstance().getTimeInMillis();
+		
 		// Start a task to read in and cache the local items
 		new LoadDataFromFilesystemTask().execute();
+	}
+	
+	/**
+	 * Close down the local data manager for the current context / usercontext
+	 * Closes any file handles or tasks currently open.
+	 */
+	public void close() {
+		mDataLock.lock();
+		
+		if (mCurrentSaveWorker != null) {
+			mCurrentSaveWorker.cancel(false);
+		}
+		
+		mDataLock.unlock();
 	}
 	
 	/**
@@ -154,15 +216,21 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param compare
 	 * @param result
 	 */
-	private void doFilterQuery(final DataFilter filter, final IItemComparator compare, final IncrementalResult result) {
+	private void doFilterQuery(DataFilter filter, IItemComparator compare, IncrementalResult result) {
+		// Create an array for the results
+		List<QAModel> packedItem = new ArrayList<QAModel>();
+		
 		// Main query loop
+		mDataLock.lock(); // Lock during iteration
 		for (QAModel item: mData) {
 			if (filter.accept(item)) {
-				List<QAModel> packedItem = new ArrayList<QAModel>();
 				packedItem.add(item);
-				result.addObjects(packedItem);
 			}
 		}
+		mDataLock.unlock();
+		
+		// Notify on the results
+		result.addObjects(packedItem);
 	}
 	
 	/**
@@ -178,28 +246,51 @@ public class LocalDataManager implements IDataSourceManager {
 		new RunTaskHelper() {
 			@Override
 			public void task() {
-				// Main query loop
-				for (QAModel item: mData) {
-					// TODO: Make this more efficient
-					for (UniqueId id: ids) {
-						if (item.getUniqueId().equals(id)) {
-							List<QAModel> packedResult = new ArrayList<QAModel>();
-							packedResult.add(item);
-							result.addObjects(packedResult);
-						}
-					}
-				}
+				doIdListQuery(ids, result);
 			}
 		};
 	}
-
 	
+	/**
+	 * Query based on a list of unique IDs, is run in a separate thread for 
+	 * each query
+	 * @param ids
+	 * @param result
+	 */
+	private void doIdListQuery(List<UniqueId> ids, IncrementalResult result) {
+		// Set up an array for our results
+		List<QAModel> packedResult = new ArrayList<QAModel>();
+		
+		// Main query loop
+		mDataLock.lock(); // Lock during iteration
+		for (QAModel item: mData) {
+			// TODO: Make this more efficient
+			for (UniqueId id: ids) {
+				if (item.getUniqueId().equals(id)) {
+					packedResult.add(item);
+				}
+			}
+		}
+		mDataLock.unlock();
+		
+		// Notify on the results
+		result.addObjects(packedResult);
+	}
+	
+
+	/**
+	 * Main save item method. Saves an item to the local storage. If the item
+	 * already exists, do nothing.
+	 * @param item The item to save.
+	 */
 	@Override
 	public boolean saveItem(QAModel item) {
 		if (!isAvailable())
 			throw new IllegalStateException("Must be available to be queried.");	
 	
-		// Add the item to our data array if it isn't there already
+		// Add the item to our data array if it isn't there already, and if we
+		// have to add it, mark as dirty.
+		mDataLock.lock();
 		found: {
 			for (QAModel currentItem: mData) {
 				if (currentItem.getUniqueId().equals(item.getUniqueId())) {
@@ -207,19 +298,51 @@ public class LocalDataManager implements IDataSourceManager {
 				}
 			}
 			mData.add(item);
+			mDataDirty = true;
 		}
 		
-		// Save our data array back to the file
-		FileOutputStream out = mUserContext.getLocalDataDestination(mContext, LDM_CATEGORY);
-		if (out != null) {
-			writeItemData(out, mData);
+		// Do we need to save?
+		if (mDataDirty) {
+			if (mCurrentSaveWorker == null) {
+				// Schedule a save
+				mCurrentSaveWorker = mSaveWorkerPool.schedule(new Runnable() {	
+					@Override
+					public void run() {
+						doSave();
+					}
+				}, Calendar.getInstance().getTimeInMillis() + SAVE_INTERVAL, TimeUnit.MILLISECONDS);
+			}
+		}
+		
+		mDataLock.unlock();
+		
+		return true;
+	}
+	
+	/**
+	 * Do a save of the current item data to our file, called asynchronously
+	 * when a scheduled save should be done.
+	 */
+	private void doSave() {
+		mDataLock.lock(); // Lock the data while iterating to save
+		
+		// Remove the reference to this task
+		mCurrentSaveWorker = null;
+		
+		// If we are still dirty, do the save
+		if (mDataDirty) {
+			FileOutputStream out = mUserContext.getLocalDataDestination(mContext, LDM_CATEGORY);
+			if (out != null) {
+				// Do the write
+				writeItemData(out, mData);
+			}
 			try {
 				out.close();
-			} catch (IOException e) { /* Nothing we can do to handle failure closing a file handle */ }
-			return true;
-		} else {
-			return false;
+			} catch (IOException e) { /* nothing we can do about closing a file handle failing */ }
+			mDataDirty = false;
 		}
+		
+		mDataLock.unlock();
 	}
 
 	@Override
@@ -238,26 +361,34 @@ public class LocalDataManager implements IDataSourceManager {
 
 	@Override
 	public void addDataLoadedListener(IDataLoadedListener listener) {
+		mDataLoadedListenersLock.lock();
 		mDataLoadedListeners.add(listener);
+		mDataLoadedListenersLock.unlock();
 	}
 
 	@SuppressWarnings("unused")
 	private void notifyDataItemLoaded(QAModel item) {
+		mDataLoadedListenersLock.lock();
 		for (IDataLoadedListener listener: mDataLoadedListeners) {
 			listener.dataItemLoaded(this, item);
 		}
+		mDataLoadedListenersLock.unlock();
 	}
 
 	@Override
 	public void addDataSourceAvailableListener(
 			IDataSourceAvailableListener listener) {
+		mAvailableListenersLock.lock();
 		mAvailableListeners.add(listener);
+		mAvailableListenersLock.unlock();
 	}
 
 	private void notifyDataSourceAvailable() {
+		mAvailableListenersLock.lock();
 		for (IDataSourceAvailableListener listener: mAvailableListeners) {
 			listener.DataSourceAvailable(this);
 		}
+		mAvailableListenersLock.unlock();
 	}
 
 }
