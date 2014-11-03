@@ -33,9 +33,88 @@ import com.ualberta.team17.UniqueId;
  * @author Corey
  */
 public class QuestionContent {
+	// Gibberish string used to fill space, so we can see what text looks like.
+	private final static String LIPSUM = "Lorem ipsum dolor sit amet, consectetur " +
+			"adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna " +
+			"aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " +
+			"nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in " +
+			"reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " +
+			"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia " +
+			"deserunt mollit anim id est laborum.";
+	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
 	
+	/**
+	 * This class holds a Question/Answer and its child Comments.
+	 * 
+	 * It's essentially a struct, so we just use public members.
+	 * 
+	 * @author Corey
+	 *
+	 */
+	private class QABody {
+		public AuthoredTextItem parent;
+		public List<CommentItem> comments;
+		
+		public QABody(AuthoredTextItem initParent) {
+			parent = initParent;
+			comments = new ArrayList<CommentItem>();
+		}
+	}	
+	
+	/**
+	 * Adapter for QABody. Connects the body of the Question/Answer
+	 * with the bodyText field and Comments with the comments field.
+	 * @author Corey + Joel
+	 *
+	 */
+	private class QABodyAdapter extends ArrayAdapter<QABody> {
+		Context mContext;
+		List<QABody> mObjects;
+		
+		public QABodyAdapter(Context context, int textViewResourceId,
+				List<QABody> objects) {
+			super(context, textViewResourceId, objects);
+			mContext = context;
+			mObjects = objects;
+		}
+		
+		/**
+		 * Returns the view after adding the list content.
+		 */
+		public View getView( int position, View convertView, ViewGroup parent ) {
+			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+			
+			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
+			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
+			
+			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
+			
+			bodyTextView.setText(mObjects.get(position).parent.getBody());
+			authorTextView.setText(mObjects.get(position).parent.getAuthor());
+			
+			for (int i=0; i<mObjects.get(position).comments.size(); i++){
+				TextView comment = new TextView(mContext);
+				comment.setText(mObjects.get(position).comments.get(i).getBody());
+				
+				TextView commentAuthor = new TextView(mContext);
+				commentAuthor.setText("-" + mObjects.get(position).comments.get(i).getAuthor());	
+				commentAuthor.setGravity(Gravity.RIGHT);
+				
+				commentsView.addView(comment);
+				commentsView.addView(commentAuthor);
+			}			
+			// TODO: Implement favorite/upvote buttons.
+			return qaItemView;
+		}
+	}
+	
+	/**
+	 * Default constructor. Need to call setQuestion() before using it since
+	 * the question isn't initialized in this case.
+	 */
 	public QuestionContent() {
 		mQuestion = null;
 		mQABodies = new ArrayList<QABody>();
@@ -79,7 +158,11 @@ public class QuestionContent {
 		
 		mQuestion = question;
 		if(question != null) {
+			// Make sure that the question is the first item in the list.
+			List<QABody> oldList = mQABodies;
+			mQABodies = new ArrayList<QABody>();
 			mQABodies.add(new QABody(mQuestion));
+			mQABodies.addAll(oldList);
 		}
 	}
 	
@@ -113,6 +196,12 @@ public class QuestionContent {
 		}
 	}
 	
+	/**
+	 * Creates an adapter for the question's list content.
+	 * @param context The context for the adapter.
+	 * @param textViewResourceId The id of the resource to connect to.
+	 * @return A new ListAdapter for this question's content.
+	 */
 	public ListAdapter getListAdapter(Context context, int textViewResourceId) {
 		return new QABodyAdapter(context, textViewResourceId, mQABodies);
 	}
@@ -132,67 +221,20 @@ public class QuestionContent {
 		return null;
 	}
 	
-	/**
-	 * This class holds a Question/Answer and its child Comments.
-	 * 
-	 * @author Corey
-	 *
-	 */
-	private class QABody {
-		@SuppressWarnings("unused")
-		public AuthoredTextItem parent;
-		public List<CommentItem> comments;
+	public void generateTestData() {
+		QuestionItem question = new QuestionItem(new UniqueId(), null, "Question Author",
+				null, "Question: " + LIPSUM, 0, "Question Title");
+		AnswerItem answer1 = new AnswerItem(new UniqueId(), question.mUniqueId, "ans1 Author",
+				null, "Answer 1: " + LIPSUM, 0);
+		AnswerItem answer2 = new AnswerItem(new UniqueId(), question.mUniqueId, "ans2 Author",
+				null, "Answer 2: " + LIPSUM, 0);
+		CommentItem comment1 = new CommentItem(new UniqueId(), question.mUniqueId, "c1a", null, "comment1... I wanted a longer comment so yeah... words and things and stuff", 0);
+		CommentItem comment2 = new CommentItem(new UniqueId(), answer1.mUniqueId, "c2a", null, "comment2", 0);
+		CommentItem comment3 = new CommentItem(new UniqueId(), answer1.mUniqueId, "c3a", null, "comment3", 0);
 		
-		public QABody(AuthoredTextItem initParent) {
-			parent = initParent;
-			comments = new ArrayList<CommentItem>();
-		}
-	}	
-	
-	/**
-	 * Adapter for QABody. Connects the body of the Question/Answer
-	 * with the bodyText field and Comments with the comments field.
-	 * @author Corey + Joel
-	 *
-	 */
-	private class QABodyAdapter extends ArrayAdapter<QABody> {
-		Context mContext;
-		List<QABody> mObjects;
-		
-		public QABodyAdapter(Context context, int textViewResourceId,
-				List<QABody> objects) {
-			super(context, textViewResourceId, objects);
-			mContext = context;
-			mObjects = objects;
-		}
-		
-	
-		public View getView( int position, View convertView, ViewGroup parent ) {
-			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
-			
-			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
-			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
-			
-			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
-			
-			bodyTextView.setText(mObjects.get(position).parent.getBody());
-			authorTextView.setText(mObjects.get(position).parent.getAuthor());
-			
-			for (int i=0; i<mObjects.get(position).comments.size(); i++){
-				TextView comment = new TextView(mContext);
-				comment.setText(mObjects.get(position).comments.get(i).getBody());
-				
-				TextView commentAuthor = new TextView(mContext);
-				commentAuthor.setText("-" + mObjects.get(position).comments.get(i).getAuthor());	
-				commentAuthor.setGravity(Gravity.RIGHT);
-				
-				commentsView.addView(comment);
-				commentsView.addView(commentAuthor);
-			}			
-			// TODO: Implement favorite/upvote buttons.
-			return qaItemView;
-		}
+		setQuestion(question);
+		addAnswers(answer1, answer2);
+		addComments(comment1, comment2, comment3);
 	}
 
 }
