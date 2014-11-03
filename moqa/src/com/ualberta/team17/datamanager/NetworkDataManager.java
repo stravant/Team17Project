@@ -34,7 +34,6 @@ public class NetworkDataManager implements IDataSourceManager {
 	public NetworkDataManager(String esServerUrl, String esServerIndex) {
 		mEsServerUrl = esServerUrl;
 		mEsServerIndex = esServerIndex;
-		initJestClient();
 	}
 
 	@Override
