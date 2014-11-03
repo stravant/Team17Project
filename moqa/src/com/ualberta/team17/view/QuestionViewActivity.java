@@ -9,6 +9,7 @@ import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.controller.QAController;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,13 +22,14 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class QuestionViewActivity extends Activity {
-	public final static String QUESTION_EXTRA = "QUESTION";
+	public final static String QUESTION_ID_EXTRA = "question_id";
 	
 	// Test stuff - can be deleted later
 	private final static boolean GENERATE_TEST_DATA = true;
@@ -40,8 +42,6 @@ public class QuestionViewActivity extends Activity {
 			"deserunt mollit anim id est laborum.";
 	
 	private QuestionContent mContent;
-	
-	
 	
 	/**
 	 * Constructor
@@ -59,15 +59,16 @@ public class QuestionViewActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_questionview);
 		
-		Intent questionIntent = this.getIntent();
+		Intent intent = this.getIntent();
 		
-		mContent.setQuestion((QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA));
-		if(mContent.getQuestion() == null) {
+		UniqueId id = (UniqueId) intent.getSerializableExtra(QUESTION_ID_EXTRA);
+		QuestionItem question = null; // get question from controller somehow
+		if(question == null) {
 			// TODO: implement Question Creation.
 			
 			// Generate our own data to test displaying before the other modules work.
 			if(GENERATE_TEST_DATA) {
-				QuestionItem question = new QuestionItem(new UniqueId(), null, "Question Author",
+				question = new QuestionItem(new UniqueId(), null, "Question Author",
 						null, "Question: " + LIPSUM, 0, "Question Title");
 				AnswerItem answer1 = new AnswerItem(new UniqueId(), question.mUniqueId, "ans1 Author",
 						null, "Answer 1: " + LIPSUM, 0);
