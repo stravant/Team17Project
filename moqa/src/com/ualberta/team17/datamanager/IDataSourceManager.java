@@ -1,11 +1,7 @@
 package com.ualberta.team17.datamanager;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import android.os.AsyncTask;
-import android.provider.VoicemailContract;
 
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.UniqueId;
@@ -19,18 +15,20 @@ public interface IDataSourceManager {
 	 * Query for items using a filter & sort approach
 	 * @param filter
 	 * @param comparator
-	 * @param result
+	 * @param result The IncrementalResult to put the results in
 	 */
 	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result);
 	
 	/**
-	 * Query for specific items using a list of IDs of those items.
-	 * @param ids
+	 * Query for specific known items using a list of IDs of those items.
+	 * @param ids The ids to get 
+	 * @param result The IncrementalResult to put the results in.
 	 */
-	public void query(List<UniqueId> ids);
+	public void query(List<UniqueId> ids, IncrementalResult result);
 	
 	/**
-	 * Save an item to our source
+	 * Save an item to our source. Note: This is a SYNCHRONOUS method, which
+	 * may have a long running time, it should not be called on the UI thread.
 	 * @param item
 	 * @return Whether the operation was successful
 	 */
@@ -48,10 +46,16 @@ public interface IDataSourceManager {
 	 */
 	public Date getLastDataSourceAvailableTime();
 	
-	
+	/**
+	 * Add a listener that is notified when an item is loaded by this source.
+	 * @param listener
+	 */
 	public void addDataLoadedListener(IDataLoadedListener listener);
-	public void notifyDataItemLoaded(QAModel item);
 	
+	/**
+	 * Add a listener to notify when this source becomes available.
+	 * Also called immediately if the source is already available.
+	 * @param listener
+	 */
 	public void addDataSourceAvailableListener(IDataSourceAvailableListener listener);
-	public void notifyDataSourceAvailable();
 }

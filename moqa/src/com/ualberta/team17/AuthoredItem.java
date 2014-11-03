@@ -20,7 +20,7 @@ public abstract class AuthoredItem extends QAModel {
 		mParentItem = parentId;
 		mAuthor = author;
 		mDate = date;
-		mStoragePolicy = StoragePolicy.Inherit;
+		mStoragePolicy = StoragePolicy.Transient;
 	}
 	
 	/* Getters */

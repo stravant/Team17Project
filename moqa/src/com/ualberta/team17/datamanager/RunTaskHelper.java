@@ -1,7 +1,5 @@
 package com.ualberta.team17.datamanager;
 
-import com.ualberta.team17.datamanager.IDataSourceManager.AsyncFufillQueryTaskArgs;
-
 import android.os.AsyncTask;
 
 /**
@@ -39,6 +37,7 @@ public abstract class RunTaskHelper {
 		@Override
 		protected Void doInBackground(Void... input) {
 			mTarget.task();
+			return null;
 		}
 
 		@Override

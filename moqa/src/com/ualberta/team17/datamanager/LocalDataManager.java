@@ -1,13 +1,13 @@
 package com.ualberta.team17.datamanager;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.WeakHashMap;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -32,6 +32,26 @@ public class LocalDataManager implements IDataSourceManager {
 	private List<QAModel> mData;
 	
 	/**
+	 * When were we last available?
+	 */
+	private Date mLastAvailable;
+	
+	/**
+	 * Our availability listeners
+	 */
+	private List<IDataSourceAvailableListener> mAvailableListeners = new ArrayList<IDataSourceAvailableListener>();
+	
+	/**
+	 * Our DataLoaded listeners
+	 */
+	private List<IDataLoadedListener> mDataLoadedListeners = new ArrayList<IDataLoadedListener>();
+	
+	/**
+	 * The local data tag that the LocalDataManager uses
+	 */
+	private static final String LDM_CATEGORY = "LocalDataManager";
+	
+	/**
 	 * An AsyncTask for loading in the QAModel entries initially.
 	 */
 	private class LoadDataFromFilesystemTask extends AsyncTask<Void, Void, List<QAModel>> {
@@ -41,10 +61,16 @@ public class LocalDataManager implements IDataSourceManager {
 			List<QAModel> result = new ArrayList<QAModel>();
 			
 			// Read in the data
-			FileInputStream in = getDataSource();
+			FileInputStream in = mUserContext.getLocalDataSource(mContext, LDM_CATEGORY);
 			if (in != null) {
-				// TODO: Read in the data
+				readItemData(in, result);
 			}
+			try {
+				in.close();
+			} catch (IOException e) { /* WTF?? How can I handle closing a file failing? */ }
+			
+			// Now available
+			mLastAvailable = Calendar.getInstance().getTime();
 			
 			// Return the result
 			return result;
@@ -55,7 +81,11 @@ public class LocalDataManager implements IDataSourceManager {
 
 		@Override
 		protected void onPostExecute(List<QAModel> result) {
+			// Actual line that sets our data
 			mData = result;
+			
+			// Notify that we are available now
+			notifyDataSourceAvailable();
 		}
 	};
 	
@@ -66,47 +96,37 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param user    The user to do the IO for
 	 */
 	public LocalDataManager(Context context, UserContext user) {
+		// Set the params
 		mContext = context;
 		mUserContext = user;
+		
+		// Availability
+		// Currently: Since Linux epoch to start
+		mLastAvailable = new Date(0);
+		
+		// Start a task to read in and cache the local items
+		new LoadDataFromFilesystemTask().execute();
 	}
 	
 	/**
-	 * Get the name of the file that we are using to store the
-	 * settings in
-	 * @return The name of the file
+	 * Private function that handles reading items from a file
+	 * @param in
+	 * @param buffer Buffer to put the read items into
 	 */
-	private String getDataLocationName() {
-		// Use the user's Id as the location
-		return mUserContext.getUserId().toString();
+	private void readItemData(FileInputStream in, List<QAModel> buffer) {
+		// TODO: implement
+		throw new UnsupportedOperationException();
+		// TODO: notify data item loaded
 	}
 	
 	/**
-	 * Get the file a handle to the source of our data.
-	 * @return A file, that is the location to read from
-	 *  given the current Context and UserContext. 
-	 *  If the user hasn't saved any data yet, return null
+	 * Private function that handles writing items to a file
+	 * @param out
+	 * @param buffer The buffer to write out items from
 	 */
-	private FileInputStream getDataSource() {
-		try {
-			return mContext.openFileInput(getDataLocationName());
-		} catch (FileNotFoundException e) {
-			// File was not found, we return null, letting the caller
-			// create a file if they want to.
-			return null;
-		}
-	}
-	
-	/**
-	 * Destination to save changes to, given the current Context and UserContext
-	 * @return A file, that is the location to write
-	 *  to given the current Context and UserContext
-	 */
-	private FileOutputStream getDataDestination() {
-		try {
-			return mContext.openFileOutput(getDataLocationName(), Context.MODE_PRIVATE);
-		} catch (FileNotFoundException e) {
-			throw new Error("Fatal Error: Can't write to application directory");
-		}
+	private void writeItemData(FileOutputStream out, List<QAModel> buffer) {
+		// TODO: implement
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -117,10 +137,13 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	@Override
 	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result) {
+		if (!isAvailable())
+			throw new IllegalStateException("Must be available to be queried.");
+		
 		new RunTaskHelper() {
 			@Override
 			public void task() {
-				doQuery(filter, compare, result);
+				doFilterQuery(filter, compare, result);
 			}
 		};
 	}
@@ -131,56 +154,110 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param compare
 	 * @param result
 	 */
-	private void doQuery(DataFilter filter, IItemComparator compare, IncrementalResult result) {
-		
-	}
-
-	@Override
-	public boolean saveItem(QAModel item) {
-		new RunTaskHelper() {
-			@Override
-			public void task() {
-				doSaveItem(item);
+	private void doFilterQuery(final DataFilter filter, final IItemComparator compare, final IncrementalResult result) {
+		// Main query loop
+		for (QAModel item: mData) {
+			if (filter.accept(item)) {
+				List<QAModel> packedItem = new ArrayList<QAModel>();
+				packedItem.add(item);
+				result.addObjects(packedItem);
 			}
-		};
+		}
 	}
 	
 	/**
-	 * Save a new item or an item that changes have been made to, may be done in a different thread.
-	 * @param item
+	 * Main query implementation for this task by ID
+	 * @param ids
 	 */
-	private void doSaveItem(QAModel item) {
+	@Override
+	public void query(final List<UniqueId> ids, final IncrementalResult result) {
+		if (!isAvailable())
+			throw new IllegalStateException("Must be available to be queried.");
 		
+		// Do query async
+		new RunTaskHelper() {
+			@Override
+			public void task() {
+				// Main query loop
+				for (QAModel item: mData) {
+					// TODO: Make this more efficient
+					for (UniqueId id: ids) {
+						if (item.getUniqueId().equals(id)) {
+							List<QAModel> packedResult = new ArrayList<QAModel>();
+							packedResult.add(item);
+							result.addObjects(packedResult);
+						}
+					}
+				}
+			}
+		};
+	}
+
+	
+	@Override
+	public boolean saveItem(QAModel item) {
+		if (!isAvailable())
+			throw new IllegalStateException("Must be available to be queried.");	
+	
+		// Add the item to our data array if it isn't there already
+		found: {
+			for (QAModel currentItem: mData) {
+				if (currentItem.getUniqueId().equals(item.getUniqueId())) {
+					break found;
+				}
+			}
+			mData.add(item);
+		}
+		
+		// Save our data array back to the file
+		FileOutputStream out = mUserContext.getLocalDataDestination(mContext, LDM_CATEGORY);
+		if (out != null) {
+			writeItemData(out, mData);
+			try {
+				out.close();
+			} catch (IOException e) { /* Nothing we can do to handle failure closing a file handle */ }
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
 	public boolean isAvailable() {
-		throw new UnsupportedOperationException();
+		return mData != null;
 	}
 
 	@Override
 	public Date getLastDataSourceAvailableTime() {
-		throw new UnsupportedOperationException();
+		if (isAvailable()) {
+			return Calendar.getInstance().getTime();
+		} else {
+			return mLastAvailable;
+		}
 	}
 
 	@Override
 	public void addDataLoadedListener(IDataLoadedListener listener) {
-		throw new UnsupportedOperationException();
+		mDataLoadedListeners.add(listener);
 	}
 
-	@Override
-	public void notifyDataItemLoaded(QAModel item) {
-		throw new UnsupportedOperationException();
+	@SuppressWarnings("unused")
+	private void notifyDataItemLoaded(QAModel item) {
+		for (IDataLoadedListener listener: mDataLoadedListeners) {
+			listener.dataItemLoaded(this, item);
+		}
 	}
 
 	@Override
 	public void addDataSourceAvailableListener(
 			IDataSourceAvailableListener listener) {
-		throw new UnsupportedOperationException();
+		mAvailableListeners.add(listener);
 	}
 
-	@Override
-	public void notifyDataSourceAvailable() {
-		throw new UnsupportedOperationException();
+	private void notifyDataSourceAvailable() {
+		for (IDataSourceAvailableListener listener: mAvailableListeners) {
+			listener.DataSourceAvailable(this);
+		}
 	}
+
 }
