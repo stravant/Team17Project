@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.gson.Gson;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.UniqueId;
 
@@ -107,7 +109,10 @@ public class LocalDataManager implements IDataSourceManager {
 			
 			// Read in the data
 			FileInputStream in = mUserContext.getLocalDataSource(mContext, LDM_CATEGORY);
-			if (in != null) {
+			if (in == null) {
+				// No data yet, return empty array
+				return result;
+			} else {
 				readItemData(in, result);
 			}
 			try {
@@ -176,9 +181,28 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param buffer Buffer to put the read items into
 	 */
 	private void readItemData(FileInputStream in, List<QAModel> buffer) {
-		// TODO: implement
-		throw new UnsupportedOperationException();
-		// TODO: notify data item loaded
+		// Read in the data
+		StringBuffer fileContent = new StringBuffer("");
+		try {
+			byte[] tmpBuffer = new byte[1024];
+			int readCount;
+			while ((readCount = in.read(tmpBuffer)) != -1) { 
+				fileContent.append(new String(tmpBuffer, 0, readCount)); 
+			}
+		} catch (IOException e) {
+			// TODO: Handle
+			return;
+		}
+		String data = fileContent.toString();
+		
+		// Get the JSON element and parse
+		Gson gson = DataManager.getGsonObject();
+		
+		@SuppressWarnings("unchecked")
+		List<QAModel> list = (List<QAModel>)gson.fromJson(data, buffer.getClass());
+		
+		// Write into the buffer
+		buffer.addAll(list);
 	}
 	
 	/**
@@ -187,8 +211,18 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param buffer The buffer to write out items from
 	 */
 	private void writeItemData(FileOutputStream out, List<QAModel> buffer) {
-		// TODO: implement
-		throw new UnsupportedOperationException();
+		// Encode the JSOn for the buffer
+		Gson gson = DataManager.getGsonObject();
+		String data = gson.toJson(buffer, buffer.getClass());
+		
+		// Write out the encoded data
+		try {
+			OutputStreamWriter outWriter = new OutputStreamWriter(out);
+			outWriter.append(data);
+			outWriter.flush();
+		} catch (IOException e) {
+			// TODO: Handle
+		}
 	}
 	
 	/**

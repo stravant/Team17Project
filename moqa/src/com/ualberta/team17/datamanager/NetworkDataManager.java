@@ -16,11 +16,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
+import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
+import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.comparators.IdComparator;
 
 public class NetworkDataManager implements IDataSourceManager {
 	protected Boolean mIsAvailable = null;
@@ -36,10 +40,6 @@ public class NetworkDataManager implements IDataSourceManager {
 		mEsServerIndex = esServerIndex;
 	}
 
-	public NetworkDataManager(String a, String b) {
-		
-	}
-	
 	@Override
 	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result) {
 		if (null == mJestClient) {
@@ -55,6 +55,15 @@ public class NetworkDataManager implements IDataSourceManager {
 
 		QueryTask task = new QueryTask(search, result);
 		task.execute();
+	}
+	
+	@Override
+	public void query(List<UniqueId> ids, IncrementalResult result) {
+		for (UniqueId id: ids) {
+			DataFilter filter = new DataFilter();
+			filter.addFieldFilter("id", id.toString(), FilterComparison.EQUALS);
+			query(filter, new IdComparator(), result);
+		}
 	}
 
 	@Override
@@ -92,7 +101,6 @@ public class NetworkDataManager implements IDataSourceManager {
 		mDataLoadedListeners.add(listener);
 	}
 
-	@Override
 	public void notifyDataItemLoaded(QAModel item) {
 		if (null == mDataLoadedListeners)
 			return;
@@ -112,7 +120,6 @@ public class NetworkDataManager implements IDataSourceManager {
 		mDataSourceAvailableListeners.add(listener);
 	}
 
-	@Override
 	public void notifyDataSourceAvailable() {
 		if (null == mDataSourceAvailableListeners)
 			return;

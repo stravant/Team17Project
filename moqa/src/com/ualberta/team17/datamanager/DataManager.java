@@ -7,10 +7,16 @@ import org.apache.http.auth.AuthenticationException;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
+import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
+import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.StoragePolicy;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.UpvoteItem;
 
 public class DataManager {
 	/**

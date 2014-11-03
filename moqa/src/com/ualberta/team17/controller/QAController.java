@@ -6,6 +6,7 @@ import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
+import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.StoragePolicy;
 import com.ualberta.team17.UniqueId;
@@ -28,7 +29,7 @@ public class QAController {
 	}
 	
 	/**
-	 * Access existing objects via a Filter & Sort
+	 * Access existing objects via an arbitrary Filter & Sort
 	 * @param filter
 	 * @param sort
 	 * @return An IncrementalResult
@@ -38,14 +39,14 @@ public class QAController {
 	}
 	
 	/**
-	 * Get all of the answers for a given question
+	 * Get all of the children of a given item
 	 * @param question
 	 * @param sort
 	 * @return
 	 */
-	public IncrementalResult getQuestionChildren(QuestionItem question, IItemComparator sort) {
+	public IncrementalResult getChildren(QAModel item, IItemComparator sort) {
 		DataFilter filter = new DataFilter();
-		filter.addFieldFilter("id", question.getUniqueId().toString(), FilterComparison.EQUALS);
+		filter.addFieldFilter("id", item.getUniqueId().toString(), FilterComparison.EQUALS);
 		return mDataManager.doQuery(filter, sort);
 	}
 	
@@ -55,7 +56,8 @@ public class QAController {
 	 * @param body
 	 * @return
 	 */
-	public QuestionItem createQuestion(UserContext creator, String title, String body) {
+	public QuestionItem createQuestion(String title, String body) {
+		UserContext creator = mDataManager.getUserContext();
 		QuestionItem item = new QuestionItem(new UniqueId(creator), null, creator.getUserName(), Calendar.getInstance().getTime(), body, 0, title);
 		item.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(item);
@@ -68,7 +70,8 @@ public class QAController {
 	 * @param body
 	 * @return
 	 */
-	public AnswerItem createAnswer(UserContext creator, QuestionItem parent, String body) {
+	public AnswerItem createAnswer(QuestionItem parent, String body) {
+		UserContext creator = mDataManager.getUserContext();
 		AnswerItem item = new AnswerItem(new UniqueId(creator), parent.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime(), body, 0);
 		item.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(item);
@@ -91,6 +94,10 @@ public class QAController {
 	 * @return
 	 */
 	public CommentItem createComment(AuthoredTextItem parent, String body) {
-		throw new UnsupportedOperationException();
+		UserContext creator = mDataManager.getUserContext();
+		CommentItem item = new CommentItem(new UniqueId(creator), parent.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime(), body, 0);
+		item.setStoragePolicy(StoragePolicy.Cached);
+		mDataManager.saveItem(item);
+		return item;
 	}
 }
