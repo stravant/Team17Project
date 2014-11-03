@@ -7,19 +7,19 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import android.content.res.Resources;
+import android.test.ActivityTestCase;
+
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
+import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
-import com.ualberta.team17.datamanager.ESSearchBuilder;
 import com.ualberta.team17.datamanager.IDataLoadedListener;
 import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
 import com.ualberta.team17.datamanager.IDataSourceManager;
@@ -29,9 +29,7 @@ import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 
-import junit.framework.TestCase;
-
-public class NetworkDataSourceTest extends TestCase {
+public class NetworkDataSourceTest extends ActivityTestCase {
 	final Integer maxWaitSeconds = 5;
 	DataFilter dataFilter;
 	IncrementalResult result;
@@ -88,7 +86,12 @@ public class NetworkDataSourceTest extends TestCase {
 	 * Sets up the UTs, instantiating a NetworkDataManager and a bare filter.
 	 */
 	public void setUp() {
-		dataManager = new NetworkDataManager("http://68.149.53.165:9182", "moqatest");
+		Resources resources = getInstrumentation().getTargetContext().getResources();
+
+		dataManager = 
+			new NetworkDataManager(
+				resources.getString(R.string.esTestServer),
+				resources.getString(R.string.esTestIndex));
 		dataFilter = new DataFilter();
 	}
 
