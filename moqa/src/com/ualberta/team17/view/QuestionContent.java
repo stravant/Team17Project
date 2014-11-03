@@ -221,6 +221,9 @@ public class QuestionContent {
 		return null;
 	}
 	
+	/**
+	 * Fills the QuestionContent with some random questions, answers and comments.
+	 */
 	public void generateTestData() {
 		QuestionItem question = new QuestionItem(new UniqueId(), null, "Question Author",
 				null, "Question: " + LIPSUM, 0, "Question Title");
