@@ -109,10 +109,14 @@ public class LocalDataManager implements IDataSourceManager {
 			
 			// Read in the data
 			FileInputStream in = mUserContext.getLocalDataSource(mContext, LDM_CATEGORY);
+<<<<<<< HEAD
 			if (in == null) {
 				// No data yet, return empty array
 				return result;
 			} else {
+=======
+			if (in != null) {
+>>>>>>> 9bf8cbe37948b29910f05bfb11c00c07184d0676
 				readItemData(in, result);
 			}
 			try {
@@ -125,11 +129,19 @@ public class LocalDataManager implements IDataSourceManager {
 			// Return the result
 			return result;
 		}
+<<<<<<< HEAD
 
 		@Override
 		protected void onProgressUpdate(Void... progress) {}
 
 		@Override
+=======
+
+		@Override
+		protected void onProgressUpdate(Void... progress) {}
+
+		@Override
+>>>>>>> 9bf8cbe37948b29910f05bfb11c00c07184d0676
 		protected void onPostExecute(List<QAModel> result) {
 			// Actual line that sets our data
 			mData = result;

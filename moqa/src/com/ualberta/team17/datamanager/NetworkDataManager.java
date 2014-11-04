@@ -40,6 +40,10 @@ public class NetworkDataManager implements IDataSourceManager {
 		mEsServerIndex = esServerIndex;
 	}
 
+	public NetworkDataManager(String a, String b) {
+		
+	}
+	
 	@Override
 	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result) {
 		if (null == mJestClient) {
