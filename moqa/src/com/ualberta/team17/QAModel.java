@@ -75,7 +75,7 @@ public abstract class QAModel {
 	public static abstract class GsonTypeAdapter<T extends QAModel> extends TypeAdapter<T> {
 		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
 			if (name.equals(FIELD_ID)) {
-				item.mUniqueId = UniqueId.fromSerial(reader.nextString());
+				item.mUniqueId = UniqueId.fromString(reader.nextString());
 				return true;
 			}
 
