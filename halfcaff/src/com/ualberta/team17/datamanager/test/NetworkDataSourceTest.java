@@ -98,7 +98,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	/**
 	 * Tests that filtering by type=question works correctly, and only returns questions.
 	 */
-	public void test_FilterType_Question() {
+	public void test_FilterTypeQuestion() {
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
 		dataFilter.setTypeFilter(ItemType.Question);
@@ -119,7 +119,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	/**
 	 * Tests that filtering by type=answer works correctly, and only returns answers.
 	 */
-	public void test_FilterType_Answer() {
+	public void test_FilterTypeAnswer() {
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
 		dataFilter.setTypeFilter(ItemType.Answer);
@@ -138,9 +138,9 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	}
 
 	/**
-	 * Tests that filtering by type=answer works correctly, and only returns comments.
+	 * Tests that filtering by type=comment works correctly, and only returns comments.
 	 */
-	public void test_FilterType_Comment() {
+	public void test_FilterTypeComment() {
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
 		dataFilter.setTypeFilter(ItemType.Comment);
@@ -159,7 +159,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	}
 
 	/**
-	 * Tests that searching for a fields' contents works correctly, and only returns results whose body
+	 * Tests that searching for a field's contents works correctly, and only returns results whose body
 	 * contain the search phrase.
 	 */
 	public void test_TextSearch() {
@@ -269,10 +269,10 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		test_TextSearch();
 
 		dataFilter = new DataFilter();
-		test_FilterType_Question();
+		test_FilterTypeQuestion();
 
 		dataFilter = new DataFilter();
-		test_FilterType_Answer();
+		test_FilterTypeAnswer();
 
 		dataFilter = new DataFilter();
 		test_BlankDataFilter();
@@ -335,7 +335,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		assertEquals(2, loadedListener.timesNotified);
 
 		// Use the previous test to query for questions, and assert that they were all notified on
-		test_FilterType_Question();
+		test_FilterTypeQuestion();
 		assertEquals(5, loadedListener.timesNotified);
 	}
 
@@ -364,7 +364,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		assertFalse("Data source unavailable", dataManager.isAvailable());
 
 		// Use the previous test to query for questions, and assert that they were notified on
-		test_FilterType_Question();
+		test_FilterTypeQuestion();
 		assertEquals(3, availableListener.timesNotified);
 
 		assertTrue("Data source available", dataManager.isAvailable());

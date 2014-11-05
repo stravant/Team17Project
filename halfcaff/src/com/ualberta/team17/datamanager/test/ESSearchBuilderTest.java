@@ -65,7 +65,7 @@ public class ESSearchBuilderTest extends TestCase {
 	}
 
 	/**
-	 * Tests a data filter have an equals filter.
+	 * Tests a data filter having an equals filter.
 	 */
 	public void test_Equals_Query() {
 		DataFilter dataFilter = new DataFilter();

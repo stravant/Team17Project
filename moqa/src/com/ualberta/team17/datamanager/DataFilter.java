@@ -12,6 +12,30 @@ public class DataFilter {
 	private Integer mMaxResults;
 	private Integer mResultsPage;
 
+	public class FieldFilter {
+		private String mField;
+		private String mFilter;
+		private FilterComparison mcomparisonMode;
+
+		private FieldFilter(String field, String filter, FilterComparison comparisonMode) {
+			mField = field;
+			mFilter = filter;
+			mcomparisonMode = comparisonMode;
+		}
+
+		public String getField() {
+			return mField;
+		}
+
+		public String getFilter() {
+			return mFilter;
+		}
+
+		public FilterComparison getComparisonMode() {
+			return mcomparisonMode;
+		}
+	}
+
 	public DataFilter() {
 		mFieldFilters = new ArrayList<FieldFilter>();
 	}
@@ -60,29 +84,5 @@ public class DataFilter {
 
 	public void setPage(Integer page) {
 		mResultsPage = page;
-	}
-	
-	public class FieldFilter {
-		private String mField;
-		private String mFilter;
-		private FilterComparison mcomparisonMode;
-		
-		private FieldFilter(String field, String filter, FilterComparison comparisonMode) {
-			mField = field;
-			mFilter = filter;
-			mcomparisonMode = comparisonMode;
-		}
-		
-		public String getField() {
-			return mField;
-		}
-		
-		public String getFilter() {
-			return mFilter;
-		}
-
-		public FilterComparison getComparisonMode() {
-			return mcomparisonMode;
-		}
 	}
 }
