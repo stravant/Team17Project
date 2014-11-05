@@ -183,9 +183,9 @@ public class NetworkDataManager implements IDataSourceManager {
 		protected Void doInBackground(Void... params) {
 			try {
 				mJestClient.execute(mIndex);
-				System.out.println("Save task success");
 				mListener.dataItemSaved(true, null);
 			} catch (Exception e) {
+				// TODO: Set isAvailable on network error
 				System.out.println("SaveTask encountered error:");
 				e.printStackTrace();
 				mListener.dataItemSaved(false, e);
@@ -207,7 +207,7 @@ public class NetworkDataManager implements IDataSourceManager {
 		}
 
 		ESSearchBuilder searchBuilder = new ESSearchBuilder(filter, comparator);
-		Search search =
+		Search search = 
 			searchBuilder
 			.getBuilder()
 			.addIndex(mEsServerIndex)
@@ -220,9 +220,30 @@ public class NetworkDataManager implements IDataSourceManager {
 			task.execute();
 	}
 
-	@Override
+	@SuppressLint("DefaultLocale") @Override
 	public boolean saveItem(QAModel item) {
-		throw new UnsupportedOperationException();
+		return saveItem(item, null);
+	}
+
+	public boolean saveItem(QAModel item, IDataItemSavedListener listener) {
+		if (null == mJestClient) {
+			initJestClient();
+		}
+
+		System.out.println("Item source: " + DataManager.getGsonObject().toJson(item));
+		Index index = new Index.Builder(DataManager.getGsonObject().toJson(item))
+			.index(mEsServerIndex)
+			.type(item.getItemType().toString().toLowerCase())
+			.id(item.getUniqueId().toString())
+			.build();
+
+		SaveTask task = new SaveTask(index, listener);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		else
+			task.execute();
+
+		return false;
 	}
 
 	@Override
@@ -293,7 +314,7 @@ public class NetworkDataManager implements IDataSourceManager {
 			mJestClientFactory = new JestClientFactory();
 			mJestClientFactory.setDroidClientConfig(new DroidClientConfig.Builder(mEsServerUrl).multiThreaded(false).build());
 		}
-
+		
 		if (null == mJestClient) {
 			mJestClient = mJestClientFactory.getObject();
 		}

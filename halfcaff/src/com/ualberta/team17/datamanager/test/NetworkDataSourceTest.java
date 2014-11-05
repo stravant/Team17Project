@@ -38,14 +38,19 @@ import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 
-@SuppressLint("DefaultLocale") public class NetworkDataSourceTest extends ActivityTestCase {
+@SuppressLint("DefaultLocale")
+public class NetworkDataSourceTest extends ActivityTestCase {
+	// Max amount of time to wait for elastic search to return a query
+	final Integer maxWaitSeconds = 2;
+
+	// Time to wait after an operation that modifies the index before running another query
+	final Integer maxModOperationWaitMs = 500;
 	JestClientFactory mJestClientFactory;
 	JestClient mJestClient;
 
 	String mEsServerUrl;
 	String mEsServerIndex;
 
-	final Integer maxWaitSeconds = 5;
 	DataFilter dataFilter;
 	IncrementalResult result;
 	NetworkDataManager dataManager;
@@ -112,7 +117,7 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 			mJestClient = mJestClientFactory.getObject();
 		}
 
-		dataManager = new NetworkDataManager(mEsServerUrl, mEsServerUrl);
+		dataManager = new NetworkDataManager(mEsServerUrl, mEsServerIndex);
 		dataFilter = new DataFilter();
 	}
 
@@ -396,72 +401,82 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 	 * @throws Exception 
 	 */
 	public void test_DataSourceItemSave() throws Exception {
-//		final Lock lock = new ReentrantLock();
-//		final Condition condition = lock.newCondition();
-//
-//		class DataItemSavedListener implements IDataItemSavedListener {
-//			boolean mSuccess = false;
-//			Exception mException;
-//
-//			@Override
-//			public void dataItemSaved(boolean success, Exception e) {
-//				mSuccess = success;
-//				mException = e;
-//				lock.lock();
-//				condition.signal();
-//				lock.unlock();
-//			}
-//		}
-//
-//		QuestionItem testQuestion = new QuestionItem(new UniqueId(), null, "author", new Date(), "body", 0, "title" );
-//
-//		DataItemSavedListener savedListener = new DataItemSavedListener();
-//		dataManager.saveItem(testQuestion, savedListener);
-//
-//		lock.lock();
-//		boolean success = false;
-//		try {
-//			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS);
-//		} catch (InterruptedException e) {
-//
-//		}
-//
-//		assertTrue("Save operation success", success);
-//		assertTrue("Save success", savedListener.mSuccess);
-//		assertNull(savedListener.mException);
-//
-//		IItemComparator comparator = new DateComparator();
-//		result = new IncrementalResult(comparator);
-//		dataFilter.addFieldFilter(
-//			QAModel.FIELD_ID, 
-//			testQuestion.getUniqueId().toString(), 
-//			DataFilter.FilterComparison.EQUALS);
-//		dataFilter.setMaxResults(1);
-//		dataManager.query(dataFilter, comparator, result);
-//
-//		assertTrue("Results arrived", waitForResults(result, 1));
-//
-//		// Verify this against the expected question
-//		List<QAModel> results = result.getCurrentResults();
-//		assertEquals("Question count", 1, results.size());
-//
-//		// Ensure each item is a question
-//		for (QAModel item: results) {
-//			assertEquals(ItemType.Question, item.getItemType());
-//		}
-//
-//		success = false;
-//		try {
-//			mJestClient.execute(new Delete.Builder(testQuestion.getUniqueId().toString())
-//		        .index(mEsServerIndex)
-//		        .type(testQuestion.getItemType().toString().toLowerCase())
-//		        .build());
-//			success = true;
-//		} catch (Exception e) {
-//			
-//		}
-//
-//		assertTrue("Delete item after test", success);
+		final Lock lock = new ReentrantLock();
+		final Condition condition = lock.newCondition();
+
+		class DataItemSavedListener implements IDataItemSavedListener {
+			boolean mSuccess = false;
+			Exception mException;
+
+			@Override
+			public void dataItemSaved(boolean success, Exception e) {
+				mSuccess = success;
+				mException = e;
+				lock.lock();
+				condition.signal();
+				lock.unlock();
+			}
+		}
+
+		QuestionItem testQuestion = new QuestionItem(new UniqueId(), null, "author", new Date(), "body", 0, "title" );
+
+		DataItemSavedListener savedListener = new DataItemSavedListener();
+		dataManager.saveItem(testQuestion, savedListener);
+
+		lock.lock();
+		boolean success = false;
+		try {
+			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS);
+
+			// We can't re-query immediately (elastic search needs time to index)
+			// So wait a bit.
+			condition.await(maxModOperationWaitMs, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+
+		}
+
+		assertTrue("Save operation success", success);
+		assertTrue("Save success", savedListener.mSuccess);
+		assertNull(savedListener.mException);
+
+		IItemComparator comparator = new DateComparator();
+		result = new IncrementalResult(comparator);
+		dataFilter.addFieldFilter(
+			QAModel.FIELD_ID, 
+			testQuestion.getUniqueId().toString(), 
+			DataFilter.FilterComparison.EQUALS);
+		dataManager.query(dataFilter, comparator, result);
+
+		assertTrue("Results arrived", waitForResults(result, 1));
+
+		// Verify this against the expected question
+		List<QAModel> results = result.getCurrentResults();
+		assertEquals("Question count", 1, results.size());
+
+		// Ensure each item is a question
+		for (QAModel item: results) {
+			assertEquals(ItemType.Question, item.getItemType());
+		}
+
+		success = false;
+		try {
+			mJestClient.execute(new Delete.Builder(testQuestion.getUniqueId().toString())
+		        .index(mEsServerIndex)
+		        .type(testQuestion.getItemType().toString().toLowerCase())
+		        .build());
+			success = true;
+		} catch (Exception e) {
+			
+		}
+
+		assertTrue("Delete item after test", success);
+
+		try {
+			// Wait for elastic search to complete the deletion so other tests don't fail.
+			condition.await(maxModOperationWaitMs, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+
+		}
 	}
 }
 
