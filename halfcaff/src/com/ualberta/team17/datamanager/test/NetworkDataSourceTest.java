@@ -504,7 +504,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	}
 
 	/**
-	 * Tests basic save functionality by saving an item, and then querying for it.
+	 * Tests that multiple items saved at the same time save correctly.
 	 *
 	 * If this or another write operation fails, the test server must be cleaned by running
 	 * the tools/add_es_test_documents.bat script on Windows or Linux.
