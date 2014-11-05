@@ -3,6 +3,9 @@ package com.ualberta.team17;
 import java.util.Date;
 
 public class AttachmentItem extends AuthoredItem {
+	public static final String FIELD_NAME = "name";
+	public static final String FIELD_DATA = "data";
+
 	private String mName;
 	private byte[] mData;
 	
