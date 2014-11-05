@@ -11,14 +11,18 @@ import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,7 +31,7 @@ public class QuestionViewActivity extends Activity {
 	public final static String QUESTION_EXTRA = "QUESTION";
 	
 	// Test stuff - can be deleted later
-	private final static boolean GENERATE_TEST_DATA = true;
+	private final static boolean GENERATE_TEST_DATA = false;
 	private final static String LIPSUM = "Lorem ipsum dolor sit amet, consectetur " +
 			"adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna " +
 			"aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris " +
@@ -158,6 +162,38 @@ public class QuestionViewActivity extends Activity {
 				
 				qaList.setAdapter(adapter);
 				adapter.notifyDataSetChanged();
+			} else {
+				final LinearLayout layout = new LinearLayout(this);
+				final EditText titleText = new EditText(this);
+				final EditText bodyText = new EditText(this);
+				
+				layout.addView(titleText);
+				layout.addView(bodyText);
+				
+				new AlertDialog.Builder(this)
+					.setTitle("New Question")
+					.setView(layout)
+					.setPositiveButton("add", new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String title = titleText.getText().toString();
+							String body = titleText.getText().toString();
+							/*QuestionItem newQuestion = controller.createQuestion(title, body);
+							mContent.setQuestion(newQuestion);*/
+						}
+						
+					})
+					.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// probably go back to the previous view, otherwise we get a blank view 
+						}
+						
+					})
+					.show();
+					
 			}
 		}
 		else {
