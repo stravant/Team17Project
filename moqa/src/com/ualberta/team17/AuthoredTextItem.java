@@ -50,5 +50,13 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 
 			return false;
 		}
+
+		@Override
+		public void addValues(JsonWriter writer, T model) throws IOException {
+			super.addValues(writer, model);
+
+			writer.name(FIELD_BODY);
+			writer.value(model.getBody());
+		}
 	}
 }

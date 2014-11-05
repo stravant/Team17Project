@@ -41,9 +41,11 @@ public class QuestionItem extends AuthoredTextItem {
 		}
 
 		@Override
-		public void write(JsonWriter arg0, QuestionItem arg1) throws IOException {
-			// TODO Auto-generated method stub
-			
+		public void addValues(JsonWriter writer, QuestionItem model) throws IOException {
+			super.addValues(writer, model);
+
+			writer.name(FIELD_TITLE);
+			writer.value(model.getTitle());
 		}
 	}
 }

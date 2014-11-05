@@ -82,5 +82,23 @@ public abstract class AuthoredItem extends QAModel {
 
 			return false;
 		}
+
+		@Override
+		public void addValues(JsonWriter writer, T model) throws IOException {
+			super.addValues(writer, model);
+
+			writer.name(FIELD_AUTHOR);
+			writer.value(model.getAuthor());
+
+			writer.name(FIELD_PARENT);
+			if (null != model.getParentItem()) {
+				writer.value(model.getParentItem().toString());
+			} else {
+				writer.value("0");
+			}
+
+			writer.name(FIELD_DATE);
+			writer.value(dateFormat.format(model.getDate()));
+		}
 	}
 }
