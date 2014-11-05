@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -106,6 +107,36 @@ public class QuestionViewActivity extends Activity {
 		}
 	}
 	
+	private class CreateAnswerListener implements View.OnClickListener {
+		private Context mContext;
+		
+		public CreateAnswerListener(Context context){
+			mContext = context;
+		}
+		public void onClick(View v){
+			final EditText answerBody = new EditText(mContext);
+			
+			new AlertDialog.Builder(mContext)
+					.setTitle("Add an Answer")
+					.setView(answerBody)
+					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String body = answerBody.getText().toString();
+								/*AnswerItem newAnswer = controller.createAnswer(mContent.getQuestion(), body);
+								mContent.addAnswers(newAnswer);*/
+							}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton)
+						{
+						// Do Nothing!
+						}
+					})
+					.show();
+
+		}
+	}
+	
 	/**
 	 * Constructor
 	 */
@@ -126,6 +157,9 @@ public class QuestionViewActivity extends Activity {
 		Intent questionIntent = this.getIntent();
 		
 		mQuestion = (QuestionItem) questionIntent.getSerializableExtra(QUESTION_EXTRA);
+		
+		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));
+		
 		if(mQuestion == null) {
 			// TODO: implement Question Creation.
 			
