@@ -112,8 +112,9 @@ public class DataManager {
 		
 		// If we got a new context, create a new local data store for that context
 		if (userContext != oldCtx) {
-			if (mLocalDataStore != null)
+			if (mLocalDataStore != null) {
 				((LocalDataManager)mLocalDataStore).close();
+			}
 			if (userContext != null) {
 				mLocalDataStore = new LocalDataManager(mContext, userContext);
 				// Make the data store start loading local data

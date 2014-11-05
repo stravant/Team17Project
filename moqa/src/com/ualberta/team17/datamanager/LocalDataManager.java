@@ -198,10 +198,11 @@ public class LocalDataManager implements IDataSourceManager {
 	public void asyncLoadData() {
 		// Start a task to read in and cache the local items
 		AsyncTask<Void, Void, List<QAModel>> load = new LoadDataFromFilesystemTask();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 		    load.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		else
+		} else {
 		    load.execute();
+		}
 	}
 	
 	/**
@@ -378,9 +379,9 @@ public class LocalDataManager implements IDataSourceManager {
 		// Wait for the notification that data is ready
 		// Dubious code: There's probably a better way to do this
 		mDataLock.lock();
-		if (isAvailable())
+		if (isAvailable()) {
 			mDataLock.unlock();
-		else
+		} else {
 			try {
 				mDataBecomeReady.await();
 				mDataLock.unlock();
@@ -388,6 +389,7 @@ public class LocalDataManager implements IDataSourceManager {
 				Log.e("app", "interruptedexception??");
 				return;
 			}
+		}
 	}
 	
 	/**
@@ -395,14 +397,15 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	public void waitForSave() {
 		mDataLock.lock();
-		if (mDataDirty && mCurrentSaveWorker != null)
+		if (mDataDirty && mCurrentSaveWorker != null) {
 			try {
 				mSaveCompleted.await();
 			} catch (InterruptedException e) {
 				return;
 			}
-		else
+		} else {
 			mDataLock.unlock();	
+		}
 	}
 	
 	/**
