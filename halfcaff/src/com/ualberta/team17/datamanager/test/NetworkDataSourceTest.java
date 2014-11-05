@@ -79,6 +79,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 		}
 
+		lock.unlock();
 		return success;
 	}
 
