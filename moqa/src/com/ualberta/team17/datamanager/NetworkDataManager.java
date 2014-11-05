@@ -8,6 +8,7 @@ import io.searchbox.client.JestClient;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.DroidClientConfig;
@@ -50,7 +51,10 @@ public class NetworkDataManager implements IDataSourceManager {
 			.build();
 
 		QueryTask task = new QueryTask(search, result);
-		task.execute();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		else
+			task.execute();
 	}
 
 	@Override
