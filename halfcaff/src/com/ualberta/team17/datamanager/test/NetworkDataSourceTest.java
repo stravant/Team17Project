@@ -459,6 +459,33 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	}
 
 	/**
+	 * Tests that simultaneous queries work correctly.
+	 */
+	public void test_SimultaneousQueries() {
+		int numRepeats = 3;
+		IItemComparator comparator = new DateComparator();
+		result = new IncrementalResult(comparator);
+		dataFilter.setTypeFilter(ItemType.Question);
+		dataFilter.setMaxResults(1);
+
+		for (int i = 0; i < numRepeats; ++i) {
+			dataFilter.setPage(i);
+			dataManager.query(dataFilter, comparator, result);
+		}
+
+		assertTrue("Results arrived", waitForResults(result, numRepeats));
+
+		// Verify this against the expected test dataset
+		List<QAModel> results = result.getCurrentResults();
+		assertEquals("Question count", numRepeats, results.size());
+
+		// Ensure each item is a question
+		for (QAModel item: results) {
+			assertEquals(ItemType.Question, item.getItemType());
+		}
+	}
+
+	/**
 	 * Tests basic save functionality by saving an item, and then querying for it.
 	 *
 	 * If this or another write operation fails, the test server must be cleaned by running
