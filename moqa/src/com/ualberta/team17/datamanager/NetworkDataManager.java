@@ -3,8 +3,11 @@ package com.ualberta.team17.datamanager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import io.searchbox.client.JestClient;
+import io.searchbox.client.JestResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
@@ -38,6 +41,7 @@ public class NetworkDataManager implements IDataSourceManager {
 	protected String mEsServerIndex;
 	protected List<IDataSourceAvailableListener> mDataSourceAvailableListeners;
 	protected List<IDataLoadedListener> mDataLoadedListeners;
+	protected final Lock mJestClientLock = new ReentrantLock();
 
 	/**
 	 * Class used for executing elastic search queries. Class is a child of AsyncTask<>, so it is asynchronous.
@@ -83,6 +87,7 @@ public class NetworkDataManager implements IDataSourceManager {
 			SearchResult searchResult = null;
 			boolean available = false;
 
+			mJestClientLock.lock();
 			try {
 				searchResult = mJestClient.execute(search);
 				available = true;
@@ -97,6 +102,7 @@ public class NetworkDataManager implements IDataSourceManager {
 				e.printStackTrace();
 				available = false;
 			}
+			mJestClientLock.unlock();
 
 			setIsAvailable(available);
 
@@ -181,14 +187,23 @@ public class NetworkDataManager implements IDataSourceManager {
 
 		@Override
 		protected Void doInBackground(Void... params) {
+			boolean success = false;
+			Exception exception = null;
+
+			mJestClientLock.lock();
 			try {
-				mJestClient.execute(mIndex);
-				mListener.dataItemSaved(true, null);
+				JestResult result = mJestClient.execute(mIndex);
+				success = null != result && result.isSucceeded();
 			} catch (Exception e) {
 				// TODO: Set isAvailable on network error
 				System.out.println("SaveTask encountered error:");
 				e.printStackTrace();
-				mListener.dataItemSaved(false, e);
+				success = false;
+			}
+			mJestClientLock.unlock();
+
+			if (null != mListener) {
+				mListener.dataItemSaved(success, exception);
 			}
 
 			return null;
