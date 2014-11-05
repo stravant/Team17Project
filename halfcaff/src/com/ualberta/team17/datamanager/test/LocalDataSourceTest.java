@@ -58,21 +58,10 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 	}
 	
 	// Wait for N results to arrive in a given incremental result, with a timeout
+	// WARNING: DO NOT CALL MULTIPLE TIMES FROM THE SAME THREAD Hangs for some reason
 	private boolean waitForResults(final IncrementalResult targetResult, final int numResults) {
 		final Lock lock = new ReentrantLock();
 		final Condition condition = lock.newCondition();
-
-		// If the data source becomes unavailable, signal the condition so we don't wait unnecessarily
-		dataManager.addDataSourceAvailableListener(new IDataSourceAvailableListener() {
-			@Override
-			public void DataSourceAvailable(IDataSourceManager manager) {
-				if (!manager.isAvailable()) {
-					lock.lock();
-					condition.signal();
-					lock.unlock();
-				}
-			}
-		});
 
 		targetResult.addObserver(new IIncrementalObserver() {
 			@Override
@@ -85,14 +74,13 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 			}
 		});
 
-		lock.lock();
 
 		boolean success = false;
 		try {
 			long maxWaitSeconds = 2;
+			lock.lock();
 			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS) && dataManager.isAvailable();
 		} catch (InterruptedException e) {
-
 		}
 
 		return success;
@@ -127,15 +115,13 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 				0);		
 	}
 	
-	/*
 	public void test_SaveAndGetItem_Cycle() {
 		// Wait for the dataManager to be ready
-		Log.i("app", "Waiting for data ready...");
+		dataManager.asyncLoadData();
 		dataManager.waitForData();
-		Log.i("app", "Data is ready");
 		
 		// Make and save an item
-		QuestionItem item = newQuestion("testTitle", "testBody");
+		QuestionItem item = newQuestion(0, "testTitle", "testBody");
 		dataManager.saveItem(item);
 		
 		// Query for it with a filter
@@ -148,10 +134,13 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		// Check that we got the item back
 		assertEquals(item, result.getCurrentResults().get(0));
 	}
-	*/
 	
 	public static final String TEST_DATA = "[[\"Question\",{\"id\":\"c4ca4238a0b92382dcc509a6f75849b\",\"parent\":\"0\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testBody\",\"title\":\"testTitle\"}],[\"Answer\",{\"id\":\"c81e728d9d4c2f636f67f89cc14862c\",\"parent\":\"c4ca4238a0b92382dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply\"}],[\"Answer\",{\"id\":\"eccbc87e4b5ce2fe28308fd9f2a7baf3\",\"parent\":\"c4ca4238a0b92382dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply2\"}],[\"Comment\",{\"id\":\"a87ff679a2f3e71d9181a67b7542122c\",\"parent\":\"c81e728d9d4c2f636f67f89cc14862c\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"comment!\"}]]";
-	/*
+	
+	/**
+	 * Test writing out a known set of data, and reading back a dump of the
+	 * LocalDataManager file to see if it matches.
+	 */
 	public void test_WritingToLocalFile() {
 		Log.i("app", "===TESTWrite===");
 		
@@ -184,7 +173,12 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		
 		dataManager.close();
 	}
-	*/
+	
+	/**
+	 * Test writing out a test set of data, and then reading in an item from it,
+	 * and checking if it's the correct item.
+	 */
+	@SuppressWarnings("serial")
 	public void test_ReadingFromLocalFile() {
 		Log.i("app", "===TESTRead===");
 		
@@ -200,18 +194,41 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		assertEquals("c4ca4238a0b92382dcc509a6f75849b", item.getUniqueId().toString());
 		assertEquals(item.getTitle(), "testTitle");
 		
+		dataManager.close();
+	}
+	
+	
+	/**
+	 * Check Querying twice for all of the items in the test set of data
+	 * and seeing if all of the items arrive correctly.
+	 */
+	@SuppressWarnings("serial")
+	public void test_MultipleRead() {
+		Log.i("app", "===TESTMultipleRead===");
+		
+		// Load in our test data
+		dataManager.writeTestData(TEST_DATA);
+		dataManager.asyncLoadData();
+		dataManager.waitForData();
+		
+		// Get the items
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
 		dataManager.query(new ArrayList<UniqueId>(){{
 			add(new UniqueId(Integer.toString(2)));
 			add(new UniqueId(Integer.toString(3)));
 			add(new UniqueId(Integer.toString(4)));
 		}}, result);
-		
+
+		// Check result count
 		assertTrue("Didn't get 4 results", waitForResults(result, 4));
 		assertEquals(4, result.getCurrentResults().size());
 		
+		// Check for one question with two answers, and a comment
 		assertEquals(2, result.getCurrentResultsOfType(ItemType.Answer).size());
+		assertEquals(1, result.getCurrentResultsOfType(ItemType.Comment).size());
+		assertEquals(1, result.getCurrentResultsOfType(ItemType.Question).size());
 		
-		dataManager.close();
+		dataManager.close();	
 	}
 	
 }

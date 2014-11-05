@@ -479,17 +479,13 @@ public class LocalDataManager implements IDataSourceManager {
 		// Set up an array for our results
 		List<QAModel> packedResult = new ArrayList<QAModel>();
 		
-		Log.i("app", "query IDS: " + ids);
-		
 		// Main query loop
 		mDataLock.lock(); // Lock during iteration
 		//Log.i("lock", "doIdListQuery Lock");
 		for (QAModel item: mData) {
-			Log.i("app", "Do we want item <" + item.getUniqueId() + "> ?");
 			// TODO: Make this more efficient
 			for (UniqueId id: ids) {
 				if (item.getUniqueId().equals(id)) {
-					Log.i("app", "  >> yes.");
 					packedResult.add(item);
 				}
 			}

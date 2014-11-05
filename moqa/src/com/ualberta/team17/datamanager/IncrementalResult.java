@@ -228,6 +228,9 @@ public class IncrementalResult {
 			} else {
 				int insertIndex = (-foundIndex) - 1;
 				
+				// Add the item to our result list
+				mResultList.add(insertIndex, model);
+				
 				// If it follows the last item inserted in a logical block, then add it to the notify list
 				if (insertIndex == lastInsertAt + 1) {
 					++lastInsertAt;
@@ -242,7 +245,6 @@ public class IncrementalResult {
 					lastInsertAt = insertIndex;
 					insertListStart = lastInsertAt;
 				}
-				mResultList.add(insertIndex, model);
 			}
 		}
 		

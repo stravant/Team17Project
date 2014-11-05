@@ -37,14 +37,31 @@ public class DataManager {
 	/**
 	 * Our network data storage location
 	 */
-	private IDataSourceManager mNetworkDataStore = new NetworkDataManager("", "");
+	private IDataSourceManager mNetworkDataStore;
 	
 	/**
 	 * Construct a new DataManager, using a given android Context to communicate 
 	 * @param ctx
 	 */
 	public DataManager(Context ctx) {
+		this(ctx, null, new NetworkDataManager("", ""));
+	}
+	
+	/**
+	 * Construct a new DataManager, using a given Network and Local data manager
+	 * @param ctx The context to use
+	 * @param local The local data manager to use
+	 * @param net The network data manager to use
+	 */
+	public DataManager(Context ctx, LocalDataManager local, NetworkDataManager net) {
 		mContext = ctx;
+		
+		// Set the members
+		mNetworkDataStore = net;
+		mLocalDataStore = local;
+		
+		// Start off the local data query
+		((LocalDataManager)mLocalDataStore).asyncLoadData();
 		
 		// When an item arrives from the network, cache it locally
 		mNetworkDataStore.addDataLoadedListener(new IDataLoadedListener() {
