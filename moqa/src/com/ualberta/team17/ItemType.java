@@ -8,12 +8,6 @@ public enum ItemType {
 	Answer;
 
 	public static ItemType fromString(String text) {
-		for (ItemType type : ItemType.values()) {
-			if (text.equalsIgnoreCase(type.toString())) {
-				return type;
-			}
-		}
-
 		if (text.equalsIgnoreCase("Question")) {
 			return Question;
 		} else if (text.equalsIgnoreCase("Answer")) {
