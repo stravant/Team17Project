@@ -1,6 +1,7 @@
 package com.ualberta.team17.datamanager.test;
 
 import io.searchbox.client.JestClient;
+import io.searchbox.client.JestResult;
 import io.searchbox.core.Delete;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import com.searchly.jestdroid.JestClientFactory;
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
+import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
@@ -44,7 +46,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	final Integer maxWaitSeconds = 2;
 
 	// Time to wait after an operation that modifies the index before running another query
-	final Integer maxModOperationWaitMs = 500;
+	final Integer maxModOperationWaitMs = 1000;
 	JestClientFactory mJestClientFactory;
 	JestClient mJestClient;
 
@@ -100,6 +102,66 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		}
 
 		return success;
+	}
+
+	/**
+	 * Waits for an item save to complete.
+	 * @param item The item to save
+	 * @return True on save success, false on any failure.
+	 */
+	private boolean waitForItemSaved(QAModel item) {
+		final Lock lock = new ReentrantLock();
+		final Condition condition = lock.newCondition();
+
+		class DataItemSavedListener implements IDataItemSavedListener {
+			boolean mSuccess = false;
+			Exception mException;
+
+			@Override
+			public void dataItemSaved(boolean success, Exception e) {
+				mSuccess = success;
+				mException = e;
+				lock.lock();
+				condition.signal();
+				lock.unlock();
+			}
+		}
+
+		DataItemSavedListener savedListener = new DataItemSavedListener();
+		dataManager.saveItem(item, savedListener);
+
+		lock.lock();
+		boolean success = false;
+		try {
+			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+
+		}
+
+		if (!success) {
+			return false;
+		}
+
+		// We can't re-query immediately (elastic search needs time to index)
+		// So wait a bit.
+		waitForModOperation();
+
+		return savedListener.mSuccess && null == savedListener.mException;
+	}
+
+	/**
+	 * Waits for a mod operation to complete by sleeping the thread.
+	 *
+	 * This is necessary because insert, update, and delete operations return immediately, but
+	 * take a non-negligible amount of time to complete before the changes are reflected in queries.
+	 */
+	private void waitForModOperation() {
+		try {
+			Thread.sleep(maxModOperationWaitMs);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -398,46 +460,14 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 	/**
 	 * Tests basic save functionality by saving an item, and then querying for it.
-	 * @throws Exception 
+	 *
+	 * If this or another write operation fails, the test server must be cleaned by running
+	 * the tools/add_es_test_documents.bat script on Windows or Linux.
 	 */
-	public void test_DataSourceItemSave() throws Exception {
-		final Lock lock = new ReentrantLock();
-		final Condition condition = lock.newCondition();
-
-		class DataItemSavedListener implements IDataItemSavedListener {
-			boolean mSuccess = false;
-			Exception mException;
-
-			@Override
-			public void dataItemSaved(boolean success, Exception e) {
-				mSuccess = success;
-				mException = e;
-				lock.lock();
-				condition.signal();
-				lock.unlock();
-			}
-		}
-
+	public void test_DataSourceItemSave() {
 		QuestionItem testQuestion = new QuestionItem(new UniqueId(), null, "author", new Date(), "body", 0, "title" );
 
-		DataItemSavedListener savedListener = new DataItemSavedListener();
-		dataManager.saveItem(testQuestion, savedListener);
-
-		lock.lock();
-		boolean success = false;
-		try {
-			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS);
-
-			// We can't re-query immediately (elastic search needs time to index)
-			// So wait a bit.
-			condition.await(maxModOperationWaitMs, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
-
-		}
-
-		assertTrue("Save operation success", success);
-		assertTrue("Save success", savedListener.mSuccess);
-		assertNull(savedListener.mException);
+		assertTrue("Save success", waitForItemSaved(testQuestion));
 
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
@@ -458,25 +488,79 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 			assertEquals(ItemType.Question, item.getItemType());
 		}
 
-		success = false;
+		boolean success = false;
 		try {
-			mJestClient.execute(new Delete.Builder(testQuestion.getUniqueId().toString())
+			JestResult result = mJestClient.execute(new Delete.Builder(testQuestion.getUniqueId().toString())
 		        .index(mEsServerIndex)
 		        .type(testQuestion.getItemType().toString().toLowerCase())
 		        .build());
-			success = true;
+			success = result.isSucceeded();
 		} catch (Exception e) {
 			
 		}
 
 		assertTrue("Delete item after test", success);
+		waitForModOperation();
+	}
 
-		try {
-			// Wait for elastic search to complete the deletion so other tests don't fail.
-			condition.await(maxModOperationWaitMs, TimeUnit.MILLISECONDS);
-		} catch (InterruptedException e) {
+	/**
+	 * Tests basic save functionality by saving an item, and then querying for it.
+	 *
+	 * If this or another write operation fails, the test server must be cleaned by running
+	 * the tools/add_es_test_documents.bat script on Windows or Linux.
+	 */
+	public void test_DataSourceMultipleItemSave() {
+		List<QAModel> questionList = new ArrayList<QAModel>() {{
+			add(new QuestionItem(new UniqueId(), null, "author1", new Date(), "test_DataSourceMultipleItemSave", 0, "title1" ));
+			add(new CommentItem(new UniqueId(), null, "author2", new Date(), "test_DataSourceMultipleItemSave", 0));
+			add(new AnswerItem(new UniqueId(), null, "author3", new Date(), "test_DataSourceMultipleItemSave", 0));
+			add(new QuestionItem(new UniqueId(), null, "author4", new Date(), "test_DataSourceMultipleItemSave", 0, "title4" ));
+			add(new QuestionItem(new UniqueId(), null, "author5", new Date(), "test_DataSourceMultipleItemSave", 0, "title5" ));
+		}};
 
+		// Save all items, waiting on the last operation to complete
+		for (QAModel item: questionList) {
+			System.out.println(String.format("Saving item %d", questionList.indexOf(item)));
+			if (questionList.indexOf(item) == questionList.size()-1) {
+				assertTrue("Save success", waitForItemSaved(item));
+			} else {
+				dataManager.saveItem(item);
+			}
 		}
+
+		IItemComparator comparator = new DateComparator();
+		result = new IncrementalResult(comparator);
+		dataFilter.addFieldFilter(
+			AuthoredTextItem.FIELD_BODY,
+			"test_DataSourceMultipleItemSave",
+			DataFilter.FilterComparison.QUERY_STRING);
+		dataManager.query(dataFilter, comparator, result);
+
+		assertTrue("Results arrived", waitForResults(result, 5));
+
+		// Verify this against the expected question
+		List<QAModel> results = result.getCurrentResults();
+		assertEquals("Question count", questionList.size(), results.size());
+
+		// Ensure each item is in the results
+		assertTrue("Items found in results", results.containsAll(questionList));
+
+		boolean success = true;
+		try {
+			for (QAModel item: questionList) {
+				System.out.println(String.format("Deleting item %d", questionList.indexOf(item)));
+				JestResult result = mJestClient.execute(new Delete.Builder(item.getUniqueId().toString())
+			        .index(mEsServerIndex)
+			        .type(item.getItemType().toString().toLowerCase())
+			        .build());
+				success &= null != result && result.isSucceeded();
+			}
+		} catch (Exception e) {
+			success = false;
+		}
+
+		assertTrue("Delete items after test", success);
+		waitForModOperation();
 	}
 }
 
