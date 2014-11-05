@@ -348,6 +348,8 @@ public class NetworkDataManager implements IDataSourceManager {
 	 * Initializes the jest client and factory if they haven't already been initialized.
 	 */
 	private void initJestClient() {
+		mJestClientLock.lock();
+
 		if (null == mJestClientFactory) {
 			mJestClientFactory = new JestClientFactory();
 			mJestClientFactory.setDroidClientConfig(new DroidClientConfig.Builder(mEsServerUrl).multiThreaded(false).build());
@@ -356,5 +358,7 @@ public class NetworkDataManager implements IDataSourceManager {
 		if (null == mJestClient) {
 			mJestClient = mJestClientFactory.getObject();
 		}
+
+		mJestClientLock.unlock();
 	}
 }
