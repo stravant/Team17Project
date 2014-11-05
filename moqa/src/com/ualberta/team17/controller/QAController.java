@@ -46,7 +46,7 @@ public class QAController {
 	 */
 	public IncrementalResult getChildren(QAModel item, IItemComparator sort) {
 		DataFilter filter = new DataFilter();
-		filter.addFieldFilter("id", item.getUniqueId().toString(), FilterComparison.EQUALS);
+		filter.addFieldFilter(QAModel.FIELD_ID, item.getUniqueId().toString(), FilterComparison.EQUALS);
 		return mDataManager.doQuery(filter, sort);
 	}
 	
