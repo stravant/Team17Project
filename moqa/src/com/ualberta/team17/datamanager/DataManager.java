@@ -97,8 +97,11 @@ public class DataManager {
 		if (userContext != oldCtx) {
 			if (mLocalDataStore != null)
 				((LocalDataManager)mLocalDataStore).close();
-			if (userContext != null)
+			if (userContext != null) {
 				mLocalDataStore = new LocalDataManager(mContext, userContext);
+				// Make the data store start loading local data
+				((LocalDataManager)mLocalDataStore).asyncLoadData();
+			}
 		}
 	}
 

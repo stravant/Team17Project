@@ -13,21 +13,39 @@ public class UniqueId {
 	private String mId;
 
 	/**
+	 * Utility method, digest a string into a hash, and encode
+	 * the hash as a Hex string.
+	 */
+	public String digest(String input) {
+		try {
+			// Initially try building the string from the user and date
+			MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGORITHM);
+			byte[] bytes = messageDigest.digest(input.getBytes());
+			String hash = "";
+			for (byte b: bytes) {
+				hash += Integer.toHexString(b & 0xFF);
+			}
+			return hash;
+		} catch (NoSuchAlgorithmException e) {
+			// Fall back to a random string
+			System.err.print(String.format("%s Algorithm not available for creating new UniqueId", DIGEST_ALGORITHM));
+			return GenerateRandomIdString(input);
+		}
+	}
+	
+	public static UniqueId fromSerial(String data) {
+		UniqueId id = new UniqueId();
+		id.mId = data;
+		return id;
+	}
+	
+	/**
 	 * Preferred constructor -- generates a unique id using the provided user context and other information.
 	 * @param context The user context to use in constructing the digest
 	 */
 	public UniqueId(UserContext context) {
 		String digestString = context.toString() + (new Date()).toString();
-
-		try {
-			// Initially try building the string from the user and date
-			MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGORITHM);
-			mId = messageDigest.digest(digestString.getBytes()).toString();
-		} catch (NoSuchAlgorithmException e) {
-			// Fall back to a random string
-			System.err.print(String.format("%s Algorithm not available for creating new UniqueId", DIGEST_ALGORITHM));
-			mId = GenerateRandomIdString(digestString);
-		}
+		mId = digest(digestString);
 	}
 	
 	/**
@@ -35,15 +53,7 @@ public class UniqueId {
 	 * @param id
 	 */
 	public UniqueId(String id) {
-		try {
-			// Initially try building the string from the passed id
-			MessageDigest messageDigest = MessageDigest.getInstance(DIGEST_ALGORITHM);
-			mId = messageDigest.digest(id.getBytes()).toString();
-		} catch (NoSuchAlgorithmException e) {
-			// Fall back to a random string
-			System.err.print(String.format("%s Algorithm not available for creating new UniqueId", DIGEST_ALGORITHM));
-			mId = GenerateRandomIdString(id);
-		}
+		mId = digest(id);
 	}
 
 	public UniqueId() {

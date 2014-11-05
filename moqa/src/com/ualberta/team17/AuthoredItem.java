@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.util.Log;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -52,6 +54,19 @@ public abstract class AuthoredItem extends QAModel {
 	public void setStoragePolicy(StoragePolicy policy) {
 		mStoragePolicy = policy;
 	}
+	
+	@Override
+	public Object getField(String fieldName) {
+		if (fieldName.equals(FIELD_PARENT)) {
+			return getParentItem();
+		} else if (fieldName.equals(FIELD_AUTHOR)) {
+			return getAuthor();
+		} else if (fieldName.equals(FIELD_DATE)) {
+			return getDate();
+		} else {
+			return super.getField(fieldName);
+		}
+	}
 
 	public static abstract class GsonTypeAdapter<T extends AuthoredItem> extends QAModel.GsonTypeAdapter<T> {
 		private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -80,6 +95,25 @@ public abstract class AuthoredItem extends QAModel {
 			}
 
 			return false;
+		}
+		
+		@Override
+		public void writeFields(AuthoredItem item, JsonWriter writer) throws IOException {
+			// We directly inherit from QAModel, so we have to use this hack instead of
+			// the normal super.writeFields
+			// TODO: Tidy that up
+			writeBaseFields(item, writer); 
+			
+			// Rest of fields
+			writer.name(FIELD_PARENT);
+			if (item.getParentItem() != null)
+				writer.value(item.getParentItem().toString());
+			else
+				writer.value("0");
+			writer.name(FIELD_AUTHOR);
+			writer.value(item.getAuthor());
+			writer.name(FIELD_DATE);
+			writer.value(dateFormat.format(item.getDate()));
 		}
 	}
 }

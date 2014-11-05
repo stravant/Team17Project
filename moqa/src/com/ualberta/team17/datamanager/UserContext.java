@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.ualberta.team17.UniqueId;
 
@@ -101,7 +102,7 @@ public class UserContext implements Serializable {
 	 */
 	private String getDataLocationName() {
 		// Use the user's Id as the location
-		return getUserId().toString();
+		return "TestFile"; //getUserId().toString();
 	}
 	
 	/**
@@ -115,6 +116,7 @@ public class UserContext implements Serializable {
 		try {
 			return ctx.openFileInput(getDataLocationName() + "_" + category);
 		} catch (FileNotFoundException e) {
+			Log.e("app", "Data Source file not found!:" + e.getMessage());
 			// File was not found, we return null, letting the caller
 			// create a file if they want to.
 			return null;

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.util.Log;
+
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.ItemType;
 
@@ -221,7 +223,6 @@ public class IncrementalResult {
 		for (QAModel model: objects) {
 			// Find out where to add it via binary search
 			int foundIndex = Collections.binarySearch(mResultList, model, mSort);
-			//Log.i("test", "FoundIndex: " + foundIndex);
 			if (foundIndex >= 0) {
 				// Already has the item, nothing to do
 			} else {
