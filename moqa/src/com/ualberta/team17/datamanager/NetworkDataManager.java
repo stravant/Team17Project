@@ -5,8 +5,10 @@ import java.util.Date;
 import java.util.List;
 
 import io.searchbox.client.JestClient;
+import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -36,7 +38,6 @@ public class NetworkDataManager implements IDataSourceManager {
 	protected String mEsServerIndex;
 	protected List<IDataSourceAvailableListener> mDataSourceAvailableListeners;
 	protected List<IDataLoadedListener> mDataLoadedListeners;
-
 
 	/**
 	 * Class used for executing elastic search queries. Class is a child of AsyncTask<>, so it is asynchronous.
@@ -161,6 +162,36 @@ public class NetworkDataManager implements IDataSourceManager {
 			}
 
 			result.addObjects(objects);
+		}
+	}
+
+	/**
+	 * Class used for executing elastic search saves.
+	 *
+	 * @author michaelblouin
+	 */
+	private class SaveTask extends AsyncTask<Void, Void, Void> {
+		Index mIndex;
+		IDataItemSavedListener mListener;
+
+		public SaveTask(Index index, IDataItemSavedListener listener) {
+			mIndex = index;
+			mListener = listener;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			try {
+				mJestClient.execute(mIndex);
+				System.out.println("Save task success");
+				mListener.dataItemSaved(true, null);
+			} catch (Exception e) {
+				System.out.println("SaveTask encountered error:");
+				e.printStackTrace();
+				mListener.dataItemSaved(false, e);
+			}
+
+			return null;
 		}
 	}
 

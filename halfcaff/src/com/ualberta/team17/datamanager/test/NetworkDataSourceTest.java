@@ -1,24 +1,33 @@
 package com.ualberta.team17.datamanager.test;
 
+import io.searchbox.client.JestClient;
+import io.searchbox.core.Delete;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.test.ActivityTestCase;
 
+import com.searchly.jestdroid.DroidClientConfig;
+import com.searchly.jestdroid.JestClientFactory;
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
+import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.IDataItemSavedListener;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IDataLoadedListener;
 import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
@@ -29,7 +38,13 @@ import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 
-public class NetworkDataSourceTest extends ActivityTestCase {
+@SuppressLint("DefaultLocale") public class NetworkDataSourceTest extends ActivityTestCase {
+	JestClientFactory mJestClientFactory;
+	JestClient mJestClient;
+
+	String mEsServerUrl;
+	String mEsServerIndex;
+
 	final Integer maxWaitSeconds = 5;
 	DataFilter dataFilter;
 	IncrementalResult result;
@@ -86,12 +101,18 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	 * Sets up the UTs, instantiating a NetworkDataManager and a bare filter.
 	 */
 	public void setUp() {
-		Resources resources = getInstrumentation().getTargetContext().getResources();
+		if (null == mJestClient) {
+			Resources resources = getInstrumentation().getTargetContext().getResources();
+			mEsServerUrl = resources.getString(R.string.esTestServer);
+			mEsServerIndex = resources.getString(R.string.esTestIndex);
 
-		dataManager = 
-			new NetworkDataManager(
-				resources.getString(R.string.esTestServer),
-				resources.getString(R.string.esTestIndex));
+			mJestClientFactory = new JestClientFactory();
+			mJestClientFactory.setDroidClientConfig(new DroidClientConfig.Builder(mEsServerUrl).multiThreaded(false).build());
+
+			mJestClient = mJestClientFactory.getObject();
+		}
+
+		dataManager = new NetworkDataManager(mEsServerUrl, mEsServerUrl);
 		dataFilter = new DataFilter();
 	}
 
@@ -368,6 +389,79 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		assertEquals(3, availableListener.timesNotified);
 
 		assertTrue("Data source available", dataManager.isAvailable());
+	}
+
+	/**
+	 * Tests basic save functionality by saving an item, and then querying for it.
+	 * @throws Exception 
+	 */
+	public void test_DataSourceItemSave() throws Exception {
+//		final Lock lock = new ReentrantLock();
+//		final Condition condition = lock.newCondition();
+//
+//		class DataItemSavedListener implements IDataItemSavedListener {
+//			boolean mSuccess = false;
+//			Exception mException;
+//
+//			@Override
+//			public void dataItemSaved(boolean success, Exception e) {
+//				mSuccess = success;
+//				mException = e;
+//				lock.lock();
+//				condition.signal();
+//				lock.unlock();
+//			}
+//		}
+//
+//		QuestionItem testQuestion = new QuestionItem(new UniqueId(), null, "author", new Date(), "body", 0, "title" );
+//
+//		DataItemSavedListener savedListener = new DataItemSavedListener();
+//		dataManager.saveItem(testQuestion, savedListener);
+//
+//		lock.lock();
+//		boolean success = false;
+//		try {
+//			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS);
+//		} catch (InterruptedException e) {
+//
+//		}
+//
+//		assertTrue("Save operation success", success);
+//		assertTrue("Save success", savedListener.mSuccess);
+//		assertNull(savedListener.mException);
+//
+//		IItemComparator comparator = new DateComparator();
+//		result = new IncrementalResult(comparator);
+//		dataFilter.addFieldFilter(
+//			QAModel.FIELD_ID, 
+//			testQuestion.getUniqueId().toString(), 
+//			DataFilter.FilterComparison.EQUALS);
+//		dataFilter.setMaxResults(1);
+//		dataManager.query(dataFilter, comparator, result);
+//
+//		assertTrue("Results arrived", waitForResults(result, 1));
+//
+//		// Verify this against the expected question
+//		List<QAModel> results = result.getCurrentResults();
+//		assertEquals("Question count", 1, results.size());
+//
+//		// Ensure each item is a question
+//		for (QAModel item: results) {
+//			assertEquals(ItemType.Question, item.getItemType());
+//		}
+//
+//		success = false;
+//		try {
+//			mJestClient.execute(new Delete.Builder(testQuestion.getUniqueId().toString())
+//		        .index(mEsServerIndex)
+//		        .type(testQuestion.getItemType().toString().toLowerCase())
+//		        .build());
+//			success = true;
+//		} catch (Exception e) {
+//			
+//		}
+//
+//		assertTrue("Delete item after test", success);
 	}
 }
 
