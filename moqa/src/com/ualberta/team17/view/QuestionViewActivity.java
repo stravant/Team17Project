@@ -80,6 +80,31 @@ public class QuestionViewActivity extends Activity {
 		}
 	}
 	
+	
+		public void createComment(final View v){
+			final EditText commentBody = new EditText(QuestionViewActivity.this);			
+			new AlertDialog.Builder(QuestionViewActivity.this)
+					.setTitle("Add an Comment")
+					.setView(commentBody)
+					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String body = commentBody.getText().toString();
+								QuestionItem badQuestion = new QuestionItem(UniqueId.fromString(v.getTag().toString()), null, null, null, null, 0, null);
+								CommentItem newComment = QAController.getInstance().createComment(badQuestion, body);								
+								mContent.addComments(newComment);
+								loadContent(mContent.getQuestion());
+							}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton)
+						{
+						// Do Nothing!
+						}
+					})
+					.show();
+
+		}
+		
 	/**
 	 * Method that sets the question for mContent
 	 * @author Joel
