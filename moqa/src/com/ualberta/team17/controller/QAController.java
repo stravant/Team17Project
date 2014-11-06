@@ -18,6 +18,7 @@ import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 
 public class QAController {
+	private static QAController mControllerInstance;
 	DataManager mDataManager;
 	
 	/**
@@ -26,6 +27,11 @@ public class QAController {
 	 */
 	public QAController(DataManager model) {
 		mDataManager = model;
+		mControllerInstance = this;
+	}
+	
+	public QAController getInstance() {
+		return mControllerInstance;
 	}
 	
 	/**
