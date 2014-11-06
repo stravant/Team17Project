@@ -34,14 +34,18 @@ public class UserContext implements Serializable {
 	 */
 	private List<UniqueId> mUserReplies;
 	
+	public UserContext() {
+		mUserFavorites = new ArrayList<UniqueId>();
+		mUserReplies = new ArrayList<UniqueId>();
+	}
+	
 	/**
 	 * Construct a user context from the name of a user
 	 * @param username The username of the user
 	 */
 	public UserContext(String username) {
+		this();
 		mUserName = username;
-		mUserFavorites = new ArrayList<UniqueId>();
-		mUserReplies = new ArrayList<UniqueId>();
 	}
 	
 	/**
