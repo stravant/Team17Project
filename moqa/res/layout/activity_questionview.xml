@@ -16,7 +16,8 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/favorite" />
+        android:text="@string/favorite"
+        android:onClick="favoriteQuestion" />
 
     <Button
         android:id="@+id/createAnswer"
