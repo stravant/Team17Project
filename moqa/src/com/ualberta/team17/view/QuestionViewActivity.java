@@ -1,5 +1,7 @@
 package com.ualberta.team17.view;
 
+import java.util.List;
+
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
@@ -9,6 +11,7 @@ import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
@@ -36,10 +39,12 @@ public class QuestionViewActivity extends Activity {
 	private QuestionContent mContent;
 	private QAController mController; 
 	
-	/**
-	 * Constructor
-	 */
 	
+	/**
+	 * Listener that opens a pop-up to creating an answer
+	 * @author Joel
+	 *
+	 */
 	private class CreateAnswerListener implements View.OnClickListener {
 		private Context mContext;
 		
@@ -56,6 +61,7 @@ public class QuestionViewActivity extends Activity {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String body = answerBody.getText().toString();
 								AnswerItem newAnswer = mController.createAnswer(mContent.getQuestion(), body);
+								//the incremental result may add this for us, this might be duplication
 								mContent.addAnswers(newAnswer);
 							}
 					})
@@ -70,6 +76,36 @@ public class QuestionViewActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * Method that sets the question for mContent
+	 * @param question
+	 */
+	private void loadQuestion(QuestionItem question) {
+		// make sure we aren't loading two questions at the same time
+		mContent = new QuestionContent();
+		mContent.setQuestion(question);
+	}
+	
+	/**
+	 * Method that queries the controller for a question based on Id
+	 * @param id
+	 */
+	private void queryQuestion(UniqueId id) {		
+		DataFilter dFilter = new DataFilter();
+		dFilter.setTypeFilter(ItemType.Question);
+		dFilter.addFieldFilter(QAModel.FIELD_ID, id.toString(), FilterComparison.EQUALS);
+		IncrementalResult queryResult = mController.getObjects(dFilter, new IdComparator());
+		//set up observer
+		queryResult.addObserver(new IIncrementalObserver() {
+			public void itemsArrived(List<QAModel> item, int index) {						
+				loadQuestion((QuestionItem)item.get(0));
+			}			
+		});
+	}
+	
+	/**
+	 * Constructor
+	 */
 	public QuestionViewActivity() {
 		mContent = new QuestionContent();
 	}
@@ -92,21 +128,11 @@ public class QuestionViewActivity extends Activity {
 		// get question from controller somehow
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
 			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
-			DataFilter dFilter = new DataFilter();
-			dFilter.setTypeFilter(ItemType.Question);
-			dFilter.addFieldFilter(QAModel.FIELD_ID, id.toString(), FilterComparison.EQUALS);
-			IncrementalResult queryResult = mController.getObjects(dFilter, new IdComparator());
-			//set up observer
-			queryResult.addObserver(new IIncrementalObserver() {
-				public void itemsArrived(List<QAModel> item, int index) {						
-					
-				}
-			
-			});
-			question = (QuestionItem)queryResult.getCurrentResultsOfType(ItemType.Question).get(0);
+			queryQuestion(id);
+			//question = (QuestionItem)queryResult.getCurrentResultsOfType(ItemType.Question).get(0);
 		}		
 		
-		if(question == null) {
+		if(intent.getSerializableExtra(QUESTION_ID_EXTRA) == null) {
 			// TODO: implement Question Creation.
 			
 			// Generate our own data to test displaying before the other modules work.
@@ -130,7 +156,7 @@ public class QuestionViewActivity extends Activity {
 							String title = titleText.getText().toString();
 							String body = titleText.getText().toString();
 							QuestionItem newQuestion = mController.createQuestion(title, body);
-							mContent.setQuestion(newQuestion);
+							loadQuestion(newQuestion);							
 						}
 						
 					})
