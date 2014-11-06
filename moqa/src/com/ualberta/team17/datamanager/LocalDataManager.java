@@ -31,12 +31,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
+import com.ualberta.team17.datamanager.DataFilter.FieldFilter;
 
 public class LocalDataManager implements IDataSourceManager {
 	/**
