@@ -129,23 +129,23 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		assertEquals("testReply", r.getCurrentResults().get(0).getField(AuthoredTextItem.FIELD_BODY));
 	}
 	
-	/**
-	 * Test adding several new answers to a question, and then querying back those
-	 * answers via getChildren.
-	 */
-	public void test_AddSeveralChildren() {
-		// Add the children
-		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
-		controller.createAnswer(q, "Answer 1 body.");
-		controller.createAnswer(q, "Answer 2 body.");
-		controller.createAnswer(q, "Answer 3 body.");
-		controller.createComment(q, "Comment body.");
-		
-		// Query them back
-		IncrementalResult r = controller.getChildren(q, new IdComparator());
-		assertTrue("Did not get back 4 results.", waitForResults(r, 4));
-		assertEquals(3, r.getCurrentResultsOfType(ItemType.Answer));
-		assertEquals(1, r.getCurrentResultsOfType(ItemType.Comment));
-		
-	}
+//	/**
+//	 * Test adding several new answers to a question, and then querying back those
+//	 * answers via getChildren.
+//	 */
+//	public void test_AddSeveralChildren() {
+//		// Add the children
+//		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
+//		controller.createAnswer(q, "Answer 1 body.");
+//		controller.createAnswer(q, "Answer 2 body.");
+//		controller.createAnswer(q, "Answer 3 body.");
+//		controller.createComment(q, "Comment body.");
+//		
+//		// Query them back
+//		IncrementalResult r = controller.getChildren(q, new IdComparator());
+//		assertTrue("Did not get back 4 results.", waitForResults(r, 4));
+//		assertEquals(3, r.getCurrentResultsOfType(ItemType.Answer));
+//		assertEquals(1, r.getCurrentResultsOfType(ItemType.Comment));
+//		
+//	}
 }
