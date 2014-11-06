@@ -1,24 +1,35 @@
 package com.ualberta.team17.datamanager.test;
 
+import io.searchbox.client.JestClient;
+import io.searchbox.client.JestResult;
+import io.searchbox.core.Delete;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.test.ActivityTestCase;
 
+import com.searchly.jestdroid.DroidClientConfig;
+import com.searchly.jestdroid.JestClientFactory;
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
+import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
+import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.IDataItemSavedListener;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IDataLoadedListener;
 import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
@@ -29,8 +40,19 @@ import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 
+@SuppressLint("DefaultLocale")
 public class NetworkDataSourceTest extends ActivityTestCase {
-	final Integer maxWaitSeconds = 5;
+	// Max amount of time to wait for elastic search to return a query
+	final Integer maxWaitSeconds = 2;
+
+	// Time to wait after an operation that modifies the index before running another query
+	final Integer maxModOperationWaitMs = 1000;
+	JestClientFactory mJestClientFactory;
+	JestClient mJestClient;
+
+	String mEsServerUrl;
+	String mEsServerIndex;
+
 	DataFilter dataFilter;
 	IncrementalResult result;
 	NetworkDataManager dataManager;
@@ -84,15 +106,81 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	}
 
 	/**
+	 * Waits for an item save to complete.
+	 * @param item The item to save
+	 * @return True on save success, false on any failure.
+	 */
+	private boolean waitForItemSaved(QAModel item) {
+		final Lock lock = new ReentrantLock();
+		final Condition condition = lock.newCondition();
+
+		class DataItemSavedListener implements IDataItemSavedListener {
+			boolean mSuccess = false;
+			Exception mException;
+
+			@Override
+			public void dataItemSaved(boolean success, Exception e) {
+				mSuccess = success;
+				mException = e;
+				lock.lock();
+				condition.signal();
+				lock.unlock();
+			}
+		}
+
+		DataItemSavedListener savedListener = new DataItemSavedListener();
+		dataManager.saveItem(item, savedListener);
+
+		lock.lock();
+		boolean success = false;
+		try {
+			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+
+		}
+
+		if (!success) {
+			return false;
+		}
+
+		// We can't re-query immediately (elastic search needs time to index)
+		// So wait a bit.
+		waitForModOperation();
+
+		return savedListener.mSuccess && null == savedListener.mException;
+	}
+
+	/**
+	 * Waits for a mod operation to complete by sleeping the thread.
+	 *
+	 * This is necessary because insert, update, and delete operations return immediately, but
+	 * take a non-negligible amount of time to complete before the changes are reflected in queries.
+	 */
+	private void waitForModOperation() {
+		try {
+			Thread.sleep(maxModOperationWaitMs);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Sets up the UTs, instantiating a NetworkDataManager and a bare filter.
 	 */
 	public void setUp() {
-		Resources resources = getInstrumentation().getTargetContext().getResources();
+		if (null == mJestClient) {
+			Resources resources = getInstrumentation().getTargetContext().getResources();
+			mEsServerUrl = resources.getString(R.string.esTestServer);
+			mEsServerIndex = resources.getString(R.string.esTestIndex);
 
-		dataManager = 
-			new NetworkDataManager(
-				resources.getString(R.string.esTestServer),
-				resources.getString(R.string.esTestIndex));
+			mJestClientFactory = new JestClientFactory();
+			mJestClientFactory.setDroidClientConfig(new DroidClientConfig.Builder(mEsServerUrl).multiThreaded(false).build());
+
+			mJestClient = mJestClientFactory.getObject();
+		}
+
+		dataManager = new NetworkDataManager(mEsServerUrl, mEsServerIndex);
 		dataFilter = new DataFilter();
 	}
 
@@ -369,6 +457,138 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		assertEquals(3, availableListener.timesNotified);
 
 		assertTrue("Data source available", dataManager.isAvailable());
+	}
+
+	/**
+	 * Tests that simultaneous queries work correctly.
+	 */
+	public void test_SimultaneousQueries() {
+		int numRepeats = 3;
+		IItemComparator comparator = new DateComparator();
+		result = new IncrementalResult(comparator);
+		dataFilter.setTypeFilter(ItemType.Question);
+		dataFilter.setMaxResults(1);
+
+		for (int i = 0; i < numRepeats; ++i) {
+			dataFilter.setPage(i);
+			dataManager.query(dataFilter, comparator, result);
+		}
+
+		assertTrue("Results arrived", waitForResults(result, numRepeats));
+
+		// Verify this against the expected test dataset
+		List<QAModel> results = result.getCurrentResults();
+		assertEquals("Question count", numRepeats, results.size());
+
+		// Ensure each item is a question
+		for (QAModel item: results) {
+			assertEquals(ItemType.Question, item.getItemType());
+		}
+	}
+
+	/**
+	 * Tests basic save functionality by saving an item, and then querying for it.
+	 *
+	 * If this or another write operation fails, the test server must be cleaned by running
+	 * the tools/add_es_test_documents.bat script on Windows or Linux.
+	 */
+	public void test_DataSourceItemSave() {
+		QuestionItem testQuestion = new QuestionItem(new UniqueId(), null, "author", new Date(), "body", 0, "title" );
+
+		assertTrue("Save success", waitForItemSaved(testQuestion));
+
+		IItemComparator comparator = new DateComparator();
+		result = new IncrementalResult(comparator);
+		dataFilter.addFieldFilter(
+			QAModel.FIELD_ID, 
+			testQuestion.getUniqueId().toString(), 
+			DataFilter.FilterComparison.EQUALS);
+		dataManager.query(dataFilter, comparator, result);
+
+		assertTrue("Results arrived", waitForResults(result, 1));
+
+		// Verify this against the expected question
+		List<QAModel> results = result.getCurrentResults();
+		assertEquals("Question count", 1, results.size());
+
+		// Ensure each item is a question
+		for (QAModel item: results) {
+			assertEquals(ItemType.Question, item.getItemType());
+		}
+
+		boolean success = false;
+		try {
+			JestResult result = mJestClient.execute(new Delete.Builder(testQuestion.getUniqueId().toString())
+		        .index(mEsServerIndex)
+		        .type(testQuestion.getItemType().toString().toLowerCase())
+		        .build());
+			success = result.isSucceeded();
+		} catch (Exception e) {
+			
+		}
+
+		assertTrue("Delete item after test", success);
+		waitForModOperation();
+	}
+
+	/**
+	 * Tests that multiple items saved at the same time save correctly.
+	 *
+	 * If this or another write operation fails, the test server must be cleaned by running
+	 * the tools/add_es_test_documents.bat script on Windows or Linux.
+	 */
+	public void test_DataSourceMultipleItemSave() {
+		List<QAModel> questionList = new ArrayList<QAModel>() {{
+			add(new QuestionItem(new UniqueId(), null, "author1", new Date(), "test_DataSourceMultipleItemSave", 0, "title1" ));
+			add(new CommentItem(new UniqueId(), null, "author2", new Date(), "test_DataSourceMultipleItemSave", 0));
+			add(new AnswerItem(new UniqueId(), null, "author3", new Date(), "test_DataSourceMultipleItemSave", 0));
+			add(new QuestionItem(new UniqueId(), null, "author4", new Date(), "test_DataSourceMultipleItemSave", 0, "title4" ));
+			add(new QuestionItem(new UniqueId(), null, "author5", new Date(), "test_DataSourceMultipleItemSave", 0, "title5" ));
+		}};
+
+		// Save all items, waiting on the last operation to complete
+		for (QAModel item: questionList) {
+			System.out.println(String.format("Saving item %d", questionList.indexOf(item)));
+			if (questionList.indexOf(item) == questionList.size()-1) {
+				assertTrue("Save success", waitForItemSaved(item));
+			} else {
+				dataManager.saveItem(item);
+			}
+		}
+
+		IItemComparator comparator = new DateComparator();
+		result = new IncrementalResult(comparator);
+		dataFilter.addFieldFilter(
+			AuthoredTextItem.FIELD_BODY,
+			"test_DataSourceMultipleItemSave",
+			DataFilter.FilterComparison.QUERY_STRING);
+		dataManager.query(dataFilter, comparator, result);
+
+		assertTrue("Results arrived", waitForResults(result, 5));
+
+		// Verify this against the expected question
+		List<QAModel> results = result.getCurrentResults();
+		assertEquals("Question count", questionList.size(), results.size());
+
+		// Ensure each item is in the results
+		assertTrue("Items found in results", results.containsAll(questionList));
+
+		boolean success = true;
+		try {
+			for (QAModel item: questionList) {
+				System.out.println(String.format("Deleting item %d", questionList.indexOf(item)));
+				JestResult result = mJestClient.execute(new Delete.Builder(item.getUniqueId().toString())
+			        .index(mEsServerIndex)
+			        .type(item.getItemType().toString().toLowerCase())
+			        .build());
+				success &= null != result && result.isSucceeded();
+			}
+		} catch (Exception e) {
+			success = false;
+		}
+
+		assertTrue("Delete items after test", success);
+		waitForModOperation();
 	}
 }
 

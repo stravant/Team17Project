@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.util.Log;
-
+import android.annotation.SuppressLint;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
@@ -17,8 +17,10 @@ import com.ualberta.team17.view.IQAView;
  */
 public abstract class QAModel {
 	public static final String FIELD_ID = "id";
+	public static final String FIELD_TYPE = "type";
 	public List<IQAView> mViews = new ArrayList<IQAView>();
 	public ItemType mType;
+
 	public UniqueId mUniqueId;
 	
 	public static final String FIELD_ID = "id";
@@ -105,13 +107,27 @@ public abstract class QAModel {
 			reader.endObject();
 			return item;
 		}
-		
+
+		@SuppressLint("DefaultLocale")
+		public void writeFields(JsonWriter writer, T model) throws IOException {
+			writer.name(FIELD_ID);
+			writer.value(model.getUniqueId().toString());
+
+			writer.name(FIELD_TYPE);
+			writer.value(model.getItemType().toString().toLowerCase());
+			writer.name("mUpvoteCount");
+			writer.value(0);
+		}
+
 		@Override
-		public void write(JsonWriter writer, T item) throws IOException {
+		public void writeFields(JsonWriter writer, T model) throws IOException {
+			if (null == model) {
+				writer.nullValue();
+				return;
+			}
+
 			writer.beginObject();
-			
-			writeFields(item, writer);
-			
+			writeFields(writer, model);
 			writer.endObject();
 		}
 	}

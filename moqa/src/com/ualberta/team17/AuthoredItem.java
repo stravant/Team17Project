@@ -97,7 +97,7 @@ public abstract class AuthoredItem extends QAModel {
 
 			return false;
 		}
-		
+
 		@Override
 		public void writeFields(AuthoredItem item, JsonWriter writer) throws IOException {
 			// We directly inherit from QAModel, so we have to use this hack instead of
@@ -107,10 +107,12 @@ public abstract class AuthoredItem extends QAModel {
 			
 			// Rest of fields
 			writer.name(FIELD_PARENT);
-			if (item.getParentItem() != null)
+			if (item.getParentItem() != null) {
 				writer.value(item.getParentItem().toString());
-			else
+			} else {
 				writer.value("0");
+			}
+
 			writer.name(FIELD_AUTHOR);
 			writer.value(item.getAuthor());
 			writer.name(FIELD_DATE);
