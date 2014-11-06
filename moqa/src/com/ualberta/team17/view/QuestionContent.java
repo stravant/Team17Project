@@ -3,12 +3,16 @@ package com.ualberta.team17.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.controller.QAController;
 
 /**
  * This class holds all of the content of a Question and all
@@ -78,7 +83,8 @@ public class QuestionContent {
 			super(context, textViewResourceId, objects);
 			mContext = context;
 			mObjects = objects;
-		}
+		}		
+		
 		
 		/**
 		 * Returns the view after adding the list content.
@@ -89,6 +95,9 @@ public class QuestionContent {
 			
 			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
 			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
+			
+			Button createCommentBtn = (Button) qaItemView.findViewById(R.id.createCommentButton);			
+			createCommentBtn.setTag(mObjects.get(position).parent.getUniqueId());
 			
 			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
 			

@@ -41,4 +41,15 @@
         android:orientation="vertical" >
     </LinearLayout>
 
+    <Button
+        android:id="@+id/createCommentButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/upvoteButton"
+        android:layout_alignRight="@+id/authorText"
+        android:layout_toRightOf="@+id/upvoteButton"
+        android:text="@string/createComment"
+        android:onClick="createComment" />
+
 </RelativeLayout>
