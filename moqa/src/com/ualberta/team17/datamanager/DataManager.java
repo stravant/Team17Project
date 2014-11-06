@@ -79,7 +79,7 @@ public class DataManager {
 	 */
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
 		IncrementalResult result = new IncrementalResult(sortComparator);
-		mLocalDataStore.query(filter, sortComparator, result);
+		//mLocalDataStore.query(filter, sortComparator, result);
 		mNetworkDataStore.query(filter, sortComparator, result);
 		return result;
 	}
@@ -92,7 +92,7 @@ public class DataManager {
 	 */
 	public void saveItem(QAModel item) {
 		mNetworkDataStore.saveItem(item);
-		mLocalDataStore.saveItem(item);
+		//mLocalDataStore.saveItem(item);
 	}
 
 	/**

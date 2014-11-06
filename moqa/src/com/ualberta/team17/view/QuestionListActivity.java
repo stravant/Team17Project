@@ -18,10 +18,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.ItemType;
+import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
+import com.ualberta.team17.datamanager.IIncrementalObserver;
+import com.ualberta.team17.datamanager.IItemComparator;
+import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.comparators.DateComparator;
+import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 
 /**
  * This class displays the list of requested questions and answers. It receives an intent
@@ -34,48 +42,32 @@ import com.ualberta.team17.datamanager.DataFilter;
  */
 public class QuestionListActivity extends Activity {
 	
-	private static final boolean GENERATE_TEST_DATA = true; //Test
 	public static final String FILTER_EXTRA = "FILTER";
 	
-	private DataFilter mDataFilter;
-	private List<QBody> mQuestions;
+	private List<QAModel> mQAModels;
+	private QuestionTaxonomyActivity.taxonomies mTaxonomy;
+	private IncrementalResult mIR;
+	private QuestionListAdapter mAdapter;
 	
 	/**
-	 * This class holds a question and its child answers.
-	 * TODO Implement support for answer browsing
-	 * 
-	 * @author Jared
-	 *
-	 */
-	private class QBody {
-		public QuestionItem parent;
-		public List<AnswerItem> answers;
-		
-		public QBody(QuestionItem initParent) {
-			parent = initParent;
-			answers = new ArrayList<AnswerItem>();
-		}
-	}
-
-	/**
-	 * The adapter for QBody. Binds the title of the question, the upvote count
+	 * The adapter for QAModel. Binds the title of the question, the upvote count
 	 * and the comment count (the number of answers).
 	 * 
 	 * @author Jared
 	 *
 	 */
-	private class QuestionListAdapter extends ArrayAdapter<QBody> {
+	protected class QuestionListAdapter extends ArrayAdapter<QAModel> {
 		Context mContext;
-		List<QBody> mObjects;
+		List<QAModel> mObjects;
 		
-		public QuestionListAdapter(Context context, int textViewResourceId, List<QBody> objects) {
+		public QuestionListAdapter(Context context, int textViewResourceId, List<QAModel> objects) {
 			super(context, textViewResourceId, objects);
 			mContext = context;
 			mObjects = objects;
 		}
 		
 		public View getView(int position, View convertView, ViewGroup parent) {
-			QBody item = (QBody) this.getItem(position);
+			QAModel item = (QAModel) this.getItem(position);
 			if (item == null) {
 				return convertView;
 			}
@@ -89,13 +81,23 @@ public class QuestionListActivity extends Activity {
 			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentsText);
 			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
 			
-			titleTextView.setText(mObjects.get(position).parent.getTitle());
-			commentTextView.setText(Integer.toString(mObjects.get(position).answers.size()));
-			upvoteTextView.setText(Integer.toString(mObjects.get(position).parent.getUpvoteCount()));
+			QuestionItem qi = (QuestionItem)item;
+			if (qi != null) {
+				IItemComparator comp = new DateComparator();
+				IncrementalResult children = QAController.getInstance().getChildren(item, comp);
+				
+				titleTextView.setText(qi.getTitle());
+				commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
+				upvoteTextView.setText(Integer.toString(-1));
+			}			
 			
 			return convertView;
 		}
-
+		
+		public void setItems(List<QAModel> qa) {
+			this.mObjects = qa;
+		}
+		
 		// TODO implement comment and upvote graphics
 	}
 	
@@ -109,18 +111,51 @@ public class QuestionListActivity extends Activity {
 		setContentView(R.layout.activity_question_list);
 		
 		Intent filterIntent = this.getIntent();
-		mDataFilter = (DataFilter) filterIntent.getSerializableExtra(FILTER_EXTRA);
+		mTaxonomy = (QuestionTaxonomyActivity.taxonomies) filterIntent.getSerializableExtra(FILTER_EXTRA);
 		
-		mQuestions = new ArrayList<QBody>();
 		
-		if (mDataFilter == null) {
-			if (GENERATE_TEST_DATA) {
-				mQuestions = getTestData();			
-			}
+		IItemComparator comp;
+		DataFilter df = new DataFilter();
+		
+		switch (mTaxonomy) {
+		case AllQuestions:
+			comp = new DateComparator();
+			df.setTypeFilter(ItemType.Question);
+			mIR = QAController.getInstance().getObjects(df, comp);
+			mQAModels = mIR.getCurrentResults();
+			break;
+		case MyActivity:
+			//ir = QAController.getInstance().getActivity();
+			break;
+		case Favorites:
+			//ir = QAController.getInstance().getFavorites();
+			break;
+		case MostUpvotedQs:
+			comp = new UpvoteComparator();
+			df.setTypeFilter(ItemType.Question);
+			mIR = QAController.getInstance().getObjects(df, comp);
+			mQAModels = mIR.getCurrentResults();
+			break;	
+		case MostUpvotedAs:
+			comp = new UpvoteComparator();
+			df.setTypeFilter(ItemType.Answer);
+			mIR = QAController.getInstance().getObjects(df, comp);
+			mQAModels = mIR.getCurrentResults();
+			break;
+		default:
+			mQAModels = new ArrayList<QAModel>();
+			break;
 		}
-		else {
-			//TODO Use intent to get questions from controller.			
-		}
+		
+		mIR.addObserver(new IIncrementalObserver() {
+
+			@Override
+			public void itemsArrived(List<QAModel> item, int index) {
+				ListView qList = (ListView) findViewById(R.id.questionListView);
+				qList.invalidate();
+				
+				qList.setAdapter(new QuestionListAdapter(QuestionListActivity.this, R.id.questionListView, mIR.getCurrentResults()));
+			}} );
 		
 		ListView qList = (ListView) findViewById(R.id.questionListView);
 		qList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -128,12 +163,8 @@ public class QuestionListActivity extends Activity {
 				QuestionListActivity.this.handleListViewItemClick(av, view, i, l);
 			}
 		});
-		QuestionListAdapter adapter = new QuestionListAdapter(this, R.id.questionListView, mQuestions);
 		
-		qList.setAdapter(adapter);
-		adapter.notifyDataSetChanged();
-		
-		//TODO add support for answers as well.
+		qList.setAdapter(new QuestionListAdapter(this, R.id.questionListView, mIR.getCurrentResults()));
 	}
 
 	/**
@@ -145,11 +176,13 @@ public class QuestionListActivity extends Activity {
 	 * @param l
 	 */
 	private void handleListViewItemClick(AdapterView<?> av, View view, int i, long l) {
-		QBody body = mQuestions.get(i);
-		QuestionItem question = body.parent;
-		Intent intent = new Intent(QuestionListActivity.this, QuestionViewActivity.class);
-		//intent.putExtra(QuestionViewActivity.QUESTION_EXTRA, question);
-		startActivity(intent);
+		QAModel qaModel = mIR.getCurrentResults().get(i);
+		QuestionItem question = (QuestionItem) qaModel;
+		if (question != null) {
+			Intent intent = new Intent(QuestionListActivity.this, QuestionViewActivity.class);
+			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, question.getUniqueId().toString());
+			startActivity(intent);
+		}
 	}
 	
 	/**
@@ -204,53 +237,5 @@ public class QuestionListActivity extends Activity {
 	 */
 	private void search() {
 		
-	}
-	
-	/**
-	 * Generates test data for filling the listview with. Temporary.
-	 * @return an ArrayList<QBody> for display purposes in the view.
-	 */
-	private ArrayList<QBody> getTestData() {
-		ArrayList<QBody> questions = new ArrayList<QBody>();
-		
-		QuestionItem qi1 = new QuestionItem(new UniqueId(), null, "QAuthor1", null, "Question body", 4, "Question 1 test");
-		AnswerItem ai1 = new AnswerItem(new UniqueId(), null, "AAuthor1", null, "Answer 1", 17);
-		AnswerItem ai2 = new AnswerItem(new UniqueId(), null, "AAuthor2", null, "Answer 2", 3);
-		QBody qb1 = new QBody(qi1);
-		qb1.answers.add(ai1);
-		qb1.answers.add(ai2);
-		questions.add(qb1);
-		
-		QuestionItem qi2 = new QuestionItem(new UniqueId(), null, "QAuthor2", null, "Question 2 body", 26, "Question 2 Title");
-		AnswerItem ai3 = new AnswerItem(new UniqueId(), null, "AAuthor1", null, "Answer 1", 0);
-		AnswerItem ai4 = new AnswerItem(new UniqueId(), null, "AAuthor2", null, "Answer 2", 6);
-		AnswerItem ai5 = new AnswerItem(new UniqueId(), null, "AAuthor3", null, "Answer 3", 174);
-		AnswerItem ai6 = new AnswerItem(new UniqueId(), null, "AAuthor4", null, "Answer 4", 13);
-		QBody qb2 = new QBody(qi2);
-		qb2.answers.add(ai3);
-		qb2.answers.add(ai4);
-		qb2.answers.add(ai5);
-		qb2.answers.add(ai6);
-		questions.add(qb2);
-		
-		QuestionItem qi3 = new QuestionItem(new UniqueId(), null, "QAuthor3", null, "Question 3 body", 113, 
-				"This demonstrates what a longer question title will look like. We wouldn't really need to " +
-				"restrict the length of titles much at all. We could just ensure that all views that contain " +
-				"a question are scrollable.");
-		AnswerItem ai7 = new AnswerItem(new UniqueId(), null, "AAuthor1", null, "Answer 1", 1);
-		QBody qb3 = new QBody(qi3);
-		qb3.answers.add(ai7);
-		questions.add(qb3);
-		
-		QuestionItem qi4 = new QuestionItem(new UniqueId(), null, "QAuthor1", null, "Question body", 1354, "Question 4 test.\n" +
-				"NL\nNL\nNL\nNL");
-		AnswerItem ai8 = new AnswerItem(new UniqueId(), null, "AAuthor1", null, "Answer 1", 0);
-		AnswerItem ai9 = new AnswerItem(new UniqueId(), null, "AAuthor2", null, "Answer 2", 1);
-		QBody qb4 = new QBody(qi4);
-		qb4.answers.add(ai8);
-		qb4.answers.add(ai9);
-		questions.add(qb4);
-		
-		return questions;
 	}
 }
