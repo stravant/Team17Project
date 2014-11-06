@@ -10,6 +10,8 @@
     <string name="title_activity_taxonomy_view">QuestionTaxonomyActivity</string>
     <string name="action_new_question">New Question</string>
     <string name="action_sort">Sort</string>
+    <string name="action_sort_date_asc">Sort by Date (Asc)</string>
+    <string name="action_sort_date_desc">Sort by Date (Desc)</string>
     <string name="action_search">Search</string>
     <string name="upvotes">Upvotes</string>
     <string name="comment">Comments</string>
