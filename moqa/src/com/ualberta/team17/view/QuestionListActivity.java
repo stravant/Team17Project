@@ -148,7 +148,7 @@ public class QuestionListActivity extends Activity {
 		QBody body = mQuestions.get(i);
 		QuestionItem question = body.parent;
 		Intent intent = new Intent(QuestionListActivity.this, QuestionViewActivity.class);
-		//intent.putExtra(QuestionViewActivity.QUESTION_EXTRA, question);
+		//intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, question);
 		startActivity(intent);
 	}
 	

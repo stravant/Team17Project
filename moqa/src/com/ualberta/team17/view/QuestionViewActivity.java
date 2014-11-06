@@ -1,8 +1,17 @@
 package com.ualberta.team17.view;
 
+import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.ItemType;
+import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.controller.QAController;
+import com.ualberta.team17.datamanager.DataFilter;
+import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
+import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.comparators.IdComparator;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +34,7 @@ public class QuestionViewActivity extends Activity {
 	private final static boolean GENERATE_TEST_DATA = false;
 	
 	private QuestionContent mContent;
+	private QAController mController; 
 	
 	/**
 	 * Constructor
@@ -45,8 +55,8 @@ public class QuestionViewActivity extends Activity {
 					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String body = answerBody.getText().toString();
-								/*AnswerItem newAnswer = controller.createAnswer(mContent.getQuestion(), body);
-								mContent.addAnswers(newAnswer);*/
+								AnswerItem newAnswer = mController.createAnswer(mContent.getQuestion(), body);
+								mContent.addAnswers(newAnswer);
 							}
 					})
 					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -63,7 +73,7 @@ public class QuestionViewActivity extends Activity {
 	public QuestionViewActivity() {
 		mContent = new QuestionContent();
 	}
-	
+		
 	/**
 	 * Initializes data depending on what is passed in the intent. Creates adapters and
 	 * listeners for all data interactions that will happen.
@@ -74,11 +84,28 @@ public class QuestionViewActivity extends Activity {
 		setContentView(R.layout.activity_questionview);
 		
 		Intent intent = this.getIntent();
+		mController = QAController.getInstance();
 		
 		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));
+		QuestionItem question = null;
 		
-		UniqueId id = (UniqueId) intent.getSerializableExtra(QUESTION_ID_EXTRA);
-		QuestionItem question = null; // get question from controller somehow
+		// get question from controller somehow
+		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
+			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
+			DataFilter dFilter = new DataFilter();
+			dFilter.setTypeFilter(ItemType.Question);
+			dFilter.addFieldFilter(QAModel.FIELD_ID, id.toString(), FilterComparison.EQUALS);
+			IncrementalResult queryResult = mController.getObjects(dFilter, new IdComparator());
+			//set up observer
+			queryResult.addObserver(new IIncrementalObserver() {
+				public void itemsArrived(List<QAModel> item, int index) {						
+					
+				}
+			
+			});
+			question = (QuestionItem)queryResult.getCurrentResultsOfType(ItemType.Question).get(0);
+		}		
+		
 		if(question == null) {
 			// TODO: implement Question Creation.
 			
@@ -102,8 +129,8 @@ public class QuestionViewActivity extends Activity {
 						public void onClick(DialogInterface dialog, int which) {
 							String title = titleText.getText().toString();
 							String body = titleText.getText().toString();
-							/*QuestionItem newQuestion = controller.createQuestion(title, body);
-							mContent.setQuestion(newQuestion);*/
+							QuestionItem newQuestion = mController.createQuestion(title, body);
+							mContent.setQuestion(newQuestion);
 						}
 						
 					})
