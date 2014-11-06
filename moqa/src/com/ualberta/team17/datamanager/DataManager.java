@@ -152,6 +152,34 @@ public class DataManager {
 		JsonParser parser = new JsonParser();
 		mUserContext.loadFromJson(parser.parse(DataManager.readLocalData(mContext, USER_CONTEXT_STORAGE)));
 	}
+	
+	/**
+	 * Favorite an item
+	 */
+	public void favoriteItem(QAModel item) {
+		saveItem(item);
+		mUserContext.addFavorite(item.getUniqueId());
+		
+		// TODO: Make call async
+		saveUserContextData(mUserContext);
+	}
+	
+	/**
+	 * Save user context data out to a user context
+	 * @param context
+	 */
+	private void saveUserContextData(UserContext context) {
+		DataManager.writeLocalData(mContext, USER_CONTEXT_STORAGE, mUserContext.saveToJson().toString());
+	}
+	
+	/**
+	 * Load user context data into a user context
+	 * @param context
+	 */
+	private void loadUserContextData(UserContext context) {
+		JsonParser parser = new JsonParser();
+		mUserContext.loadFromJson(parser.parse(DataManager.readLocalData(mContext, USER_CONTEXT_STORAGE)));
+	}
 
 	/**
 	 * Set the user context to a given context
