@@ -29,8 +29,8 @@ public class QuestionTaxonomyActivity extends Activity {
 		MyActivity(1),
 		Favorites(2) ,
 		MostUpvotedQs(3), 
-		MostUpvotedAs(4);
-		
+		MostUpvotedAs(4),
+		RecentlyViewed(5);
 		int value;
 		private taxonomies(int value) {
 			this.value = value;
@@ -47,6 +47,7 @@ public class QuestionTaxonomyActivity extends Activity {
 		options.add("Favorites");
 		options.add("Most Upvoted Questions");
 		options.add("Most Upvoted Answers");
+		options.add("Recently Viewed");
 		setContentView(R.layout.activity_taxonomy);
 		//Intent userIntent = this.getIntent();
 		ListView optionList = (ListView) findViewById(R.id.taxonomyView);
@@ -77,6 +78,9 @@ public class QuestionTaxonomyActivity extends Activity {
 				break;	
 			case 4:
 				intent.putExtra(QuestionListActivity.FILTER_EXTRA, taxonomies.MostUpvotedAs);
+				break;
+			case 5:
+				intent.putExtra(QuestionListActivity.FILTER_EXTRA, taxonomies.RecentlyViewed);
 				break;
 		}
 		
