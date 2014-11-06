@@ -122,6 +122,21 @@ public class IncrementalResult {
 				return result;
 			}
 		}
+
+		@Override
+		public void setCompareDirection(SortDirection direction) {
+			throw new UnsupportedOperationException("Compare direction not supported on disambiguating comparator.");
+		}
+
+		@Override
+		public SortDirection getCompareDirection() {
+			throw new UnsupportedOperationException("Compare direction not supported on disambiguating comparator.");
+		}
+
+		@Override
+		public String getFilterField() {
+			throw new UnsupportedOperationException("Filter field not supported on disambiguating comparator.");
+		}
 	}
 	
 	/**

@@ -7,7 +7,7 @@ import com.ualberta.team17.QAModel;
 public class LocalDataManager implements IDataSourceManager {
 
 	@Override
-	public void query(DataFilter filter, IncrementalResult result) {
+	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result) {
 		throw new UnsupportedOperationException();
 	}
 

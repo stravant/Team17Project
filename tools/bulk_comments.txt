@@ -1,0 +1,2 @@
+{ "create" : { "_index" : "moqatest", "_type" : "comment", "_id" : "a9677219a88b1b742f95c7f881bca2a9" } }
+{ "body": "This is a very boring question", "mUpvoteCount": "0", "parent": "ecf5165525f1fde44c1ebbb55a0f2d1b", "author": "michaelblouin", "date": "2014-10-18T22:52:55Z", "type": "question", "id": "a9677219a88b1b742f95c7f881bca2a9" }

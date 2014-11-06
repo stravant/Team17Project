@@ -38,6 +38,20 @@ public class UniqueId {
 		mId = GenerateRandomIdString(null);
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (null == other || !(other instanceof UniqueId)) {
+			return false;
+		}
+
+		return mId.equals(((UniqueId)other).mId);
+	}
+
+	@Override
+	public int hashCode() {
+		return mId.hashCode();
+	}
+
 	/**
 	 * Generates a random string to be used as a UniqueId
 	 * @param seedString A string to be turned into a seed for the random number generator
