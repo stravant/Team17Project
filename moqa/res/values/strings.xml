@@ -7,6 +7,7 @@
     <string name="reply">Reply</string>
     <string name="title_activity_question_list">QuestionListActivity</string>
     <string name="title_activity_question_view">QuestionViewActivity</string>
+    <string name="title_activity_taxonomy_view">QuestionTaxonomyActivity</string>
     <string name="action_new_question">New Question</string>
     <string name="action_sort">Sort</string>
     <string name="action_search">Search</string>

@@ -19,11 +19,5 @@ public class UpvoteItem extends AuthoredItem {
 		public UpvoteItem read(JsonReader reader) throws IOException {
 			return readInto(new UpvoteItem(null, null, null, null), reader);
 		}
-
-		@Override
-		public void write(JsonWriter arg0, UpvoteItem arg1) throws IOException {
-			// TODO Auto-generated method stub
-			
-		}
 	}
 }

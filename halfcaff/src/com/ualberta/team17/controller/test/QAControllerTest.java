@@ -29,7 +29,7 @@ public class QAControllerTest extends TestCase {
 	}
 	
 	public void test_QAC2_GetQuestionChildren() {
-		IncrementalResult childrenResult = controller.getQuestionChildren( parentQuestion, new UpvoteComparator() );
+		IncrementalResult childrenResult = controller.getChildren( parentQuestion, new UpvoteComparator() );
 		
 		assertEquals( "Question has 2 children", childrenResult.getCurrentResults().size(), 2 );
 	}

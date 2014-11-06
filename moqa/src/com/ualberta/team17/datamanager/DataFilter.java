@@ -3,6 +3,9 @@ package com.ualberta.team17.datamanager;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Bitmap.CompressFormat;
+import android.util.Log;
+
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 
@@ -66,8 +69,35 @@ public class DataFilter {
 		return mFieldFilters;
 	}
 	
+	// TODO: Only accepts items exact equality right now
 	public Boolean accept(QAModel item) {
-		throw new UnsupportedOperationException();
+		// Type filter
+		if (getTypeFilter() != null && item.getItemType() != getTypeFilter())
+			return false;
+		
+		// For each filter
+		for (FieldFilter f: mFieldFilters) {
+			Object value = item.getField(f.getField());
+			
+			// If this object does not have the field, it can't pass
+			if (value == null && f.getField() != null)
+				return false;
+			
+			// See how we compare
+			int cmp = f.getFilter().compareTo(value.toString());
+			
+			// Check if we pass given the comparator to use
+			if (f.getComparisonMode() == FilterComparison.EQUALS) {
+				if (cmp != 0) return false;
+			} else if (f.getComparisonMode() == FilterComparison.NOT_EQUAL) {
+				if (cmp == 0) return false;
+			} else {
+				throw new UnsupportedOperationException("TODO: Implement more comparators");
+			}	
+		}
+		
+		// Passed all filters, accept
+		return true;
 	}
 
 	public Integer getMaxResults() {

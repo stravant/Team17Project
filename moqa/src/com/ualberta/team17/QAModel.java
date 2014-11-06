@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import com.ualberta.team17.view.IQAView;
 
 /*
@@ -14,8 +16,10 @@ import com.ualberta.team17.view.IQAView;
  */
 public abstract class QAModel {
 	public static final String FIELD_ID = "id";
+	public static final String FIELD_TYPE = "type";
 	public List<IQAView> mViews = new ArrayList<IQAView>();
 	public ItemType mType;
+
 	public UniqueId mUniqueId;
 	
 	/* Ctor */
@@ -58,11 +62,20 @@ public abstract class QAModel {
 	public int hashCode() {
 		return getUniqueId().hashCode();
 	}
+	
+	/* Introspection for stuff */
+	public Object getField(String fieldName) {
+		if (fieldName.equals(FIELD_ID)) {
+			return getUniqueId();
+		} else {
+			return null;
+		}
+	}
 
 	public static abstract class GsonTypeAdapter<T extends QAModel> extends TypeAdapter<T> {
 		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
 			if (name.equals(FIELD_ID)) {
-				item.mUniqueId = new UniqueId(reader.nextString());
+				item.mUniqueId = UniqueId.fromString(reader.nextString());
 				return true;
 			}
 
@@ -83,6 +96,29 @@ public abstract class QAModel {
 
 			reader.endObject();
 			return item;
+		}
+
+		@SuppressLint("DefaultLocale")
+		public void writeFields(JsonWriter writer, T model) throws IOException {
+			writer.name(FIELD_ID);
+			writer.value(model.getUniqueId().toString());
+
+			writer.name(FIELD_TYPE);
+			writer.value(model.getItemType().toString().toLowerCase());
+			writer.name("mUpvoteCount");
+			writer.value(0);
+		}
+
+		@Override
+		public void write(JsonWriter writer, T model) throws IOException {
+			if (null == model) {
+				writer.nullValue();
+				return;
+			}
+
+			writer.beginObject();
+			writeFields(writer, model);
+			writer.endObject();
 		}
 	}
 }

@@ -3,10 +3,17 @@ package com.ualberta.team17.datamanager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.apache.commons.lang3.NotImplementedException;
 
 import io.searchbox.client.JestClient;
+import io.searchbox.client.JestResult;
+import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
 
@@ -21,6 +28,7 @@ import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
+import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
 
 /**
@@ -28,15 +36,21 @@ import com.ualberta.team17.UpvoteItem;
  *
  * @author michaelblouin
  */
-public class NetworkDataManager implements IDataSourceManager {
+@SuppressLint("DefaultLocale") public class NetworkDataManager implements IDataSourceManager {
 	protected Boolean mIsAvailable = null;
-	protected JestClientFactory mJestClientFactory;
-	protected JestClient mJestClient;
+
 	protected String mEsServerUrl;
 	protected String mEsServerIndex;
-	protected List<IDataSourceAvailableListener> mDataSourceAvailableListeners;
-	protected List<IDataLoadedListener> mDataLoadedListeners;
 
+	protected final Lock mJestClientLock = new ReentrantLock();
+	protected JestClientFactory mJestClientFactory;
+	protected JestClient mJestClient;
+
+	protected final Lock mDataSourceAvailableListenersLock = new ReentrantLock();
+	protected List<IDataSourceAvailableListener> mDataSourceAvailableListeners;
+
+	protected final Lock mDataLoadedListenersLock = new ReentrantLock();
+	protected List<IDataLoadedListener> mDataLoadedListeners;
 
 	/**
 	 * Class used for executing elastic search queries. Class is a child of AsyncTask<>, so it is asynchronous.
@@ -82,6 +96,7 @@ public class NetworkDataManager implements IDataSourceManager {
 			SearchResult searchResult = null;
 			boolean available = false;
 
+			mJestClientLock.lock();
 			try {
 				searchResult = mJestClient.execute(search);
 				available = true;
@@ -96,6 +111,7 @@ public class NetworkDataManager implements IDataSourceManager {
 				e.printStackTrace();
 				available = false;
 			}
+			mJestClientLock.unlock();
 
 			setIsAvailable(available);
 
@@ -164,6 +180,45 @@ public class NetworkDataManager implements IDataSourceManager {
 		}
 	}
 
+	/**
+	 * Class used for executing elastic search saves.
+	 *
+	 * @author michaelblouin
+	 */
+	private class SaveTask extends AsyncTask<Void, Void, Void> {
+		Index mIndex;
+		IDataItemSavedListener mListener;
+
+		public SaveTask(Index index, IDataItemSavedListener listener) {
+			mIndex = index;
+			mListener = listener;
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			boolean success = false;
+			Exception exception = null;
+
+			mJestClientLock.lock();
+			try {
+				JestResult result = mJestClient.execute(mIndex);
+				success = null != result && result.isSucceeded();
+			} catch (Exception e) {
+				// TODO: Set isAvailable on network error
+				System.out.println("SaveTask encountered error:");
+				e.printStackTrace();
+				success = false;
+			}
+			mJestClientLock.unlock();
+
+			if (null != mListener) {
+				mListener.dataItemSaved(success, exception);
+			}
+
+			return null;
+		}
+	}
+
 	public NetworkDataManager(String esServerUrl, String esServerIndex) {
 		mEsServerUrl = esServerUrl;
 		mEsServerIndex = esServerIndex;
@@ -176,7 +231,7 @@ public class NetworkDataManager implements IDataSourceManager {
 		}
 
 		ESSearchBuilder searchBuilder = new ESSearchBuilder(filter, comparator);
-		Search search =
+		Search search = 
 			searchBuilder
 			.getBuilder()
 			.addIndex(mEsServerIndex)
@@ -190,8 +245,34 @@ public class NetworkDataManager implements IDataSourceManager {
 	}
 
 	@Override
+	public void query(List<UniqueId> ids, IncrementalResult result) {
+		throw new NotImplementedException("NetworkDataManager has not yet implemented query(List<UniqueId>)");
+	}
+
+	@Override
 	public boolean saveItem(QAModel item) {
-		throw new UnsupportedOperationException();
+		return saveItem(item, null);
+	}
+
+	public boolean saveItem(QAModel item, IDataItemSavedListener listener) {
+		if (null == mJestClient) {
+			initJestClient();
+		}
+
+		System.out.println("Item source: " + DataManager.getGsonObject().toJson(item));
+		Index index = new Index.Builder(DataManager.getGsonObject().toJson(item))
+			.index(mEsServerIndex)
+			.type(item.getItemType().toString().toLowerCase())
+			.id(item.getUniqueId().toString())
+			.build();
+
+		SaveTask task = new SaveTask(index, listener);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		else
+			task.execute();
+
+		return false;
 	}
 
 	@Override
@@ -217,47 +298,63 @@ public class NetworkDataManager implements IDataSourceManager {
 
 	@Override
 	public void addDataLoadedListener(IDataLoadedListener listener) {
+		mDataLoadedListenersLock.lock();
 		if (null == mDataLoadedListeners) {
 			mDataLoadedListeners = new ArrayList<IDataLoadedListener>();
 		}
 
 		mDataLoadedListeners.add(listener);
+		mDataLoadedListenersLock.unlock();
 	}
 
-	@Override
 	public void notifyDataItemLoaded(QAModel item) {
-		if (null == mDataLoadedListeners)
+		mDataLoadedListenersLock.lock();
+
+		if (null == mDataLoadedListeners) {
+			mDataLoadedListenersLock.unlock();
 			return;
+		}
 
 		for (IDataLoadedListener listener: mDataLoadedListeners) {
 			listener.dataItemLoaded(this, item);
 		}
+
+		mDataLoadedListenersLock.unlock();
 	}
 
 	@Override
-	public void addDataSourceAvailableListener(
-			IDataSourceAvailableListener listener) {
+	public void addDataSourceAvailableListener(IDataSourceAvailableListener listener) {
+		mDataSourceAvailableListenersLock.lock();
+
 		if (null == mDataSourceAvailableListeners) {
 			mDataSourceAvailableListeners = new ArrayList<IDataSourceAvailableListener>();
 		}
 
 		mDataSourceAvailableListeners.add(listener);
+
+		mDataSourceAvailableListenersLock.unlock();
 	}
 
-	@Override
 	public void notifyDataSourceAvailable() {
-		if (null == mDataSourceAvailableListeners)
+		mDataSourceAvailableListenersLock.lock();
+
+		if (null == mDataSourceAvailableListeners) {
 			return;
+		}
 
 		for (IDataSourceAvailableListener listener: mDataSourceAvailableListeners) {
 			listener.DataSourceAvailable(this);
 		}
+
+		mDataSourceAvailableListenersLock.unlock();
 	}
 
 	/**
 	 * Initializes the jest client and factory if they haven't already been initialized.
 	 */
 	private void initJestClient() {
+		mJestClientLock.lock();
+
 		if (null == mJestClientFactory) {
 			mJestClientFactory = new JestClientFactory();
 			mJestClientFactory.setDroidClientConfig(new DroidClientConfig.Builder(mEsServerUrl).multiThreaded(false).build());
@@ -266,5 +363,7 @@ public class NetworkDataManager implements IDataSourceManager {
 		if (null == mJestClient) {
 			mJestClient = mJestClientFactory.getObject();
 		}
+
+		mJestClientLock.unlock();
 	}
 }
