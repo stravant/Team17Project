@@ -223,7 +223,8 @@ public class QuestionListActivity extends Activity {
 	 * TODO implement createNewQuestion().
 	 */
 	private void createNewQuestion() {
-		
+		Intent intent = new Intent(QuestionListActivity.this, QuestionViewActivity.class);		
+		startActivity(intent);
 	}
 	
 	/**
