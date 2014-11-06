@@ -1,6 +1,7 @@
 package com.ualberta.team17.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.ualberta.team17.R;
 import com.ualberta.team17.controller.QAController;
+import com.ualberta.team17.datamanager.UserContext;
 
 public class LoginActivity extends Activity {
 
@@ -42,9 +44,11 @@ public class LoginActivity extends Activity {
 		if (usernameET != null) {
 			username = usernameET.getText().toString();
 			
-			if (username.length() >= 6 && username.length() <= 20 && !username.contains(" ")) {
+			if (username.length() >= 4 && username.length() <= 20 && !username.contains(" ")) {
 				// Create the user context.
-				//QAController.getInstance().
+				QAController.getInstance().login(new UserContext(username));
+				Intent intent = new Intent(LoginActivity.this, QuestionTaxonomyActivity.class);
+				startActivity(intent);
 			}
 			else {
 				TextView tv = (TextView) findViewById(R.id.loginWarning);
