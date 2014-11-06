@@ -131,7 +131,7 @@ public class QuestionListActivity extends Activity {
 			//ir = QAController.getInstance().getActivity();
 			break;
 		case Favorites:
-			//ir = QAController.getInstance().getFavorites();
+			mIR = QAController.getInstance().getFavorites();
 			break;
 		case MostUpvotedQs:
 			comp = new UpvoteComparator();

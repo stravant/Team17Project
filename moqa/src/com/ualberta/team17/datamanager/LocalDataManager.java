@@ -147,12 +147,13 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	public void asyncLoadData() {
 		if (mData == null) {
-			new RunTaskHelper() {
+			new RunTaskHelper<Void>() {
 				@Override
-				public void task() {
+				public Void task() {
 					mDataLock.lock();
 					maybeDoInitialDataQuery();
 					mDataLock.unlock();
+					return null;
 				}
 			};
 		}
@@ -359,11 +360,17 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	@Override
 	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result) {
-		new RunTaskHelper() {
+		new RunTaskHelper<List<QAModel>>() {
 			@Override
-			public void task() {
-				doFilterQuery(filter, compare, result);
+			public List<QAModel> task() {
+				Log.i("app", "LocalDataManager :: Doing Filter query...");
+				List<QAModel> resultList = doFilterQuery(filter, compare);
 				Log.i("app", "LocalDataManager :: Filter query finished with " + result.getCurrentResults().size() + " results.");
+				return resultList;
+			}
+			@Override
+			public void done(List<QAModel> resultList) {
+				result.addObjects(resultList);
 			}
 		};
 	}
@@ -372,9 +379,9 @@ public class LocalDataManager implements IDataSourceManager {
 	 * Main query implementation for this task, is run in a separate thread for each query.
 	 * @param filter
 	 * @param compare
-	 * @param result
+	 * @return The list of items found to insert
 	 */
-	private void doFilterQuery(DataFilter filter, IItemComparator compare, IncrementalResult result) {		
+	private List<QAModel> doFilterQuery(DataFilter filter, IItemComparator compare) {		
 		// Create an array for the results
 		List<QAModel> packedItem = new ArrayList<QAModel>();
 		
@@ -394,8 +401,7 @@ public class LocalDataManager implements IDataSourceManager {
 		//Log.i("lock", "DoFilterQuery Unlock");
 		mDataLock.unlock();
 		
-		// Notify on the results
-		result.addObjects(packedItem);
+		return packedItem;
 	}
 	
 	/**
@@ -405,11 +411,16 @@ public class LocalDataManager implements IDataSourceManager {
 	@Override
 	public void query(final List<UniqueId> ids, final IncrementalResult result) {
 		// Do query async
-		new RunTaskHelper() {
+		new RunTaskHelper<List<QAModel>>() {
 			@Override
-			public void task() {
-				doIdListQuery(ids, result);
+			public List<QAModel> task() {
+				List<QAModel> resultList = doIdListQuery(ids);
 				Log.i("app", "LocalDataManager :: Id query finished with " + result.getCurrentResults().size() + " results.");
+				return resultList;
+			}
+			@Override
+			public void done(List<QAModel> resultList) {
+				result.addObjects(resultList);
 			}
 		};
 	}
@@ -420,7 +431,7 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param ids
 	 * @param result
 	 */
-	private void doIdListQuery(List<UniqueId> ids, IncrementalResult result) {
+	private List<QAModel> doIdListQuery(List<UniqueId> ids) {
 		// Set up an array for our results
 		List<QAModel> packedResult = new ArrayList<QAModel>();
 		
@@ -442,8 +453,7 @@ public class LocalDataManager implements IDataSourceManager {
 		//Log.i("lock", "doIdListQuery Unlock");
 		mDataLock.unlock();
 		
-		// Notify on the results
-		result.addObjects(packedResult);
+		return packedResult;
 	}
 	
 
