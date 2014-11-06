@@ -173,10 +173,22 @@ public class QuestionContent {
 	 */
 	public void addAnswers(AnswerItem... answers) {
 		for(AnswerItem answer : answers) {
-			QABody answerBody = new QABody(answer);
-			mQABodies.add(answerBody);
+			if (!exists(answer)) {
+				QABody answerBody = new QABody(answer);
+				mQABodies.add(answerBody);
+			}			
 		}
 	}
+	
+	public boolean exists(AuthoredTextItem item) {
+		for (QABody body : mQABodies) {
+			if (body.parent.equals(item)) {
+				return true;
+			}			
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * Adds all comments to their corresponding parent
@@ -188,7 +200,9 @@ public class QuestionContent {
 		for(CommentItem comment : comments) {
 			QABody parentBody = findById(comment.getParentItem());
 			if(parentBody != null) {
-				parentBody.comments.add(comment);
+				if (!parentBody.comments.contains(comment)) {
+					parentBody.comments.add(comment);
+				}				
 			}
 			else {
 				// maybe some kind of error
@@ -202,7 +216,7 @@ public class QuestionContent {
 	 * @param textViewResourceId The id of the resource to connect to.
 	 * @return A new ListAdapter for this question's content.
 	 */
-	public ListAdapter getListAdapter(Context context, int textViewResourceId) {
+	public ArrayAdapter getArrayAdapter(Context context, int textViewResourceId) {
 		return new QABodyAdapter(context, textViewResourceId, mQABodies);
 	}
 	
@@ -214,7 +228,7 @@ public class QuestionContent {
 	 */
 	private QABody findById(UniqueId id) {
 		for(QABody body : mQABodies) {
-			if(id == body.parent.mUniqueId) {
+			if(id.equals(body.parent.mUniqueId)){
 				return body;
 			}
 		}
