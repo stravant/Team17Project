@@ -173,10 +173,22 @@ public class QuestionContent {
 	 */
 	public void addAnswers(AnswerItem... answers) {
 		for(AnswerItem answer : answers) {
-			QABody answerBody = new QABody(answer);
-			mQABodies.add(answerBody);
+			if (!exists(answer)) {
+				QABody answerBody = new QABody(answer);
+				mQABodies.add(answerBody);
+			}			
 		}
 	}
+	
+	public boolean exists(AuthoredTextItem item) {
+		for (QABody body : mQABodies) {
+			if (body.parent.equals(item)) {
+				return true;
+			}			
+		}
+		return false;
+	}
+	
 	
 	/**
 	 * Adds all comments to their corresponding parent
@@ -188,7 +200,9 @@ public class QuestionContent {
 		for(CommentItem comment : comments) {
 			QABody parentBody = findById(comment.getParentItem());
 			if(parentBody != null) {
-				parentBody.comments.add(comment);
+				if (!parentBody.comments.contains(comment)) {
+					parentBody.comments.add(comment);
+				}				
 			}
 			else {
 				// maybe some kind of error

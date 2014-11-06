@@ -63,8 +63,7 @@ public class QuestionViewActivity extends Activity {
 					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String body = answerBody.getText().toString();
-								AnswerItem newAnswer = mController.createAnswer(mContent.getQuestion(), body);
-								//the incremental result may add this for us, this might be duplication
+								AnswerItem newAnswer = mController.createAnswer(mContent.getQuestion(), body);								
 								mContent.addAnswers(newAnswer);
 							}
 					})
@@ -84,11 +83,9 @@ public class QuestionViewActivity extends Activity {
 	 * @param question
 	 */
 	private void loadContent(QuestionItem question) {
-		// make sure we aren't loading a mix of two questions at the same time
-		//did corey deal with this?
-		//mContent = new QuestionContent();
+		// make sure we aren't loading a mix of two questions at the same time		
+		mContent = new QuestionContent();
 		mContent.setQuestion(question);
-		//How does this work? the query statement is the same for when I was grabbing one question
 		IncrementalResult iRAC = mController.getChildren(question, new DateComparator());
 		iRAC.addObserver(new IIncrementalObserver() {
 			@Override
@@ -101,6 +98,7 @@ public class QuestionViewActivity extends Activity {
 						break;
 					case Comment:
 						mContent.addComments((CommentItem) qaitem);
+						break;
 					}
 				}
 				
