@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
 
+import com.google.common.collect.Iterables;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -46,10 +48,16 @@ public class UserContext implements Serializable {
 	 */
 	private List<UniqueId> mLocalOnlyItems;
 	
+	/**
+	 * Recently viewed items
+	 */
+	private List<UniqueId> mRecentlyViewed;
+	
 	public UserContext() {
 		mUserFavorites = new ArrayList<UniqueId>();
 		mUserReplies = new ArrayList<UniqueId>();
 		mLocalOnlyItems = new ArrayList<UniqueId>();
+		mRecentlyViewed = new ArrayList<UniqueId>();
 	}
 	
 	/**
@@ -69,15 +77,19 @@ public class UserContext implements Serializable {
 		mUserFavorites.clear();
 		mLocalOnlyItems.clear();
 		mUserReplies.clear();
+		mRecentlyViewed.clear();
 		//
-		for (JsonElement item: elem.getAsJsonObject().get("favorites").getAsJsonArray()) {
+		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("favorites")) {
 			mUserFavorites.add(UniqueId.fromString(item.getAsString()));
 		}
-		for (JsonElement item: elem.getAsJsonObject().get("local_only").getAsJsonArray()) {
+		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("local_only")) {
 			mLocalOnlyItems.add(UniqueId.fromString(item.getAsString()));
 		}
-		for (JsonElement item: elem.getAsJsonObject().get("replies").getAsJsonArray()) {
+		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("replies")) {
 			mUserReplies.add(UniqueId.fromString(item.getAsString()));
+		}
+		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("recent")) {
+			mRecentlyViewed.add(UniqueId.fromString(item.getAsString()));
 		}
 	}
 	
@@ -98,10 +110,15 @@ public class UserContext implements Serializable {
 		for (UniqueId item: mUserReplies) {
 			repliesArray.add(new JsonPrimitive(item.toString()));
 		}
+		JsonArray recentArray = new JsonArray();
+		for (UniqueId item: mRecentlyViewed) {
+			recentArray.add(new JsonPrimitive(item.toString()));
+		}
 		JsonObject obj = new JsonObject();
 		obj.add("favorites", favoriteArray);
 		obj.add("local_only", localOnlyArray);
 		obj.add("replies", repliesArray);
+		obj.add("recent", recentArray);
 		return obj;
 	}
 	
@@ -153,5 +170,31 @@ public class UserContext implements Serializable {
 	public void addReply(UniqueId itemId) {
 		if (!mUserReplies.contains(itemId))
 			mUserReplies.add(itemId);
+	}
+	
+	/**
+	 * Mark an item as the most recently viewed one.
+	 * @param itemId
+	 */
+	public void addRecentItem(UniqueId itemId) {
+		// Remove the item if it was already in the recently viewed
+		Iterator<UniqueId> it = mRecentlyViewed.iterator();
+		while (it.hasNext()) {
+			UniqueId id = it.next();
+			if (id.equals(itemId)) {
+				it.remove();
+				break;
+			}
+		}
+		
+		// Insert the item at the start
+		mRecentlyViewed.add(0, itemId);
+	}
+	
+	/**
+	 * Get the recently viewed items
+	 */
+	public List<UniqueId> getRecentItems() {
+		return mRecentlyViewed;
 	}
 }

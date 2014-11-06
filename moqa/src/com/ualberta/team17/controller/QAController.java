@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
+import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
@@ -36,6 +37,14 @@ public class QAController {
 	}
 	
 	/**
+	 * Log in using a given user context
+	 * @param ctx
+	 */
+	public void login(UserContext ctx) {
+		mDataManager.setUserContext(ctx);
+	}
+	
+	/**
 	 * Access existing objects via an arbitrary Filter & Sort
 	 * @param filter
 	 * @param sort
@@ -53,7 +62,7 @@ public class QAController {
 	 */
 	public IncrementalResult getChildren(QAModel item, IItemComparator sort) {
 		DataFilter filter = new DataFilter();
-		filter.addFieldFilter(QAModel.FIELD_ID, item.getUniqueId().toString(), FilterComparison.EQUALS);
+		filter.addFieldFilter(AuthoredItem.FIELD_PARENT, item.getUniqueId().toString(), FilterComparison.EQUALS);
 		return mDataManager.doQuery(filter, sort);
 	}
 	
@@ -67,10 +76,38 @@ public class QAController {
 	}
 	
 	/**
-	 * Create a question, from a creator context, title, and body
+	 * Adds an item to the user's favorites
+	 * @param item The item to favorite
+	 */
+	public void addFavorite(QAModel item) {
+		mDataManager.favoriteItem(item);
+	}
+	
+	/**
+	 * Get the recently items that have been marked as recently viewed
+	 * most recently with QAController::markRecentlyViewed
+	 * @return An IncrementalResult that will be populated with the recently viewed items
+	 */
+	public IncrementalResult getRecentItems() {
+		return mDataManager.doQuery(
+				mDataManager.getUserContext().getRecentItems(), 
+				new DateComparator());
+	}
+	
+	/**
+	 * Mark an item as recently viewed
+	 * Mainly to be used for questions.
+	 * @param item
+	 */
+	public void markRecentlyViewed(QAModel item) {
+		mDataManager.markRecentlyViewed(item.getUniqueId());
+	}
+	
+	/**
+	 * Create a question object, from a creator context, title, and body
 	 * @param title
 	 * @param body
-	 * @return
+	 * @return The item created
 	 */
 	public QuestionItem createQuestion(String title, String body) {
 		UserContext creator = mDataManager.getUserContext();
@@ -81,7 +118,7 @@ public class QAController {
 	}
 	
 	/**
-	 * Create an answer to a question
+	 * Create an answer object to a given question
 	 * @param parent
 	 * @param body
 	 * @return
