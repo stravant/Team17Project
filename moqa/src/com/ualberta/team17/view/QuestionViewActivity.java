@@ -226,4 +226,9 @@ public class QuestionViewActivity extends Activity {
 		}*/
 		
 	}
+
+	public void favoriteQuestion(View v) {
+		System.out.println("Favorite Question!");
+		QAController.getInstance().addFavorite(mContent.getQuestion());
+	}
 }
