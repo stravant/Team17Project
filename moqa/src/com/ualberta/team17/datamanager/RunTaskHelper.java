@@ -11,40 +11,46 @@ import android.os.AsyncTask;
  *       };
  *   };
  */
-public abstract class RunTaskHelper {
+public abstract class RunTaskHelper<Res> {
 	/**
 	 * The task to be done, to be overridden
 	 */
-	public abstract void task();
+	public abstract Res task();
+	
+	/**
+	 * The process function on the original thread
+	 */
+	public void done(Res result) {}
 	
 	/**
 	 * Private AsyncTask, used to run the thread
 	 */
-	private class RunTaskTask extends AsyncTask<Void, Void, Void> {
+	private class RunTaskTask extends AsyncTask<Void, Void, Res> {
 		/**
 		 * Target task
 		 */
-		RunTaskHelper mTarget;
+		RunTaskHelper<Res> mTarget;
 		
 		/**
 		 * Construct a RunTaskTask with the target task to run
 		 * @param target
 		 */
-		public RunTaskTask(RunTaskHelper target) {
+		public RunTaskTask(RunTaskHelper<Res> target) {
 			mTarget = target;
 		}
 		
 		@Override
-		protected Void doInBackground(Void... input) {
-			mTarget.task();
-			return null;
+		protected Res doInBackground(Void... input) {
+			return mTarget.task();
 		}
 
 		@Override
 		protected void onProgressUpdate(Void... progress) {}
 
 		@Override
-		protected void onPostExecute(Void result) {}
+		protected void onPostExecute(Res result) {
+			mTarget.done(result);
+		}
 	}
 	
 	/**
