@@ -113,6 +113,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Visio
+*.~vsdx
 
 ### Java ###
 *.class

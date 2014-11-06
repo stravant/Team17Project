@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+import android.util.Log;
+
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.ItemType;
 
@@ -122,6 +124,21 @@ public class IncrementalResult {
 				return result;
 			}
 		}
+
+		@Override
+		public void setCompareDirection(SortDirection direction) {
+			throw new UnsupportedOperationException("Compare direction not supported on disambiguating comparator.");
+		}
+
+		@Override
+		public SortDirection getCompareDirection() {
+			throw new UnsupportedOperationException("Compare direction not supported on disambiguating comparator.");
+		}
+
+		@Override
+		public String getFilterField() {
+			throw new UnsupportedOperationException("Filter field not supported on disambiguating comparator.");
+		}
 	}
 	
 	/**
@@ -206,11 +223,13 @@ public class IncrementalResult {
 		for (QAModel model: objects) {
 			// Find out where to add it via binary search
 			int foundIndex = Collections.binarySearch(mResultList, model, mSort);
-			//Log.i("test", "FoundIndex: " + foundIndex);
 			if (foundIndex >= 0) {
 				// Already has the item, nothing to do
 			} else {
 				int insertIndex = (-foundIndex) - 1;
+				
+				// Add the item to our result list
+				mResultList.add(insertIndex, model);
 				
 				// If it follows the last item inserted in a logical block, then add it to the notify list
 				if (insertIndex == lastInsertAt + 1) {
@@ -226,7 +245,6 @@ public class IncrementalResult {
 					lastInsertAt = insertIndex;
 					insertListStart = lastInsertAt;
 				}
-				mResultList.add(insertIndex, model);
 			}
 		}
 		

@@ -3,44 +3,116 @@ package com.ualberta.team17.datamanager;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Bitmap.CompressFormat;
+import android.util.Log;
+
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 
 public class DataFilter {
 	private ItemType mTypeFilter;
-	private List<String> mFilterFields;
-	private List<String> mFieldFilters;
-	private List<FilterComparison> mFieldFilterComparisons;
+	private List<FieldFilter> mFieldFilters;
+	private Integer mMaxResults;
+	private Integer mResultsPage;
+
+	public class FieldFilter {
+		private String mField;
+		private String mFilter;
+		private FilterComparison mcomparisonMode;
+
+		private FieldFilter(String field, String filter, FilterComparison comparisonMode) {
+			mField = field;
+			mFilter = filter;
+			mcomparisonMode = comparisonMode;
+		}
+
+		public String getField() {
+			return mField;
+		}
+
+		public String getFilter() {
+			return mFilter;
+		}
+
+		public FilterComparison getComparisonMode() {
+			return mcomparisonMode;
+		}
+	}
 
 	public DataFilter() {
-		mFilterFields = new ArrayList<String>();
-		mFieldFilters = new ArrayList<String>();
-		mFieldFilterComparisons = new ArrayList<FilterComparison>();
+		mFieldFilters = new ArrayList<FieldFilter>();
 	}
 
 	public enum FilterComparison {
-		CONTAINS,
+		QUERY_STRING,
 		EQUALS,
 		NOT_EQUAL,
 		LESS_THAN,
-		GREATER_THAN
+		LESS_THAN_OR_EQUAL,
+		GREATER_THAN,
+		GREATER_THAN_OR_EQUAL
 	}
 
 	public void setTypeFilter(ItemType type) {
 		mTypeFilter = type;
 	}
 
-	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode) {
-		mFilterFields.add(field);
-		mFieldFilters.add(filter);
-		mFieldFilterComparisons.add(comparisonMode);
+	public ItemType getTypeFilter() {
+		return mTypeFilter;
 	}
 
-	public String getFilterString() {
-		throw new UnsupportedOperationException();
+	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode) {
+		mFieldFilters.add(new FieldFilter(field, filter, comparisonMode));
 	}
 	
+	public List<FieldFilter> getFieldFilters() {
+		return mFieldFilters;
+	}
+	
+	// TODO: Only accepts items exact equality right now
 	public Boolean accept(QAModel item) {
-		throw new UnsupportedOperationException();
+		// Type filter
+		if (getTypeFilter() != null && item.getItemType() != getTypeFilter())
+			return false;
+		
+		// For each filter
+		for (FieldFilter f: mFieldFilters) {
+			Object value = item.getField(f.getField());
+			
+			// If this object does not have the field, it can't pass
+			if (value == null && f.getField() != null)
+				return false;
+			
+			// See how we compare
+			int cmp = f.getFilter().compareTo(value.toString());
+			
+			// Check if we pass given the comparator to use
+			if (f.getComparisonMode() == FilterComparison.EQUALS) {
+				if (cmp != 0) return false;
+			} else if (f.getComparisonMode() == FilterComparison.NOT_EQUAL) {
+				if (cmp == 0) return false;
+			} else {
+				throw new UnsupportedOperationException("TODO: Implement more comparators");
+			}	
+		}
+		
+		// Passed all filters, accept
+		return true;
+	}
+
+	public Integer getMaxResults() {
+		return mMaxResults;
+	}
+
+	public void setMaxResults(Integer maxResults) {
+		mMaxResults = maxResults;
+	}
+
+	public Integer getPage() {
+		return mResultsPage;
+	}
+
+	public void setPage(Integer page) {
+		mResultsPage = page;
 	}
 }

@@ -1,6 +1,12 @@
 package com.ualberta.team17;
 
+import java.io.IOException;
 import java.util.Date;
+
+import android.util.Log;
+
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 /*
  * A QAItem represents a question or answer in the service.
@@ -8,6 +14,8 @@ import java.util.Date;
  * Also, can be upvoted.
  */
 public abstract class AuthoredTextItem extends AuthoredItem {
+	public static final String FIELD_BODY = "body";
+
 	private String mBody;
 	private transient int mUpvoteCount;
 	
@@ -30,5 +38,35 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 	public void upvote() {
 		mUpvoteCount++;
 		notifyViews();
-	}	
+	}
+	
+	@Override
+	public Object getField(String fieldName) {
+		if (fieldName.equals(FIELD_BODY)) {
+			return getBody();
+		} else {
+			return super.getField(fieldName);
+		}
+	}
+
+	public static abstract class GsonTypeAdapter<T extends AuthoredTextItem> extends AuthoredItem.GsonTypeAdapter<T> {
+		@Override
+		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
+			if (super.parseField(item, name, reader)) {
+				return true;
+			} else if (name.equals(AuthoredTextItem.FIELD_BODY)) {
+				item.mBody = reader.nextString();
+				return true;
+			}
+
+			return false;
+		}
+		
+		@Override
+		public void writeFields(AuthoredTextItem item, JsonWriter writer) throws IOException {
+			super.writeFields(item, writer);
+			writer.name(FIELD_BODY);
+			writer.value(item.getBody());
+		}
+	}
 }
