@@ -15,7 +15,7 @@ public class MoqaApplication extends Application {
 		super.onCreate();
 
 		// Make local data manager, and set the data to the test data set
-		LocalDataManager localDataManager = new LocalDataManager(getApplicationContext(), new UserContext());
+		LocalDataManager localDataManager = new LocalDataManager(getApplicationContext());
 		
 		// Make net data manager
 		Resources resources = getResources();
