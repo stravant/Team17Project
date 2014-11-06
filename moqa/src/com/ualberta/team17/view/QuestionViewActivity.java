@@ -1,7 +1,7 @@
 package com.ualberta.team17.view;
 
-import com.ualberta.team17.R;
 import com.ualberta.team17.QuestionItem;
+import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
 
 import android.app.Activity;
@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -27,6 +28,37 @@ public class QuestionViewActivity extends Activity {
 	/**
 	 * Constructor
 	 */
+	
+	private class CreateAnswerListener implements View.OnClickListener {
+		private Context mContext;
+		
+		public CreateAnswerListener(Context context){
+			mContext = context;
+		}
+		public void onClick(View v){
+			final EditText answerBody = new EditText(mContext);
+			
+			new AlertDialog.Builder(mContext)
+					.setTitle("Add an Answer")
+					.setView(answerBody)
+					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								String body = answerBody.getText().toString();
+								/*AnswerItem newAnswer = controller.createAnswer(mContent.getQuestion(), body);
+								mContent.addAnswers(newAnswer);*/
+							}
+					})
+					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int whichButton)
+						{
+						// Do Nothing!
+						}
+					})
+					.show();
+
+		}
+	}
+	
 	public QuestionViewActivity() {
 		mContent = new QuestionContent();
 	}
