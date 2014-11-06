@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -81,22 +83,21 @@ public class QuestionViewActivity extends Activity {
 					.show();
 					
 			}
-			else {
-				// Create the question here.
-			}
 			
-			TextView title = (TextView) findViewById(R.id.titleView);
-			title.setText(mContent.getQuestion().getTitle());
-			
-			ListView qaList = (ListView) findViewById(R.id.qaItemView);
-			ListAdapter adapter = mContent.getListAdapter(this, R.id.qaItemView);
+			if (mContent.getQuestion() != null) {
+				TextView title = (TextView) findViewById(R.id.titleView);
+				title.setText(mContent.getQuestion().getTitle());
+				
+				ListView qaList = (ListView) findViewById(R.id.qaItemView);
+				ListAdapter adapter = mContent.getListAdapter(this, R.id.qaItemView);
 			
 			qaList.setAdapter(adapter);
 			//((BaseAdapter) adapter).notifyDataSetChanged();
+			}
 		}
-		else {
+		/*else {
 			// TODO: Implement interactions with the controller to get Answers/Comments.
-		}
+		}*/
 		
-	}		
+	}
 }
