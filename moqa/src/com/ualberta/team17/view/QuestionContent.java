@@ -202,7 +202,7 @@ public class QuestionContent {
 	 * @param textViewResourceId The id of the resource to connect to.
 	 * @return A new ListAdapter for this question's content.
 	 */
-	public ListAdapter getListAdapter(Context context, int textViewResourceId) {
+	public ArrayAdapter getArrayAdapter(Context context, int textViewResourceId) {
 		return new QABodyAdapter(context, textViewResourceId, mQABodies);
 	}
 	

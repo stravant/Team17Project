@@ -3,6 +3,7 @@ package com.ualberta.team17.view;
 import java.util.List;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
@@ -14,6 +15,7 @@ import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
 
 import android.app.Activity;
@@ -23,6 +25,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -37,8 +40,8 @@ public class QuestionViewActivity extends Activity {
 	private final static boolean GENERATE_TEST_DATA = false;
 	
 	private QuestionContent mContent;
-	private QAController mController; 
-	
+	private QAController mController; 	
+	private ArrayAdapter mAdapter;
 	
 	/**
 	 * Listener that opens a pop-up to creating an answer
@@ -80,11 +83,33 @@ public class QuestionViewActivity extends Activity {
 	 * Method that sets the question for mContent
 	 * @param question
 	 */
-	private void loadQuestion(QuestionItem question) {
-		// make sure we aren't loading two questions at the same time
-		mContent = new QuestionContent();
+	private void loadContent(QuestionItem question) {
+		// make sure we aren't loading a mix of two questions at the same time
+		//did corey deal with this?
+		//mContent = new QuestionContent();
 		mContent.setQuestion(question);
-	}
+		//How does this work? the query statement is the same for when I was grabbing one question
+		IncrementalResult iRAC = mController.getChildren(question, new DateComparator());
+		iRAC.addObserver(new IIncrementalObserver() {
+			@Override
+			public void itemsArrived(List<QAModel> item, int index) {
+				ListView qaList = (ListView) findViewById(R.id.qaItemView);
+				for(QAModel qaitem : item ) {
+					switch(qaitem.mType) {
+					case Answer:
+						mContent.addAnswers((AnswerItem) qaitem);
+						break;
+					case Comment:
+						mContent.addComments((CommentItem) qaitem);
+					}
+				}
+				
+				mAdapter.notifyDataSetChanged();
+			}
+		});
+		
+	}	
+	
 	
 	/**
 	 * Method that queries the controller for a question based on Id
@@ -97,8 +122,9 @@ public class QuestionViewActivity extends Activity {
 		IncrementalResult queryResult = mController.getObjects(dFilter, new IdComparator());
 		//set up observer
 		queryResult.addObserver(new IIncrementalObserver() {
+			@Override
 			public void itemsArrived(List<QAModel> item, int index) {						
-				loadQuestion((QuestionItem)item.get(0));
+				loadContent((QuestionItem)item.get(0));
 			}			
 		});
 	}
@@ -107,7 +133,7 @@ public class QuestionViewActivity extends Activity {
 	 * Constructor
 	 */
 	public QuestionViewActivity() {
-		mContent = new QuestionContent();
+		mContent = new QuestionContent();		
 	}
 		
 	/**
@@ -121,9 +147,11 @@ public class QuestionViewActivity extends Activity {
 		
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();
+		//mAdapter = QuestionContent.getListAdapter()
 		
 		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));
 		QuestionItem question = null;
+		mAdapter = mContent.getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView);
 		
 		// get question from controller somehow
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
@@ -156,7 +184,7 @@ public class QuestionViewActivity extends Activity {
 							String title = titleText.getText().toString();
 							String body = titleText.getText().toString();
 							QuestionItem newQuestion = mController.createQuestion(title, body);
-							loadQuestion(newQuestion);							
+							loadContent(newQuestion);							
 						}
 						
 					})
@@ -177,7 +205,7 @@ public class QuestionViewActivity extends Activity {
 				title.setText(mContent.getQuestion().getTitle());
 				
 				ListView qaList = (ListView) findViewById(R.id.qaItemView);
-				ListAdapter adapter = mContent.getListAdapter(this, R.id.qaItemView);
+				ListAdapter adapter = mContent.getArrayAdapter(this, R.id.qaItemView);
 			
 			qaList.setAdapter(adapter);
 			//((BaseAdapter) adapter).notifyDataSetChanged();
