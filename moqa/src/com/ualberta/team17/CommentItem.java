@@ -17,11 +17,5 @@ public class CommentItem extends AuthoredTextItem {
 		public CommentItem read(JsonReader reader) throws IOException {
 			return readInto(new CommentItem(null, null, null, null, null, 0), reader);
 		}
-
-		@Override
-		public void write(JsonWriter arg0, CommentItem arg1) throws IOException {
-			// TODO Auto-generated method stub
-			
-		}
 	}
 }

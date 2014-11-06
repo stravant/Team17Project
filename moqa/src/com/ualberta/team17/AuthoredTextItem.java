@@ -3,6 +3,8 @@ package com.ualberta.team17;
 import java.io.IOException;
 import java.util.Date;
 
+import android.util.Log;
+
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
@@ -36,7 +38,16 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 	public void upvote() {
 		mUpvoteCount++;
 		notifyViews();
-	}	
+	}
+	
+	@Override
+	public Object getField(String fieldName) {
+		if (fieldName.equals(FIELD_BODY)) {
+			return getBody();
+		} else {
+			return super.getField(fieldName);
+		}
+	}
 
 	public static abstract class GsonTypeAdapter<T extends AuthoredTextItem> extends AuthoredItem.GsonTypeAdapter<T> {
 		@Override
@@ -49,6 +60,13 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 			}
 
 			return false;
+		}
+		
+		@Override
+		public void writeFields(AuthoredTextItem item, JsonWriter writer) throws IOException {
+			super.writeFields(item, writer);
+			writer.name(FIELD_BODY);
+			writer.value(item.getBody());
 		}
 	}
 }

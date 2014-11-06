@@ -3,6 +3,8 @@ package com.ualberta.team17.controller.test;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
+
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
@@ -23,12 +25,12 @@ import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
  *
  */
 public class DummyDataManager extends DataManager {
-	private UserContext mContext;
+	private UserContext mUserContext;
 	List<QAModel> items;
 	
-	public DummyDataManager()
-	{
-		mContext = null;
+	public DummyDataManager() {
+		super(null);
+		mUserContext = null;
 		items = new ArrayList<QAModel>();
 		
 		UniqueId questionId = new UniqueId();
@@ -46,11 +48,11 @@ public class DummyDataManager extends DataManager {
 	}
 	
 	public void setUserContext(UserContext ctx) {
-		mContext = ctx;
+		mUserContext = ctx;
 	}
 	
 	public UserContext getUserContext() {
-		return mContext;
+		return mUserContext;
 	}
 	
 	/**
