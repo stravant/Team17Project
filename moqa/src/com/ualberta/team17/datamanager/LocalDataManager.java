@@ -60,6 +60,11 @@ public class LocalDataManager implements IDataSourceManager {
 	private boolean mDataDirty = false;
 	
 	/**
+	 * Has the data load started yet
+	 */
+	private boolean mDataLoadStarted = false;
+	
+	/**
 	 * A lock on our data
 	 */
 	private ReentrantLock mDataLock = new ReentrantLock();
@@ -125,55 +130,6 @@ public class LocalDataManager implements IDataSourceManager {
 	private static final String LDM_CATEGORY = "LocalDataManager";
 	
 	/**
-	 * An AsyncTask for loading in the QAModel entries initially.
-	 */
-	private class LoadDataFromFilesystemTask extends AsyncTask<Void, Void, List<QAModel>> {
-		@Override
-		protected List<QAModel> doInBackground(Void... input) {
-			// Initialize a list for the results
-			List<QAModel> result = new ArrayList<QAModel>();
-			
-			// Read in the data
-			FileInputStream in = mUserContext.getLocalDataSource(mContext, LDM_CATEGORY);
-			if (in == null) {
-				// No data yet, return empty array
-				return result;
-			} else {
-				readItemData(in, result);
-			}
-			try {
-				in.close();
-			} catch (IOException e) { /* WTF?? How can I handle closing a file failing? */ }
-			
-			// Now available
-			mLastAvailable = Calendar.getInstance().getTime();
-			
-			// Return the result
-			return result;
-		}
-
-		@Override
-		protected void onProgressUpdate(Void... progress) {}
-
-		@Override
-		protected void onPostExecute(List<QAModel> result) {
-			mDataLock.lock();
-			
-			// Actual line that sets our data
-			mData = result;
-			
-			// Notify that we are available now
-			notifyDataSourceAvailable();	
-			
-			// Notify that we are ready
-			mDataBecomeReady.signalAll();
-			mDataLock.unlock();
-			
-			Log.i("app", "LocalDataManager :: Finish loading data.");
-		}
-	};
-	
-	/**
 	 * Construct a LocalDataManager, doing FileIO for a given 
 	 * user, using a given App context.
 	 * @param context The app context to use.
@@ -193,15 +149,18 @@ public class LocalDataManager implements IDataSourceManager {
 	}
 	
 	/**
-	 * Load in the data from the file system
+	 * Force a  load of the local data
 	 */
 	public void asyncLoadData() {
-		// Start a task to read in and cache the local items
-		AsyncTask<Void, Void, List<QAModel>> load = new LoadDataFromFilesystemTask();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-		    load.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		} else {
-		    load.execute();
+		if (mData == null) {
+			new RunTaskHelper() {
+				@Override
+				public void task() {
+					mDataLock.lock();
+					maybeDoInitialDataQuery();
+					mDataLock.unlock();
+				}
+			};
 		}
 	}
 	
@@ -409,6 +368,58 @@ public class LocalDataManager implements IDataSourceManager {
 	}
 	
 	/**
+	 * Private utility method to do the initial query of data on the
+	 * data manager. Called by the query methods.
+	 * Yields until the save has completed if it was needed.
+	 * PRECONDITION: Current thread must be holding the mDataLock
+	 */
+	private void maybeDoInitialDataQuery() {
+		if (mDataLoadStarted) {
+			if (mData == null) {
+				// Wait for the data
+				try {
+					mSaveCompleted.await();
+				} catch (InterruptedException e) {}
+			} else {
+				// Otherwise, data is ready, just return
+				return;
+			}
+		} else {
+			Log.i("app", "Doing Initial Query");
+			
+			// Start loading data
+			mDataLoadStarted = true;
+			
+			// Start loading the data
+			List<QAModel> result = new ArrayList<QAModel>();
+			
+			// Read in the data
+			FileInputStream in = mUserContext.getLocalDataSource(mContext, LDM_CATEGORY);
+			if (in == null) {
+				// No data yet, return empty array, nothing to do
+			} else {
+				readItemData(in, result);
+			}
+			try {
+				in.close();
+			} catch (IOException e) { /* WTF?? How can I handle closing a file failing? */ }
+			
+			// Actual line that sets our data
+			mData = result;
+			
+			// Now available
+			mLastAvailable = Calendar.getInstance().getTime();
+			
+			// Notify that we are available now
+			notifyDataSourceAvailable();
+			
+			// Notify that we are ready
+			mDataBecomeReady.signalAll();
+			Log.i("app", "Done initial query");
+		}
+	}
+	
+	/**
 	 * Query the LocalData using a given query, and a given result to put the results
 	 * into.
 	 * @param filter
@@ -416,9 +427,6 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	@Override
 	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result) {
-		if (!isAvailable())
-			throw new IllegalStateException("Must be available to be queried.");
-		
 		new RunTaskHelper() {
 			@Override
 			public void task() {
@@ -434,12 +442,17 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param compare
 	 * @param result
 	 */
-	private void doFilterQuery(DataFilter filter, IItemComparator compare, IncrementalResult result) {
+	private void doFilterQuery(DataFilter filter, IItemComparator compare, IncrementalResult result) {		
 		// Create an array for the results
 		List<QAModel> packedItem = new ArrayList<QAModel>();
 		
 		// Main query loop
 		mDataLock.lock(); // Lock during iteration
+		
+		// If the initial data load has not started yet, then we
+		// need to do the data load in this task.
+		maybeDoInitialDataQuery();
+		
 		//Log.i("lock", "DoFilterQuery Lock <" + mData.size() + ">");
 		for (QAModel item: mData) {
 			if (filter.accept(item)) {
@@ -459,9 +472,6 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	@Override
 	public void query(final List<UniqueId> ids, final IncrementalResult result) {
-		if (!isAvailable())
-			throw new IllegalStateException("Must be available to be queried.");
-		
 		// Do query async
 		new RunTaskHelper() {
 			@Override
@@ -484,6 +494,10 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Main query loop
 		mDataLock.lock(); // Lock during iteration
+		
+		// Do the initial query if needed
+		maybeDoInitialDataQuery();
+		
 		//Log.i("lock", "doIdListQuery Lock");
 		for (QAModel item: mData) {
 			// TODO: Make this more efficient
@@ -507,13 +521,14 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param item The item to save.
 	 */
 	@Override
-	public boolean saveItem(QAModel item) {
-		if (!isAvailable())
-			throw new IllegalStateException("Must be available to save.");		
-	
+	public boolean saveItem(QAModel item) {	
 		// Add the item to our data array if it isn't there already, and if we
 		// have to add it, mark as dirty.
 		mDataLock.lock();
+		
+		// Test
+		maybeDoInitialDataQuery();
+		
 		//Log.i("lock", "saveItem Lock");
 		found: {
 			for (QAModel currentItem: mData) {

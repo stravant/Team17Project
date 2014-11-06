@@ -60,9 +60,6 @@ public class DataManager {
 		mNetworkDataStore = net;
 		mLocalDataStore = local;
 		
-		// Start off the local data query
-		((LocalDataManager)mLocalDataStore).asyncLoadData();
-		
 		// When an item arrives from the network, cache it locally
 		mNetworkDataStore.addDataLoadedListener(new IDataLoadedListener() {
 			@Override
@@ -82,12 +79,8 @@ public class DataManager {
 	 */
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
 		IncrementalResult result = new IncrementalResult(sortComparator);
-		if (mLocalDataStore.isAvailable()) {
-			mLocalDataStore.query(filter, sortComparator, result);
-		}
-		if (mNetworkDataStore.isAvailable()) {
-			mNetworkDataStore.query(filter, sortComparator, result);
-		}
+		mLocalDataStore.query(filter, sortComparator, result);
+		mNetworkDataStore.query(filter, sortComparator, result);
 		return result;
 	}
 
@@ -117,8 +110,6 @@ public class DataManager {
 			}
 			if (userContext != null) {
 				mLocalDataStore = new LocalDataManager(mContext, userContext);
-				// Make the data store start loading local data
-				((LocalDataManager)mLocalDataStore).asyncLoadData();
 			}
 		}
 	}
