@@ -16,6 +16,7 @@ import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.comparators.DateComparator;
 
 public class QAController {
 	private static QAController mControllerInstance;
@@ -48,12 +49,21 @@ public class QAController {
 	 * Get all of the children of a given item
 	 * @param question
 	 * @param sort
-	 * @return
+	 * @return An incremental result that will be populated with the results
 	 */
 	public IncrementalResult getChildren(QAModel item, IItemComparator sort) {
 		DataFilter filter = new DataFilter();
 		filter.addFieldFilter(QAModel.FIELD_ID, item.getUniqueId().toString(), FilterComparison.EQUALS);
 		return mDataManager.doQuery(filter, sort);
+	}
+	
+	/**
+	 * Gets the current users favorites
+	 * @return An incremental result that will be populated with the users favorites.
+	 */
+	public IncrementalResult getFavorites() {
+		return mDataManager.doQuery(
+				mDataManager.getUserContext().getFavorites(), new DateComparator());
 	}
 	
 	/**

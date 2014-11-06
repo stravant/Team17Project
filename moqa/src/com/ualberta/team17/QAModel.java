@@ -105,8 +105,6 @@ public abstract class QAModel {
 
 			writer.name(FIELD_TYPE);
 			writer.value(model.getItemType().toString().toLowerCase());
-			writer.name("mUpvoteCount");
-			writer.value(0);
 		}
 
 		@Override

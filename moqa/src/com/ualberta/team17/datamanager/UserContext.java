@@ -10,6 +10,12 @@ import java.util.List;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.ualberta.team17.QAModel;
 import com.ualberta.team17.UniqueId;
 
 /*
@@ -34,9 +40,16 @@ public class UserContext implements Serializable {
 	 */
 	private List<UniqueId> mUserReplies;
 	
+	/**
+	 * The items that we have stored locally, waiting to be
+	 * pushed to the network when we next connect.
+	 */
+	private List<UniqueId> mLocalOnlyItems;
+	
 	public UserContext() {
 		mUserFavorites = new ArrayList<UniqueId>();
 		mUserReplies = new ArrayList<UniqueId>();
+		mLocalOnlyItems = new ArrayList<UniqueId>();
 	}
 	
 	/**
@@ -46,6 +59,50 @@ public class UserContext implements Serializable {
 	public UserContext(String username) {
 		this();
 		mUserName = username;
+	}
+	
+	/**
+	 * Load in the UserContext from a serialized copy
+	 * @param elem
+	 */
+	public void loadFromJson(JsonElement elem) {
+		mUserFavorites.clear();
+		mLocalOnlyItems.clear();
+		mUserReplies.clear();
+		//
+		for (JsonElement item: elem.getAsJsonObject().get("favorites").getAsJsonArray()) {
+			mUserFavorites.add(UniqueId.fromString(item.getAsString()));
+		}
+		for (JsonElement item: elem.getAsJsonObject().get("local_only").getAsJsonArray()) {
+			mLocalOnlyItems.add(UniqueId.fromString(item.getAsString()));
+		}
+		for (JsonElement item: elem.getAsJsonObject().get("replies").getAsJsonArray()) {
+			mUserReplies.add(UniqueId.fromString(item.getAsString()));
+		}
+	}
+	
+	/**
+	 * Write out the UserContext to a serialized copy
+	 * @return
+	 */
+	public JsonElement saveToJson() {
+		JsonArray favoriteArray = new JsonArray();
+		for (UniqueId item: mUserFavorites) {
+			favoriteArray.add(new JsonPrimitive(item.toString()));
+		}
+		JsonArray localOnlyArray = new JsonArray();
+		for (UniqueId item: mLocalOnlyItems) {
+			localOnlyArray.add(new JsonPrimitive(item.toString()));
+		}
+		JsonArray repliesArray = new JsonArray();
+		for (UniqueId item: mUserReplies) {
+			repliesArray.add(new JsonPrimitive(item.toString()));
+		}
+		JsonObject obj = new JsonObject();
+		obj.add("favorites", favoriteArray);
+		obj.add("local_only", localOnlyArray);
+		obj.add("replies", repliesArray);
+		return obj;
 	}
 	
 	/**
@@ -96,47 +153,5 @@ public class UserContext implements Serializable {
 	public void addReply(UniqueId itemId) {
 		if (!mUserReplies.contains(itemId))
 			mUserReplies.add(itemId);
-	}
-	
-	
-	/**
-	 * Get the name of the file that we are using to store the
-	 * settings in
-	 * @return The name of the file
-	 */
-	private String getDataLocationName() {
-		// Use the user's Id as the location
-		return "TestFile"; //getUserId().toString();
-	}
-	
-	/**
-	 * Get the file a handle to the source of settings data
-	 * @param ctx The context to get the source from
-	 * @return A file, that is the location to read from
-	 *  given the current Context and UserContext. 
-	 *  If the user hasn't saved any data yet, return null
-	 */
-	public FileInputStream getLocalDataSource(Context ctx, String category) {
-		try {
-			return ctx.openFileInput(getDataLocationName() + "_" + category);
-		} catch (FileNotFoundException e) {
-			Log.e("app", "Data Source file not found!:" + e.getMessage());
-			// File was not found, we return null, letting the caller
-			// create a file if they want to.
-			return null;
-		}
-	}
-	
-	/**
-	 * Destination to save changes to, given the current Context and UserContext
-	 * @return A file, that is the location to write
-	 *  to given the current Context and UserContext
-	 */
-	public FileOutputStream getLocalDataDestination(Context ctx, String category) {
-		try {
-			return ctx.openFileOutput(getDataLocationName() + "_" + category, Context.MODE_PRIVATE);
-		} catch (FileNotFoundException e) {
-			throw new Error("Fatal Error: Can't write to application directory");
-		}
 	}
 }

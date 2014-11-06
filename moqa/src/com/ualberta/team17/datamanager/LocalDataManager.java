@@ -45,11 +45,6 @@ public class LocalDataManager implements IDataSourceManager {
 	private Context mContext;
 	
 	/**
-	 * The UserContext of the user to load data for
-	 */
-	private UserContext mUserContext;
-	
-	/**
 	 * Our set of in-memory data
 	 */
 	private volatile List<QAModel> mData;
@@ -135,10 +130,9 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param context The app context to use.
 	 * @param user    The user to do the IO for
 	 */
-	public LocalDataManager(Context context, UserContext user) {
+	public LocalDataManager(Context context) {
 		// Set the params
 		mContext = context;
-		mUserContext = user;
 		
 		// Availability
 		// Currently: Since Linux epoch to start
@@ -183,24 +177,10 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param in
 	 * @param buffer Buffer to put the read items into
 	 */
-	private void readItemData(FileInputStream in, List<QAModel> buffer) {
-		// Read in the data
-		StringBuffer fileContent = new StringBuffer("");
-		try {
-			byte[] tmpBuffer = new byte[1024];
-			int readCount;
-			while ((readCount = in.read(tmpBuffer)) != -1) { 
-				fileContent.append(new String(tmpBuffer, 0, readCount)); 
-			}
-		} catch (IOException e) {
-			// TODO: Handle
-			return;
-		}
-		String data = fileContent.toString();
-		
+	private void readItemData(String input, List<QAModel> buffer) {
 		// Get the JSON element and parse
 		JsonParser parser = new JsonParser();
-		JsonElement elem = parser.parse(data);
+		JsonElement elem = parser.parse(input);
 		
 		// Read the objects into our in-memory format
 		Gson gson = DataManager.getGsonObject();
@@ -248,7 +228,7 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param out
 	 * @param buffer The buffer to write out items from
 	 */
-	private void writeItemData(FileOutputStream out, List<QAModel> buffer) {
+	private String writeItemData(List<QAModel> buffer) {
 		// Encode the JSOn for the buffer
 		Log.i("app", "LocalDataManager :: Writing out " + buffer.size() + " objects.");
 		Gson gson = DataManager.getGsonObject();
@@ -262,16 +242,8 @@ public class LocalDataManager implements IDataSourceManager {
 			array.add(itemAndType);
 		}
 		
-		String data = gson.toJson(array);
-
-		// Write out the encoded data
-		try {
-			OutputStreamWriter outWriter = new OutputStreamWriter(out);
-			outWriter.append(data);
-			outWriter.flush();
-		} catch (IOException e) {
-			// TODO: Handle
-		}
+		// Return the encoded data
+		return gson.toJson(array);
 	}
 	
 	/**
@@ -279,49 +251,15 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @return Whether the write was successful
 	 */
 	public boolean writeTestData(String data) {
-		try {
-			FileOutputStream out = mUserContext.getLocalDataDestination(mContext, LDM_CATEGORY);
-			OutputStreamWriter outWriter = new OutputStreamWriter(out);
-			outWriter.append(data);
-			outWriter.flush();
-			out.close();
-			return true;
-		} catch (IOException e) {
-			return false;
-		}
+		DataManager.writeLocalData(mContext, LDM_CATEGORY, data);
+		return true;
 	}
 	
 	/**
 	 * Debug method: Dump local data
 	 */
 	public String dumpLocalData() {
-		try {
-			// Read in the data
-			FileInputStream in = mUserContext.getLocalDataSource(mContext, LDM_CATEGORY);
-			if (in == null) {
-				Log.i("app", "Failed to open input stream");
-				return null;
-			}
-			
-			StringBuffer fileContent = new StringBuffer("");
-			try {
-				byte[] tmpBuffer = new byte[1024];
-				int readCount;
-				while ((readCount = in.read(tmpBuffer)) != -1) { 
-					fileContent.append(new String(tmpBuffer, 0, readCount)); 
-				}
-			} catch (IOException e) {
-				return null;
-			} finally {
-				in.close();
-			}
-			String data = fileContent.toString();
-			
-			// Return it
-			return data;
-		} catch (IOException e) {
-			return null;
-		}
+		return DataManager.readLocalData(mContext, LDM_CATEGORY);
 	}
 	
 	/**
@@ -384,9 +322,7 @@ public class LocalDataManager implements IDataSourceManager {
 				// Otherwise, data is ready, just return
 				return;
 			}
-		} else {
-			Log.i("app", "Doing Initial Query");
-			
+		} else {	
 			// Start loading data
 			mDataLoadStarted = true;
 			
@@ -394,15 +330,12 @@ public class LocalDataManager implements IDataSourceManager {
 			List<QAModel> result = new ArrayList<QAModel>();
 			
 			// Read in the data
-			FileInputStream in = mUserContext.getLocalDataSource(mContext, LDM_CATEGORY);
+			String in = DataManager.readLocalData(mContext, LDM_CATEGORY);
 			if (in == null) {
 				// No data yet, return empty array, nothing to do
 			} else {
 				readItemData(in, result);
 			}
-			try {
-				in.close();
-			} catch (IOException e) { /* WTF?? How can I handle closing a file failing? */ }
 			
 			// Actual line that sets our data
 			mData = result;
@@ -415,7 +348,6 @@ public class LocalDataManager implements IDataSourceManager {
 			
 			// Notify that we are ready
 			mDataBecomeReady.signalAll();
-			Log.i("app", "Done initial query");
 		}
 	}
 	
@@ -573,14 +505,8 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// If we are still dirty, do the save
 		if (mDataDirty) {
-			FileOutputStream out = mUserContext.getLocalDataDestination(mContext, LDM_CATEGORY);
-			if (out != null) {
-				// Do the write
-				writeItemData(out, mData);
-			}
-			try {
-				out.close();
-			} catch (IOException e) { /* nothing we can do about closing a file handle failing */ }
+			String data = writeItemData(mData);
+			DataManager.writeLocalData(mContext, LDM_CATEGORY, data);
 			mDataDirty = false;
 			mSaveCompleted.signalAll();
 		}
