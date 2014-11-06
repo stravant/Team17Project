@@ -1,5 +1,6 @@
 package com.ualberta.team17.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ualberta.team17.AnswerItem;
@@ -80,37 +81,50 @@ public class QuestionViewActivity extends Activity {
 	
 	/**
 	 * Method that sets the question for mContent
+	 * @author Joel
 	 * @param question
 	 */
 	private void loadContent(QuestionItem question) {
 		// make sure we aren't loading a mix of two questions at the same time		
 		mContent = new QuestionContent();
 		mContent.setQuestion(question);
+		TextView title = (TextView)findViewById(R.id.titleView);
+		ListView listview = (ListView)findViewById(R.id.qaItemView);
+		listview.setAdapter(mAdapter);
+		title.setText(mContent.getQuestion().getTitle());
 		IncrementalResult iRAC = mController.getChildren(question, new DateComparator());
 		iRAC.addObserver(new IIncrementalObserver() {
 			@Override
-			public void itemsArrived(List<QAModel> item, int index) {
+			public void itemsArrived(List<QAModel> item, int index) {				
 				ListView qaList = (ListView) findViewById(R.id.qaItemView);
+				List<CommentItem> comments = new ArrayList<CommentItem>();
 				for(QAModel qaitem : item ) {
 					switch(qaitem.mType) {
 					case Answer:
 						mContent.addAnswers((AnswerItem) qaitem);
 						break;
 					case Comment:
-						mContent.addComments((CommentItem) qaitem);
+						comments.add((CommentItem)qaitem);
 						break;
 					}
 				}
-				
-				mAdapter.notifyDataSetChanged();
+				//this functionality should be moved to content
+				for (CommentItem comment : comments) {
+					mContent.addComments(comment);
+				}
+				qaList.invalidate();
+				qaList.setAdapter(mContent.getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));
+				//mAdapter.notifyDataSetChanged();
 			}
 		});
+		//mAdapter.notifyDataSetChanged();
 		
 	}	
 	
 	
 	/**
 	 * Method that queries the controller for a question based on Id
+	 * @author Joel
 	 * @param id
 	 */
 	private void queryQuestion(UniqueId id) {		
@@ -144,8 +158,7 @@ public class QuestionViewActivity extends Activity {
 		setContentView(R.layout.activity_questionview);
 		
 		Intent intent = this.getIntent();
-		mController = QAController.getInstance();
-		//mAdapter = QuestionContent.getListAdapter()
+		mController = QAController.getInstance();		
 		
 		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));
 		QuestionItem question = null;
@@ -154,8 +167,7 @@ public class QuestionViewActivity extends Activity {
 		// get question from controller somehow
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
 			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
-			queryQuestion(id);
-			//question = (QuestionItem)queryResult.getCurrentResultsOfType(ItemType.Question).get(0);
+			queryQuestion(id);			
 		}		
 		
 		if(intent.getSerializableExtra(QUESTION_ID_EXTRA) == null) {
@@ -181,8 +193,8 @@ public class QuestionViewActivity extends Activity {
 						public void onClick(DialogInterface dialog, int which) {
 							String title = titleText.getText().toString();
 							String body = titleText.getText().toString();
-							QuestionItem newQuestion = mController.createQuestion(title, body);
-							loadContent(newQuestion);							
+							//QuestionItem newQuestion = mController.createQuestion(title, body);
+							//loadContent(newQuestion);							
 						}
 						
 					})
