@@ -18,6 +18,6 @@ public class AnswerItem extends AuthoredTextItem {
 		@Override
 		public AnswerItem read(JsonReader reader) throws IOException {
 			return readInto(new AnswerItem(null, null, null, null, null, 0), reader);
-		}
+		}	
 	}
 }

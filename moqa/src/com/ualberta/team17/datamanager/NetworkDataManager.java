@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
 import io.searchbox.core.Index;
@@ -22,22 +24,19 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import com.ualberta.team17.AnswerItem;
-import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
-import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
-import com.ualberta.team17.datamanager.comparators.IdComparator;
 
 /**
  * Manages all interaction with the Elastic Search server.
  *
  * @author michaelblouin
  */
-public class NetworkDataManager implements IDataSourceManager {
+@SuppressLint("DefaultLocale") public class NetworkDataManager implements IDataSourceManager {
 	protected Boolean mIsAvailable = null;
 
 	protected String mEsServerUrl;
@@ -245,7 +244,12 @@ public class NetworkDataManager implements IDataSourceManager {
 			task.execute();
 	}
 
-	@SuppressLint("DefaultLocale") @Override
+	@Override
+	public void query(List<UniqueId> ids, IncrementalResult result) {
+		throw new NotImplementedException("NetworkDataManager has not yet implemented query(List<UniqueId>)");
+	}
+
+	@Override
 	public boolean saveItem(QAModel item) {
 		return saveItem(item, null);
 	}
@@ -303,7 +307,6 @@ public class NetworkDataManager implements IDataSourceManager {
 		mDataLoadedListenersLock.unlock();
 	}
 
-	@Override
 	public void notifyDataItemLoaded(QAModel item) {
 		mDataLoadedListenersLock.lock();
 
@@ -332,7 +335,6 @@ public class NetworkDataManager implements IDataSourceManager {
 		mDataSourceAvailableListenersLock.unlock();
 	}
 
-	@Override
 	public void notifyDataSourceAvailable() {
 		mDataSourceAvailableListenersLock.lock();
 

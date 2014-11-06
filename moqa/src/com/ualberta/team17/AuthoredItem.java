@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.google.gson.TypeAdapter;
@@ -69,6 +70,7 @@ public abstract class AuthoredItem extends QAModel {
 	}
 
 	public static abstract class GsonTypeAdapter<T extends AuthoredItem> extends QAModel.GsonTypeAdapter<T> {
+		@SuppressLint("SimpleDateFormat")
 		private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 		@Override
@@ -99,11 +101,8 @@ public abstract class AuthoredItem extends QAModel {
 		}
 
 		@Override
-		public void writeFields(AuthoredItem item, JsonWriter writer) throws IOException {
-			// We directly inherit from QAModel, so we have to use this hack instead of
-			// the normal super.writeFields
-			// TODO: Tidy that up
-			writeBaseFields(item, writer); 
+		public void writeFields(JsonWriter writer, T item) throws IOException {
+			super.writeFields(writer, item); 
 			
 			// Rest of fields
 			writer.name(FIELD_PARENT);

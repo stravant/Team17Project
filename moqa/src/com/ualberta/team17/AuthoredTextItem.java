@@ -63,8 +63,8 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 		}
 
 		@Override
-		public void writeFields(AuthoredTextItem item, JsonWriter writer) throws IOException {
-			super.writeFields(item, writer);
+		public void writeFields(JsonWriter writer, T item) throws IOException {
+			super.writeFields(writer, item);
 			writer.name(FIELD_BODY);
 			writer.value(item.getBody());
 		}

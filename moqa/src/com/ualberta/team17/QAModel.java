@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
 import android.annotation.SuppressLint;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -22,8 +21,6 @@ public abstract class QAModel {
 	public ItemType mType;
 
 	public UniqueId mUniqueId;
-	
-	public static final String FIELD_ID = "id";
 	
 	/* Ctor */
 	public QAModel(ItemType type, UniqueId id) {
@@ -84,13 +81,6 @@ public abstract class QAModel {
 
 			return false;
 		}
-		
-		public void writeBaseFields(QAModel item, JsonWriter writer) throws IOException {
-			writer.name(FIELD_ID);
-			writer.value(item.getUniqueId().toString());
-		}
-	
-		public abstract void writeFields(T item, JsonWriter writer) throws IOException;
 
 		public T readInto(T item, JsonReader reader) throws IOException {
 			reader.beginObject();
@@ -120,7 +110,7 @@ public abstract class QAModel {
 		}
 
 		@Override
-		public void writeFields(JsonWriter writer, T model) throws IOException {
+		public void write(JsonWriter writer, T model) throws IOException {
 			if (null == model) {
 				writer.nullValue();
 				return;
