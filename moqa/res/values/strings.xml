@@ -15,5 +15,5 @@
     <string name="comment">Comments</string>
     <string name="default_str">default string</string>
     <string name="default_num">0</string>
-
+    <string name="title_activity_login">LoginActivity</string>
 </resources>
