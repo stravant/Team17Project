@@ -114,38 +114,38 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		controller.login(userContext);
 	}
 	
-	/**
-	 * Basic test of DataManager functionality, querying for an item, and waiting 
-	 * for it to arrive.
-	 */
-	public void test_DataManager() {		
-		// Do a query
-		DataFilter f = new DataFilter();
-		f.addFieldFilter(AuthoredTextItem.FIELD_BODY, "testReply", FilterComparison.EQUALS);
-		IncrementalResult r = controller.getObjects(f, new IdComparator());
-		
-		// Get the results
-		assertTrue(waitForResults(r, 1));
-		assertEquals("testReply", r.getCurrentResults().get(0).getField(AuthoredTextItem.FIELD_BODY));
-	}
-	
 //	/**
-//	 * Test adding several new answers to a question, and then querying back those
-//	 * answers via getChildren.
+//	 * Basic test of DataManager functionality, querying for an item, and waiting 
+//	 * for it to arrive.
 //	 */
-//	public void test_AddSeveralChildren() {
-//		// Add the children
-//		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
-//		controller.createAnswer(q, "Answer 1 body.");
-//		controller.createAnswer(q, "Answer 2 body.");
-//		controller.createAnswer(q, "Answer 3 body.");
-//		controller.createComment(q, "Comment body.");
+//	public void test_DataManager() {		
+//		// Do a query
+//		DataFilter f = new DataFilter();
+//		f.addFieldFilter(AuthoredTextItem.FIELD_BODY, "testReply", FilterComparison.EQUALS);
+//		IncrementalResult r = controller.getObjects(f, new IdComparator());
 //		
-//		// Query them back
-//		IncrementalResult r = controller.getChildren(q, new IdComparator());
-//		assertTrue("Did not get back 4 results.", waitForResults(r, 4));
-//		assertEquals(3, r.getCurrentResultsOfType(ItemType.Answer));
-//		assertEquals(1, r.getCurrentResultsOfType(ItemType.Comment));
-//		
+//		// Get the results
+//		assertTrue(waitForResults(r, 1));
+//		assertEquals("testReply", r.getCurrentResults().get(0).getField(AuthoredTextItem.FIELD_BODY));
 //	}
+	
+	/**
+	 * Test adding several new answers to a question, and then querying back those
+	 * answers via getChildren.
+	 */
+	public void test_AddSeveralChildren() {
+		// Add the children
+		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
+		controller.createAnswer(q, "Answer 1 body.");
+		controller.createAnswer(q, "Answer 2 body.");
+		controller.createAnswer(q, "Answer 3 body.");
+		controller.createComment(q, "Comment body.");
+		
+		// Query them back
+		IncrementalResult r = controller.getChildren(q, new IdComparator());
+		assertTrue("Did not get back 4 results.", waitForResults(r, 4));
+		assertEquals(3, r.getCurrentResultsOfType(ItemType.Answer));
+		assertEquals(1, r.getCurrentResultsOfType(ItemType.Comment));
+		
+	}
 }
