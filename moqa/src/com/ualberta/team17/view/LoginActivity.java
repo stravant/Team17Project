@@ -13,7 +13,6 @@ import com.ualberta.team17.R;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.UserContext;
 
-
 public class LoginActivity extends Activity {
 
 	@Override
