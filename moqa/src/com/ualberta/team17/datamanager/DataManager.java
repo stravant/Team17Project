@@ -75,12 +75,25 @@ public class DataManager {
 	 * Query the DataManager for items, using a given filter and sort.
 	 * @param filter          A filter, specifying which items to get
 	 * @param sortComparator  A sort, specifying how to order the items in the IncrementalResult
-	 * @return An IncrementalResult to which the items will be added as they arrive, or null if the
+	 * @return An IncrementalResult to which the items will be added as they arrive
 	 */
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
 		IncrementalResult result = new IncrementalResult(sortComparator);
 		mLocalDataStore.query(filter, sortComparator, result);
 		mNetworkDataStore.query(filter, sortComparator, result);
+		return result;
+	}
+
+	/**
+	 * Query the DataManager for items with the given ids, returning them in the order defined by the given sort.
+	 * @param idList          The list of ids to query for
+	 * @param sortComparator  A sort, specifying how to order the items in the IncrementalResult
+	 * @return An IncrementalResult to which the items will be added as they arrive
+	 */
+	public IncrementalResult doQuery(List<UniqueId> idList, IItemComparator sortComparator) {
+		IncrementalResult result = new IncrementalResult(sortComparator);
+		mLocalDataStore.query(idList, result);
+		mNetworkDataStore.query(idList, result);
 		return result;
 	}
 
