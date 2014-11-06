@@ -127,7 +127,7 @@ public class QuestionListActivity extends Activity {
 			mQAModels = mIR.getCurrentResults();
 			break;
 		case MyActivity:
-			//ir = QAController.getInstance().getActivity();
+			
 			break;
 		case Favorites:
 			mIR = QAController.getInstance().getFavorites();
@@ -162,20 +162,24 @@ public class QuestionListActivity extends Activity {
 			}
 		});
 		
-		qList.setAdapter(new QuestionListAdapter(this, R.id.questionListView, mIR.getCurrentResults()));
+		if (mIR != null) {
+			qList.setAdapter(new QuestionListAdapter(this, R.id.questionListView, mIR.getCurrentResults()));
+		}
 	}
 	
 	private void addObserver(IncrementalResult ir) {
-		ir.addObserver(new IIncrementalObserver() {
-
-			@Override
-			public void itemsArrived(List<QAModel> item, int index) {
-				ListView qList = (ListView) findViewById(R.id.questionListView);
-				qList.invalidate();
-				
-				qList.setAdapter(new QuestionListAdapter(QuestionListActivity.this, R.id.questionListView, mIR.getCurrentResults()));
-			}
-		});
+		if (ir != null) {
+			ir.addObserver(new IIncrementalObserver() {
+	
+				@Override
+				public void itemsArrived(List<QAModel> item, int index) {
+					ListView qList = (ListView) findViewById(R.id.questionListView);
+					qList.invalidate();
+					
+					qList.setAdapter(new QuestionListAdapter(QuestionListActivity.this, R.id.questionListView, mIR.getCurrentResults()));
+				}
+			});
+		}
 	}
 	
 	/**
