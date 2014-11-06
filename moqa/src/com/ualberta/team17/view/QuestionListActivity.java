@@ -18,10 +18,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
+import com.ualberta.team17.datamanager.IItemComparator;
+import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.comparators.DateComparator;
+import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
+import com.ualberta.team17.view.QuestionTaxonomyActivity.taxonomies;
 
 /**
  * This class displays the list of requested questions and answers. It receives an intent
@@ -39,6 +46,7 @@ public class QuestionListActivity extends Activity {
 	
 	private DataFilter mDataFilter;
 	private List<QBody> mQuestions;
+	private QuestionTaxonomyActivity.taxonomies mTaxonomy;
 	
 	/**
 	 * This class holds a question and its child answers.
@@ -109,7 +117,39 @@ public class QuestionListActivity extends Activity {
 		setContentView(R.layout.activity_question_list);
 		
 		Intent filterIntent = this.getIntent();
-		mDataFilter = (DataFilter) filterIntent.getSerializableExtra(FILTER_EXTRA);
+		mTaxonomy = (QuestionTaxonomyActivity.taxonomies) filterIntent.getSerializableExtra(FILTER_EXTRA);
+		
+		IncrementalResult ir;
+		IItemComparator comp;
+		DataFilter df = new DataFilter();
+		
+		
+		switch (mTaxonomy) {
+		case AllQuestions:
+			comp = new DateComparator();
+			df.setTypeFilter(ItemType.Question);
+			ir = QAController.getInstance().getChildren(df, comp);
+			
+			break;
+		case MyActivity:
+			//ir = QAController.getInstance().getActivity();
+			break;
+		case Favorites:
+			//ir = QAController.getInstance().getFavorites();
+			break;
+		case MostUpvotedQs:
+			comp = new UpvoteComparator();
+			df.setTypeFilter(ItemType.Question);
+			ir = QAController.getInstance().getChildren(df, comp);
+			
+			break;	
+		case MostUpvotedAs:
+			comp = new UpvoteComparator();
+			df.setTypeFilter(ItemType.Answer);
+			ir = QAController.getInstance().getChildren(df, comp);
+			
+			break;
+	}
 		
 		mQuestions = new ArrayList<QBody>();
 		
