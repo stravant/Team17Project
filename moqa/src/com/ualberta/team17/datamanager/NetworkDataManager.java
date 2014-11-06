@@ -246,7 +246,7 @@ import com.ualberta.team17.UpvoteItem;
 
 	@Override
 	public void query(List<UniqueId> ids, IncrementalResult result) {
-		throw new NotImplementedException("NetworkDataManager has not yet implemented query(List<UniqueId>)");
+		return;
 	}
 
 	@Override
