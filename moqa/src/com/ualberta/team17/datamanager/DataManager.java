@@ -122,7 +122,7 @@ public class DataManager {
 	 */
 	public void saveItem(QAModel item) {
 		mNetworkDataStore.saveItem(item);
-		//mLocalDataStore.saveItem(item);
+		mLocalDataStore.saveItem(item);
 	}
 	
 	/**
