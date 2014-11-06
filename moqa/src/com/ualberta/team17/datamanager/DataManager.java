@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
@@ -162,7 +163,13 @@ public class DataManager {
 	 */
 	private void loadUserContextData(UserContext context) {
 		JsonParser parser = new JsonParser();
-		mUserContext.loadFromJson(parser.parse(DataManager.readLocalData(mContext, USER_CONTEXT_STORAGE)));
+		String data = DataManager.readLocalData(mContext, USER_CONTEXT_STORAGE);
+		if (data != null) {
+			JsonElement tree = parser.parse(data);
+			if (tree != null) {
+				mUserContext.loadFromJson(tree);
+			}
+		}
 	}
 
 	/**
@@ -177,6 +184,9 @@ public class DataManager {
 	}
 
 	public UserContext getUserContext() {
+		if (mUserContext == null) {
+			throw new RuntimeException("Attempt to getUserContext before user context has been set.");
+		}
 		return mUserContext;
 	}
 
@@ -210,6 +220,7 @@ public class DataManager {
 				fileContent.append(new String(tmpBuffer, 0, readCount)); 
 			}
 			inStream.close();
+			Log.i("app", "DataManager :: Read local file `AppData_" + fileName + "`");
 			return fileContent.toString();
 		} catch (FileNotFoundException e) {
 			Log.e("app", "Data Source file not found!:" + e.getMessage());
@@ -234,6 +245,7 @@ public class DataManager {
 			outWrite.write(data);
 			outWrite.flush();
 			outStream.close();
+			Log.i("app", "DataManager :: Wrote local file `AppData_" + fileName + "`");
 		} catch (FileNotFoundException e) {
 			throw new Error("Fatal Error: Can't write to application directory");
 		} catch (IOException e) {

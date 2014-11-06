@@ -11,7 +11,9 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
+import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
+import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
@@ -84,14 +86,13 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		return success;
 	}
 
+	public static final String TEST_DATA = "[[\"Question\",{\"id\":\"c4ca4238a0b923820dcc509a6f75849b\",\"type\":\"question\",\"parent\":\"0\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testBody\",\"title\":\"testTitle\"}],[\"Answer\",{\"id\":\"c81e728d9d4c2f636f067f89cc14862c\",\"type\":\"answer\",\"parent\":\"c4ca4238a0b923820dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply\"}],[\"Answer\",{\"id\":\"eccbc87e4b5ce2fe28308fd9f2a7baf3\",\"type\":\"answer\",\"parent\":\"c4ca4238a0b923820dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply2\"}],[\"Comment\",{\"id\":\"a87ff679a2f3e71d9181a67b7542122c\",\"type\":\"comment\",\"parent\":\"c81e728d9d4c2f636f067f89cc14862c\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"comment!\"}]]";
 	
 	public DataManagerTest() {
 		super(QuestionListActivity.class);
 	}
 	
-	public static final String TEST_DATA = "[[\"Question\",{\"id\":\"c4ca4238a0b923820dcc509a6f75849b\",\"type\":\"question\",\"parent\":\"0\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testBody\",\"title\":\"testTitle\"}],[\"Answer\",{\"id\":\"c81e728d9d4c2f636f067f89cc14862c\",\"type\":\"answer\",\"parent\":\"c4ca4238a0b923820dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply\"}],[\"Answer\",{\"id\":\"eccbc87e4b5ce2fe28308fd9f2a7baf3\",\"type\":\"answer\",\"parent\":\"c4ca4238a0b923820dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply2\"}],[\"Comment\",{\"id\":\"a87ff679a2f3e71d9181a67b7542122c\",\"type\":\"comment\",\"parent\":\"c81e728d9d4c2f636f067f89cc14862c\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"comment!\"}]]";
-	
-	public void test_DataManager() {
+	public void setUp() {
 		// User context
 		userContext = new UserContext("test_user");
 		
@@ -110,7 +111,14 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		
 		// Make the controller
 		controller = new QAController(manager);
-		
+		controller.login(userContext);
+	}
+	
+	/**
+	 * Basic test of DataManager functionality, querying for an item, and waiting 
+	 * for it to arrive.
+	 */
+	public void test_DataManager() {		
 		// Do a query
 		DataFilter f = new DataFilter();
 		f.addFieldFilter(AuthoredTextItem.FIELD_BODY, "testReply", FilterComparison.EQUALS);
@@ -119,5 +127,25 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		// Get the results
 		assertTrue(waitForResults(r, 1));
 		assertEquals("testReply", r.getCurrentResults().get(0).getField(AuthoredTextItem.FIELD_BODY));
+	}
+	
+	/**
+	 * Test adding several new answers to a question, and then querying back those
+	 * answers via getChildren.
+	 */
+	public void test_AddSeveralChildren() {
+		// Add the children
+		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
+		controller.createAnswer(q, "Answer 1 body.");
+		controller.createAnswer(q, "Answer 2 body.");
+		controller.createAnswer(q, "Answer 3 body.");
+		controller.createComment(q, "Comment body.");
+		
+		// Query them back
+		IncrementalResult r = controller.getChildren(q, new IdComparator());
+		assertTrue("Did not get back 4 results.", waitForResults(r, 4));
+		assertEquals(3, r.getCurrentResultsOfType(ItemType.Answer));
+		assertEquals(1, r.getCurrentResultsOfType(ItemType.Comment));
+		
 	}
 }
