@@ -17,16 +17,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
-import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
+import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
@@ -132,6 +131,7 @@ public class QuestionListActivity extends Activity {
 			break;
 		case Favorites:
 			mIR = QAController.getInstance().getFavorites();
+			mQAModels = mIR.getCurrentResults();
 			break;
 		case MostUpvotedQs:
 			comp = new UpvoteComparator();
@@ -145,20 +145,15 @@ public class QuestionListActivity extends Activity {
 			mIR = QAController.getInstance().getObjects(df, comp);
 			mQAModels = mIR.getCurrentResults();
 			break;
+		case RecentlyViewed:
+			mIR = QAController.getInstance().getRecentItems();
+			mQAModels = mIR.getCurrentResults();
 		default:
 			mQAModels = new ArrayList<QAModel>();
 			break;
 		}
 		
-		mIR.addObserver(new IIncrementalObserver() {
-
-			@Override
-			public void itemsArrived(List<QAModel> item, int index) {
-				ListView qList = (ListView) findViewById(R.id.questionListView);
-				qList.invalidate();
-				
-				qList.setAdapter(new QuestionListAdapter(QuestionListActivity.this, R.id.questionListView, mIR.getCurrentResults()));
-			}} );
+		this.addObserver(mIR);		
 		
 		ListView qList = (ListView) findViewById(R.id.questionListView);
 		qList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -169,7 +164,20 @@ public class QuestionListActivity extends Activity {
 		
 		qList.setAdapter(new QuestionListAdapter(this, R.id.questionListView, mIR.getCurrentResults()));
 	}
+	
+	private void addObserver(IncrementalResult ir) {
+		ir.addObserver(new IIncrementalObserver() {
 
+			@Override
+			public void itemsArrived(List<QAModel> item, int index) {
+				ListView qList = (ListView) findViewById(R.id.questionListView);
+				qList.invalidate();
+				
+				qList.setAdapter(new QuestionListAdapter(QuestionListActivity.this, R.id.questionListView, mIR.getCurrentResults()));
+			}
+		});
+	}
+	
 	/**
 	 * Handles the event when a listview item is clicked.
 	 * TODO Sort out how to pass QuestionItem to QuestionViewActivity
@@ -182,6 +190,8 @@ public class QuestionListActivity extends Activity {
 		QAModel qaModel = mIR.getCurrentResults().get(i);
 		QuestionItem question = (QuestionItem) qaModel;
 		if (question != null) {
+			QAController.getInstance().markRecentlyViewed(qaModel);
+			
 			Intent intent = new Intent(QuestionListActivity.this, QuestionViewActivity.class);
 			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, question.getUniqueId().toString());
 			startActivity(intent);
@@ -210,6 +220,10 @@ public class QuestionListActivity extends Activity {
 			applySort();
 			return true;
 		}
+		else if (id == R.id.action_sort_date) {
+			applyDateSort(item);
+			return true;
+		}
 		else if (id == R.id.action_search) {
 			search();
 			return true;
@@ -232,6 +246,34 @@ public class QuestionListActivity extends Activity {
 	 */
 	private void applySort() {
 		
+	}
+	
+	private void applyDateSort(MenuItem toggleDate) {
+
+		if (toggleDate.getTitle().toString().equals(getString(R.string.action_sort_date_asc))) {
+			toggleDate.setTitle(getString(R.string.action_sort_date_desc));
+			
+			IItemComparator comp = new DateComparator();
+			comp.setCompareDirection(SortDirection.Ascending);
+			DataFilter df = new DataFilter();
+			df.setTypeFilter(ItemType.Question);
+			mIR = QAController.getInstance().getObjects(df, comp);
+			mQAModels = mIR.getCurrentResults();
+			
+			this.addObserver(mIR);
+		}
+		else if (toggleDate.getTitle().toString().equals(getString(R.string.action_sort_date_desc))) {
+			toggleDate.setTitle(getString(R.string.action_sort_date_asc));
+			
+			IItemComparator comp = new DateComparator();
+			comp.setCompareDirection(SortDirection.Descending);
+			DataFilter df = new DataFilter();
+			df.setTypeFilter(ItemType.Question);
+			mIR = QAController.getInstance().getObjects(df, comp);
+			mQAModels = mIR.getCurrentResults();
+			
+			this.addObserver(mIR);
+		}
 	}
 	
 	/**
