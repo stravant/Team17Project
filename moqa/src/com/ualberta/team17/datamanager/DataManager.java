@@ -197,6 +197,7 @@ public class DataManager {
 			while ((readCount = inStream.read(tmpBuffer)) != -1) { 
 				fileContent.append(new String(tmpBuffer, 0, readCount)); 
 			}
+			inStream.close();
 			return fileContent.toString();
 		} catch (FileNotFoundException e) {
 			Log.e("app", "Data Source file not found!:" + e.getMessage());
@@ -220,6 +221,7 @@ public class DataManager {
 			OutputStreamWriter outWrite = new OutputStreamWriter(outStream);
 			outWrite.write(data);
 			outWrite.flush();
+			outStream.close();
 		} catch (FileNotFoundException e) {
 			throw new Error("Fatal Error: Can't write to application directory");
 		} catch (IOException e) {
