@@ -81,7 +81,7 @@ public abstract class AuthoredItem extends QAModel {
 				String parent = reader.nextString();
 
 				if (null != parent && !parent.equals("0")) {
-					item.mParentItem = new UniqueId(parent);
+					item.mParentItem = UniqueId.fromString(parent);
 				}
 
 				return true;

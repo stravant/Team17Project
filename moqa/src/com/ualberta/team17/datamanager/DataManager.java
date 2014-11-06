@@ -17,6 +17,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
@@ -96,7 +97,7 @@ public class DataManager {
 	 */
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
 		IncrementalResult result = new IncrementalResult(sortComparator);
-		//mLocalDataStore.query(filter, sortComparator, result);
+		mLocalDataStore.query(filter, sortComparator, result);
 		mNetworkDataStore.query(filter, sortComparator, result);
 		return result;
 	}
@@ -122,17 +123,29 @@ public class DataManager {
 	 */
 	public void saveItem(QAModel item) {
 		mNetworkDataStore.saveItem(item);
-		//mLocalDataStore.saveItem(item);
+		mLocalDataStore.saveItem(item);
 	}
 	
 	/**
 	 * Favorite an item
+	 * @param item The item to favorite
 	 */
 	public void favoriteItem(QAModel item) {
 		saveItem(item);
 		mUserContext.addFavorite(item.getUniqueId());
 		
 		// TODO: Make call async
+		saveUserContextData(mUserContext);
+	}
+	
+	/**
+	 * Mark an item as recently viewed at this time
+	 * @param item The uniqueId of the item to mark as recently viewed
+	 */
+	public void markRecentlyViewed(UniqueId item) {
+		mUserContext.addRecentItem(item);
+		
+		// TODO: Async call async
 		saveUserContextData(mUserContext);
 	}
 	
@@ -150,7 +163,13 @@ public class DataManager {
 	 */
 	private void loadUserContextData(UserContext context) {
 		JsonParser parser = new JsonParser();
-		mUserContext.loadFromJson(parser.parse(DataManager.readLocalData(mContext, USER_CONTEXT_STORAGE)));
+		String data = DataManager.readLocalData(mContext, USER_CONTEXT_STORAGE);
+		if (data != null) {
+			JsonElement tree = parser.parse(data);
+			if (tree != null) {
+				mUserContext.loadFromJson(tree);
+			}
+		}
 	}
 
 	/**
@@ -165,6 +184,9 @@ public class DataManager {
 	}
 
 	public UserContext getUserContext() {
+		if (mUserContext == null) {
+			throw new RuntimeException("Attempt to getUserContext before user context has been set.");
+		}
 		return mUserContext;
 	}
 
@@ -197,6 +219,8 @@ public class DataManager {
 			while ((readCount = inStream.read(tmpBuffer)) != -1) { 
 				fileContent.append(new String(tmpBuffer, 0, readCount)); 
 			}
+			inStream.close();
+			Log.i("app", "DataManager :: Read local file `AppData_" + fileName + "`");
 			return fileContent.toString();
 		} catch (FileNotFoundException e) {
 			Log.e("app", "Data Source file not found!:" + e.getMessage());
@@ -220,6 +244,8 @@ public class DataManager {
 			OutputStreamWriter outWrite = new OutputStreamWriter(outStream);
 			outWrite.write(data);
 			outWrite.flush();
+			outStream.close();
+			Log.i("app", "DataManager :: Wrote local file `AppData_" + fileName + "`");
 		} catch (FileNotFoundException e) {
 			throw new Error("Fatal Error: Can't write to application directory");
 		} catch (IOException e) {

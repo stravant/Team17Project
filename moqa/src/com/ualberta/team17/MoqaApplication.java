@@ -20,8 +20,8 @@ public class MoqaApplication extends Application {
 		// Make net data manager
 		Resources resources = getResources();
 		NetworkDataManager netDataManager = new NetworkDataManager(
-				resources.getString(R.string.esTestServer),
-				resources.getString(R.string.esTestIndex));
+				resources.getString(R.string.esProductionServer),
+				resources.getString(R.string.esProductionIndex));
 		
 		// Make the manager
 		DataManager dataManager = new DataManager(getApplicationContext(), localDataManager, netDataManager);
