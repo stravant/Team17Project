@@ -19,11 +19,5 @@ public class AnswerItem extends AuthoredTextItem {
 		public AnswerItem read(JsonReader reader) throws IOException {
 			return readInto(new AnswerItem(null, null, null, null, null, 0), reader);
 		}
-
-		@Override
-		public void write(JsonWriter arg0, AnswerItem arg1) throws IOException {
-			// TODO Auto-generated method stub
-			
-		}
 	}
 }

@@ -17,11 +17,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
+import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
+import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.comparators.IdComparator;
 
 /**
  * Manages all interaction with the Elastic Search server.
@@ -37,6 +41,113 @@ public class NetworkDataManager implements IDataSourceManager {
 	protected List<IDataSourceAvailableListener> mDataSourceAvailableListeners;
 	protected List<IDataLoadedListener> mDataLoadedListeners;
 
+	public NetworkDataManager(String esServerUrl, String esServerIndex) {
+		mEsServerUrl = esServerUrl;
+		mEsServerIndex = esServerIndex;
+	}
+	
+	@Override
+	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result) {
+		if (null == mJestClient) {
+			initJestClient();
+		}
+
+		ESSearchBuilder searchBuilder = new ESSearchBuilder(filter, comparator);
+		Search search = 
+			searchBuilder
+			.getBuilder()
+			.addIndex(mEsServerIndex)
+			.build();
+
+		QueryTask task = new QueryTask(search, result);
+		task.execute();
+	}
+	
+	@Override
+	public void query(List<UniqueId> ids, IncrementalResult result) {
+		for (UniqueId id: ids) {
+			DataFilter filter = new DataFilter();
+			filter.addFieldFilter("id", id.toString(), FilterComparison.EQUALS);
+			query(filter, new IdComparator(), result);
+		}
+	}
+
+	@Override
+	public boolean saveItem(QAModel item) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isAvailable() {
+		return null != mIsAvailable && mIsAvailable;
+	}
+
+	/**
+	 * Sets whether the data manager is available. If the availability has changed, the data manager notifies.
+	 * @param available The new available state of te data manager.
+	 */
+	protected void setIsAvailable(final boolean available) {
+		if (null == mIsAvailable || available != mIsAvailable) {
+			mIsAvailable = available;
+			notifyDataSourceAvailable();
+		}
+	}
+
+	@Override
+	public Date getLastDataSourceAvailableTime() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void addDataLoadedListener(IDataLoadedListener listener) {
+		if (null == mDataLoadedListeners) {
+			mDataLoadedListeners = new ArrayList<IDataLoadedListener>();
+		}
+
+		mDataLoadedListeners.add(listener);
+	}
+
+	public void notifyDataItemLoaded(QAModel item) {
+		if (null == mDataLoadedListeners)
+			return;
+
+		for (IDataLoadedListener listener: mDataLoadedListeners) {
+			listener.dataItemLoaded(this, item);
+		}
+	}
+
+	@Override
+	public void addDataSourceAvailableListener(
+			IDataSourceAvailableListener listener) {
+		if (null == mDataSourceAvailableListeners) {
+			mDataSourceAvailableListeners = new ArrayList<IDataSourceAvailableListener>();
+		}
+
+		mDataSourceAvailableListeners.add(listener);
+	}
+
+	public void notifyDataSourceAvailable() {
+		if (null == mDataSourceAvailableListeners)
+			return;
+
+		for (IDataSourceAvailableListener listener: mDataSourceAvailableListeners) {
+			listener.DataSourceAvailable(this);
+		}
+	}
+
+	/**
+	 * Initializes the jest client and factory if they haven't already been initialized.
+	 */
+	private void initJestClient() {
+		if (null == mJestClientFactory) {
+			mJestClientFactory = new JestClientFactory();
+			mJestClientFactory.setDroidClientConfig(new DroidClientConfig.Builder(mEsServerUrl).multiThreaded(false).build());
+		}
+		
+		if (null == mJestClient) {
+			mJestClient = mJestClientFactory.getObject();
+		}
+	}
 
 	/**
 	 * Class used for executing elastic search queries. Class is a child of AsyncTask<>, so it is asynchronous.
