@@ -111,6 +111,7 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		
 		// Make the controller
 		controller = new QAController(manager);
+		controller.login(userContext);
 	}
 	
 	/**

@@ -177,6 +177,9 @@ public class DataManager {
 	}
 
 	public UserContext getUserContext() {
+		if (mUserContext == null) {
+			throw new RuntimeException("Attempt to getUserContext before user context has been set.");
+		}
 		return mUserContext;
 	}
 
