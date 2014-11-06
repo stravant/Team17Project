@@ -24,33 +24,21 @@
         android:layout_below="@+id/bodyText"
         android:text="@string/upvote" />
 
-    <Button
-        android:id="@+id/favoriteButton"
-        style="?android:attr/buttonStyleSmall"
+    <TextView
+        android:id="@+id/authorText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/upvoteButton"
-        android:layout_alignBottom="@+id/upvoteButton"
-        android:layout_toRightOf="@+id/upvoteButton"
-        android:text="@string/favorite" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/upvoteButton"
+        android:ems="10" />
 
     <LinearLayout
         android:id="@+id/commentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/upvoteButton" 
-        android:orientation="vertical"
-        >
+        android:layout_below="@+id/authorText"
+        android:orientation="vertical" >
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/authorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/favoriteButton"
-        android:layout_alignBottom="@+id/favoriteButton"
-        android:layout_toRightOf="@+id/favoriteButton"
-        android:ems="10" />
 
 </RelativeLayout>

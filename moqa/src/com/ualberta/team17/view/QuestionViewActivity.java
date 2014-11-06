@@ -66,6 +66,7 @@ public class QuestionViewActivity extends Activity {
 								String body = answerBody.getText().toString();
 								AnswerItem newAnswer = mController.createAnswer(mContent.getQuestion(), body);								
 								mContent.addAnswers(newAnswer);
+								loadContent(mContent.getQuestion());
 							}
 					})
 					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -90,7 +91,7 @@ public class QuestionViewActivity extends Activity {
 		mContent.setQuestion(question);
 		TextView title = (TextView)findViewById(R.id.titleView);
 		ListView listview = (ListView)findViewById(R.id.qaItemView);
-		listview.setAdapter(mAdapter);
+		listview.setAdapter(mContent.getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));
 		title.setText(mContent.getQuestion().getTitle());
 		IncrementalResult iRAC = mController.getChildren(question, new DateComparator());
 		iRAC.addObserver(new IIncrementalObserver() {
@@ -160,8 +161,7 @@ public class QuestionViewActivity extends Activity {
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
 		
-		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));
-		QuestionItem question = null;
+		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));		
 		mAdapter = mContent.getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView);
 		
 		// get question from controller somehow
@@ -192,9 +192,9 @@ public class QuestionViewActivity extends Activity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							String title = titleText.getText().toString();
-							String body = titleText.getText().toString();
-							//QuestionItem newQuestion = mController.createQuestion(title, body);
-							//loadContent(newQuestion);							
+							String body = bodyText.getText().toString();
+							QuestionItem newQuestion = mController.createQuestion(title, body);
+							loadContent(newQuestion);							
 						}
 						
 					})
