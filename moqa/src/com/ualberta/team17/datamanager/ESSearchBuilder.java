@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 import com.ualberta.team17.ItemType;
 
 public class ESSearchBuilder {
-	public static final Integer MAX_ES_RESULTS = 20;
+	public static final Integer MAX_ES_RESULTS = 100;
 	private JsonObject mQueryObject;
 	private DataFilter mFilter;
 	private IItemComparator mComparator;
