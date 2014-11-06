@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
+import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
@@ -53,7 +54,7 @@ public class QAController {
 	 */
 	public IncrementalResult getChildren(QAModel item, IItemComparator sort) {
 		DataFilter filter = new DataFilter();
-		filter.addFieldFilter(QAModel.FIELD_ID, item.getUniqueId().toString(), FilterComparison.EQUALS);
+		filter.addFieldFilter(AuthoredItem.FIELD_PARENT, item.getUniqueId().toString(), FilterComparison.EQUALS);
 		return mDataManager.doQuery(filter, sort);
 	}
 	
