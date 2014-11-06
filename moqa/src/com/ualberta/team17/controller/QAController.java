@@ -30,7 +30,7 @@ public class QAController {
 		mControllerInstance = this;
 	}
 	
-	public QAController getInstance() {
+	public static QAController getInstance() {
 		return mControllerInstance;
 	}
 	
