@@ -228,7 +228,7 @@ public class QuestionContent {
 	 */
 	private QABody findById(UniqueId id) {
 		for(QABody body : mQABodies) {
-			if(id == body.parent.mUniqueId) {
+			if(id.equals(body.parent.mUniqueId)){
 				return body;
 			}
 		}
