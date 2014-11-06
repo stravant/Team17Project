@@ -37,6 +37,14 @@ public class QAController {
 	}
 	
 	/**
+	 * Log in using a given user context
+	 * @param ctx
+	 */
+	public void login(UserContext ctx) {
+		mDataManager.setUserContext(ctx);
+	}
+	
+	/**
 	 * Access existing objects via an arbitrary Filter & Sort
 	 * @param filter
 	 * @param sort
