@@ -43,7 +43,7 @@ public class LoginActivity extends Activity {
 		EditText usernameET = (EditText) findViewById(R.id.usernameText);
 		if (usernameET != null) {
 			username = usernameET.getText().toString();
-			
+
 			if (username.length() >= 4 && username.length() <= 20 && !username.contains(" ")) {
 				// Create the user context.
 				QAController.getInstance().login(new UserContext(username));
