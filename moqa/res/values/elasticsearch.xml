@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="esTestServer">http://estest.michaelblouin.com:9182/</string>
-    <string name="esProductionServer">http://cmput301.softwareprocess.es:8080/cmput301f14t17/</string>
+    <string name="esTestServer">http://estest.michaelblouin.ca:9182/</string>
+    <string name="esProductionServer">http://estest.michaelblouin.ca:9182/</string>
     <string name="esTestIndex">moqatest</string>
     <string name="esProductionIndex">moqa</string>
 </resources>
