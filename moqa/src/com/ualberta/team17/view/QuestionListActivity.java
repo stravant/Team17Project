@@ -112,7 +112,10 @@ public class QuestionListActivity extends Activity {
 		
 		Intent filterIntent = this.getIntent();
 		mTaxonomy = (QuestionTaxonomyActivity.taxonomies) filterIntent.getSerializableExtra(FILTER_EXTRA);
-		
+		if (null == mTaxonomy) {
+			System.out.println("No taxonomy specified -- defaulting to all questions");
+			mTaxonomy = QuestionTaxonomyActivity.taxonomies.AllQuestions;
+		}
 		
 		IItemComparator comp;
 		DataFilter df = new DataFilter();
