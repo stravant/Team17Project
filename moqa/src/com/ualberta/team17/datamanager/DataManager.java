@@ -127,12 +127,24 @@ public class DataManager {
 	
 	/**
 	 * Favorite an item
+	 * @param item The item to favorite
 	 */
 	public void favoriteItem(QAModel item) {
 		saveItem(item);
 		mUserContext.addFavorite(item.getUniqueId());
 		
 		// TODO: Make call async
+		saveUserContextData(mUserContext);
+	}
+	
+	/**
+	 * Mark an item as recently viewed at this time
+	 * @param item The uniqueId of the item to mark as recently viewed
+	 */
+	public void markRecentlyViewed(UniqueId item) {
+		mUserContext.addRecentItem(item);
+		
+		// TODO: Async call async
 		saveUserContextData(mUserContext);
 	}
 	
@@ -197,6 +209,7 @@ public class DataManager {
 			while ((readCount = inStream.read(tmpBuffer)) != -1) { 
 				fileContent.append(new String(tmpBuffer, 0, readCount)); 
 			}
+			inStream.close();
 			return fileContent.toString();
 		} catch (FileNotFoundException e) {
 			Log.e("app", "Data Source file not found!:" + e.getMessage());
@@ -220,6 +233,7 @@ public class DataManager {
 			OutputStreamWriter outWrite = new OutputStreamWriter(outStream);
 			outWrite.write(data);
 			outWrite.flush();
+			outStream.close();
 		} catch (FileNotFoundException e) {
 			throw new Error("Fatal Error: Can't write to application directory");
 		} catch (IOException e) {
