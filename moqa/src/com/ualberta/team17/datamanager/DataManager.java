@@ -96,7 +96,7 @@ public class DataManager {
 	 */
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
 		IncrementalResult result = new IncrementalResult(sortComparator);
-		//mLocalDataStore.query(filter, sortComparator, result);
+		mLocalDataStore.query(filter, sortComparator, result);
 		mNetworkDataStore.query(filter, sortComparator, result);
 		return result;
 	}
