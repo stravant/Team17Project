@@ -316,9 +316,9 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 		@SuppressWarnings("serial")
 		List<UniqueId> idList = new ArrayList<UniqueId>(){{
-			add(new UniqueId("0db7fac6e3ceb0add59ab9cd030ffd7c"));
-			add(new UniqueId("b2a7c2e2e477495eb77bdfca23dcc13a"));
-			add(new UniqueId("ba0baf9d538a14f982c09c6f6c1f4666"));
+			add(UniqueId.fromString("0db7fac6e3ceb0add59ab9cd030ffd7c"));
+			add(UniqueId.fromString("b2a7c2e2e477495eb77bdfca23dcc13a"));
+			add(UniqueId.fromString("ba0baf9d538a14f982c09c6f6c1f4666"));
 		}};
 
 		IItemComparator comparator = new DateComparator();

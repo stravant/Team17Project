@@ -47,8 +47,8 @@ public class QuestionItem extends AuthoredTextItem {
 		}
 		
 		@Override
-		public void writeFields(QuestionItem item, JsonWriter writer) throws IOException {
-			super.writeFields(item, writer);
+		public void writeFields(JsonWriter writer, QuestionItem item) throws IOException {
+			super.writeFields(writer, item); 
 			writer.name(FIELD_TITLE);
 			writer.value(item.getTitle());
 		}
