@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:textAlignment="center"
+    tools:context="com.ualberta.team17.view.LoginActivity" >
+
+    <EditText
+        android:id="@+id/usernameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/loginWarning"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="114dp"
+        android:ems="10"
+        android:gravity="center"
+        android:text="username"
+        android:textAlignment="center" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/signInButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/usernameText"
+        android:layout_alignRight="@+id/usernameText"
+        android:layout_below="@+id/usernameText"
+        android:layout_marginTop="27dp"
+        android:text="Sign In" />
+
+    <TextView
+        android:id="@+id/loginWarning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="TextView" />
+
+</RelativeLayout>
