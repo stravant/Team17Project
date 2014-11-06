@@ -133,6 +133,10 @@ import com.ualberta.team17.UpvoteItem;
 		 * @param IncrementalResult The incremental result to load parsed results into
 		 */
 		private void parseSearchResults(SearchResult searchResult, IncrementalResult result) {
+			if (null == searchResult) {
+				return;
+			}
+
 			Gson gson = DataManager.getGsonObject();
 			List<QAModel> objects = new ArrayList<QAModel>();
 			for (JsonElement element: searchResult.getJsonObject().getAsJsonObject("hits").getAsJsonArray("hits")) {
@@ -176,7 +180,9 @@ import com.ualberta.team17.UpvoteItem;
 				}
 			}
 
-			result.addObjects(objects);
+			if (null != result) {
+				result.addObjects(objects);
+			}
 		}
 	}
 
@@ -188,6 +194,8 @@ import com.ualberta.team17.UpvoteItem;
 	private class SaveTask extends AsyncTask<Void, Void, Void> {
 		Index mIndex;
 		IDataItemSavedListener mListener;
+		boolean mSuccess;
+		Exception mException = null;
 
 		public SaveTask(Index index, IDataItemSavedListener listener) {
 			mIndex = index;
@@ -196,26 +204,27 @@ import com.ualberta.team17.UpvoteItem;
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			boolean success = false;
-			Exception exception = null;
-
 			mJestClientLock.lock();
 			try {
 				JestResult result = mJestClient.execute(mIndex);
-				success = null != result && result.isSucceeded();
+				mSuccess = null != result && result.isSucceeded();
 			} catch (Exception e) {
 				// TODO: Set isAvailable on network error
 				System.out.println("SaveTask encountered error:");
 				e.printStackTrace();
-				success = false;
+				mSuccess = false;
+				mException = e;
 			}
 			mJestClientLock.unlock();
 
-			if (null != mListener) {
-				mListener.dataItemSaved(success, exception);
-			}
-
 			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void nothing) {
+			if (null != mListener) {
+				mListener.dataItemSaved(mSuccess, mException);
+			}
 		}
 	}
 
