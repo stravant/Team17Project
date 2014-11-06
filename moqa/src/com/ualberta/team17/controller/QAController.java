@@ -68,10 +68,38 @@ public class QAController {
 	}
 	
 	/**
-	 * Create a question, from a creator context, title, and body
+	 * Adds an item to the user's favorites
+	 * @param item The item to favorite
+	 */
+	public void addFavorite(QAModel item) {
+		mDataManager.favoriteItem(item);
+	}
+	
+	/**
+	 * Get the recently items that have been marked as recently viewed
+	 * most recently with QAController::markRecentlyViewed
+	 * @return An IncrementalResult that will be populated with the recently viewed items
+	 */
+	public IncrementalResult getRecentItems() {
+		return mDataManager.doQuery(
+				mDataManager.getUserContext().getRecentItems(), 
+				new DateComparator());
+	}
+	
+	/**
+	 * Mark an item as recently viewed
+	 * Mainly to be used for questions.
+	 * @param item
+	 */
+	public void markRecentlyViewed(QAModel item) {
+		mDataManager.markRecentlyViewed(item.getUniqueId());
+	}
+	
+	/**
+	 * Create a question object, from a creator context, title, and body
 	 * @param title
 	 * @param body
-	 * @return
+	 * @return The item created
 	 */
 	public QuestionItem createQuestion(String title, String body) {
 		UserContext creator = mDataManager.getUserContext();
@@ -82,7 +110,7 @@ public class QAController {
 	}
 	
 	/**
-	 * Create an answer to a question
+	 * Create an answer object to a given question
 	 * @param parent
 	 * @param body
 	 * @return

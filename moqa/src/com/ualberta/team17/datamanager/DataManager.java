@@ -127,12 +127,24 @@ public class DataManager {
 	
 	/**
 	 * Favorite an item
+	 * @param item The item to favorite
 	 */
 	public void favoriteItem(QAModel item) {
 		saveItem(item);
 		mUserContext.addFavorite(item.getUniqueId());
 		
 		// TODO: Make call async
+		saveUserContextData(mUserContext);
+	}
+	
+	/**
+	 * Mark an item as recently viewed at this time
+	 * @param item The uniqueId of the item to mark as recently viewed
+	 */
+	public void markRecentlyViewed(UniqueId item) {
+		mUserContext.addRecentItem(item);
+		
+		// TODO: Async call async
 		saveUserContextData(mUserContext);
 	}
 	
