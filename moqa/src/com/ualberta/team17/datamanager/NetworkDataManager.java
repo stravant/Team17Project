@@ -57,7 +57,7 @@ import com.ualberta.team17.UpvoteItem;
 	 *
 	 * @author michaelblouin
 	 */
-	private class QueryTask extends AsyncTask<Void, Void, Void> {
+	private class QueryTask extends AsyncTask<Void, Void, SearchResult> {
 		private Search mSearch;
 		private IncrementalResult mResult;
 
@@ -67,7 +67,7 @@ import com.ualberta.team17.UpvoteItem;
 		}
 
 		@Override
-		protected Void doInBackground(Void ... nothing) {
+		protected SearchResult doInBackground(Void ... nothing) {
 			SearchResult searchResult = beginSearch(mSearch);
 
 			if (null == searchResult) {
@@ -75,10 +75,15 @@ import com.ualberta.team17.UpvoteItem;
 			}
 
 			System.out.println(String.format("NetworkDataManager received %d results", searchResult.getTotal()));
-			parseSearchResults(searchResult, mResult);
-
-			return null;
+			
+			return searchResult;
 		}
+
+		@Override
+		protected void onPostExecute(SearchResult searchResult) {
+			parseSearchResults(searchResult, mResult);
+		}
+		
 
 		/**
 		 * Begins the search against the elastic search server. This function blocks until the request has been completed.
