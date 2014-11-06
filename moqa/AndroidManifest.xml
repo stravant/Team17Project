@@ -11,14 +11,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name="com.ualberta.team17.MoqaApplication"
+        android:name=".MoqaApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.ualberta.team17.view.QuestionTaxonomyActivity"
-            android:label="@string/title_activity_taxonomy_view" >
+            android:name=".view.LoginActivity"
+            android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,12 +26,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ualberta.team17.view.QuestionListActivity"
+            android:name=".view.QuestionListActivity"
             android:label="@string/title_activity_question_list" >
         </activity>
         <activity
-            android:name="com.ualberta.team17.view.QuestionViewActivity"
+            android:name=".view.QuestionViewActivity"
             android:label="@string/title_activity_question_view" >
+        </activity>
+        <activity
+            android:name=".view.QuestionTaxonomyActivity"
+            android:label="@string/title_activity_taxonomy_view" >
         </activity>
     </application>
 
