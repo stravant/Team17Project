@@ -43,10 +43,8 @@ public class QuestionListActivity extends Activity {
 	
 	public static final String FILTER_EXTRA = "FILTER";
 	
-	private List<QAModel> mQAModels;
 	private QuestionTaxonomyActivity.taxonomies mTaxonomy;
 	private IncrementalResult mIR;
-	private QuestionListAdapter mAdapter;
 	
 	/**
 	 * The adapter for QAModel. Binds the title of the question, the upvote count
@@ -103,6 +101,8 @@ public class QuestionListActivity extends Activity {
 	/**
 	 * Initializes data depending on what is passed in the intent. Creates adapters and
 	 * listeners for all data interactions that will happen.
+	 * 
+	 * @author Jared
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,33 +124,25 @@ public class QuestionListActivity extends Activity {
 			comp = new DateComparator();
 			df.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(df, comp);
-			mQAModels = mIR.getCurrentResults();
 			break;
 		case MyActivity:
 			
 			break;
 		case Favorites:
 			mIR = QAController.getInstance().getFavorites();
-			mQAModels = mIR.getCurrentResults();
 			break;
 		case MostUpvotedQs:
 			comp = new UpvoteComparator();
 			df.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(df, comp);
-			mQAModels = mIR.getCurrentResults();
 			break;	
 		case MostUpvotedAs:
 			comp = new UpvoteComparator();
 			df.setTypeFilter(ItemType.Answer);
 			mIR = QAController.getInstance().getObjects(df, comp);
-			mQAModels = mIR.getCurrentResults();
 			break;
 		case RecentlyViewed:
 			mIR = QAController.getInstance().getRecentItems();
-			mQAModels = mIR.getCurrentResults();
-		default:
-			mQAModels = new ArrayList<QAModel>();
-			break;
 		}
 		
 		this.addObserver(mIR);		
@@ -167,6 +159,12 @@ public class QuestionListActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * A convenience function for adding an observer to ir.
+	 * @param ir The incremental result to observe.
+	 * 
+	 * @author Jared
+	 */
 	private void addObserver(IncrementalResult ir) {
 		if (ir != null) {
 			ir.addObserver(new IIncrementalObserver() {
@@ -184,11 +182,12 @@ public class QuestionListActivity extends Activity {
 	
 	/**
 	 * Handles the event when a listview item is clicked.
-	 * TODO Sort out how to pass QuestionItem to QuestionViewActivity
 	 * @param av
 	 * @param view
 	 * @param i
 	 * @param l
+	 * 
+	 * @author Jared
 	 */
 	private void handleListViewItemClick(AdapterView<?> av, View view, int i, long l) {
 		QAModel qaModel = mIR.getCurrentResults().get(i);
@@ -213,6 +212,11 @@ public class QuestionListActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * This handles the menu at the top of this view. This is temporary.
+	 * 
+	 * @author Jared
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
@@ -238,7 +242,8 @@ public class QuestionListActivity extends Activity {
 	/**
 	 * Creates an intent that is passed to QuestionViewActivity.
 	 * This allows for a new question to be created.
-	 * TODO implement createNewQuestion().
+	 * 
+	 * @author Jared
 	 */
 	private void createNewQuestion() {
 		Intent intent = new Intent(QuestionListActivity.this, QuestionViewActivity.class);		
@@ -253,6 +258,12 @@ public class QuestionListActivity extends Activity {
 		
 	}
 	
+	/**
+	 * Applies a date sort. 
+	 * @param toggleDate The menu item. It has its state changed to show which way the sort will sort.
+	 * 
+	 * @author Jared
+	 */
 	private void applyDateSort(MenuItem toggleDate) {
 
 		if (toggleDate.getTitle().toString().equals(getString(R.string.action_sort_date_asc))) {
@@ -263,7 +274,6 @@ public class QuestionListActivity extends Activity {
 			DataFilter df = new DataFilter();
 			df.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(df, comp);
-			mQAModels = mIR.getCurrentResults();
 			
 			this.addObserver(mIR);
 		}
@@ -275,7 +285,6 @@ public class QuestionListActivity extends Activity {
 			DataFilter df = new DataFilter();
 			df.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(df, comp);
-			mQAModels = mIR.getCurrentResults();
 			
 			this.addObserver(mIR);
 		}

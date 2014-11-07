@@ -37,6 +37,12 @@ public class LoginActivity extends Activity {
 		}
 	}
 	
+	/**
+	 * This function creates the user context, logging the user in in the process. 
+	 * The user is passed to the TaxonomyActivity.
+	 * 
+	 * @author Jared
+	 */
 	private void login() {
 		String username;
 		
