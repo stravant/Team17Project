@@ -1,7 +1,16 @@
-Team17Project
+moQA
 =============
 
 CMPUT301 TEAM CMPUT301F14T17 Git Repository
+
+Code Structure
+--------------
+
+### Main Application Project
+The main application project is located within the [moqa](https://github.com/CMPUT301F14T17/Team17Project/tree/master/moqa) folder and contains the application as would be run by users.
+
+### Test Project
+The test project containing just unit tests is located in the [halfcaff](https://github.com/CMPUT301F14T17/Team17Project/tree/master/halfcaff) folder and can be run directly to executed all tests.
 
 External Resources
 ------------------
