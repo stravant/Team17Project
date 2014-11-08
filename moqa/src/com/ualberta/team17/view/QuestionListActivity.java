@@ -1,6 +1,5 @@
 package com.ualberta.team17.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
