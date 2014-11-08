@@ -38,7 +38,7 @@ public class QuestionViewActivityTest extends ActivityInstrumentationTestCase2<Q
 	}
 	
 	/**
-	 * Tests that setUp didn't fail to create objects.
+	 * Tests that setUp didn't fail to create objects...
 	 */
 	public void test_QVA0_preconditions() {
 		assertNotNull(mActivity);
