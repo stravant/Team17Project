@@ -26,24 +26,29 @@ import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
  */
 public class DummyDataManager extends DataManager {
 	private UserContext mUserContext;
-	List<QAModel> items;
+	List<QAModel> mItems;
 	
-	public DummyDataManager() {
-		super(null);
-		mUserContext = null;
-		items = new ArrayList<QAModel>();
-		
-		UniqueId questionId = new UniqueId();
-		
-		items.add( new QuestionItem(questionId, null, null, null, null, 0, null) );
-		items.add( new AnswerItem(null, questionId, null, null, null, 0) );
-		items.add( new CommentItem(null, questionId, null, null, null, 0) );
+	public DummyDataManager(UserContext userContext, Context context) {
+		super(context);
+		mUserContext = userContext;
+	}
+
+	public void setItems(List<QAModel> items) {
+		mItems = items;
 	}
 	
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
 		IncrementalResult incrementalResult = new IncrementalResult(new UpvoteComparator());
-		incrementalResult.addObjects(items);
-		
+		List<QAModel> returnItems = new ArrayList<QAModel>();
+
+		for (QAModel item: mItems) {
+			if (filter.accept(item)) {
+				returnItems.add(item);
+			}
+		}
+
+		incrementalResult.addObjects(returnItems);
+
 		return incrementalResult;
 	}
 	
@@ -59,6 +64,6 @@ public class DummyDataManager extends DataManager {
 	 * Test stuff
 	 */
 	public int getItemCount(){
-		return items.size();
+		return mItems.size();
 	}
 }

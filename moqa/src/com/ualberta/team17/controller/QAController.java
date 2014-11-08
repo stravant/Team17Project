@@ -61,8 +61,22 @@ public class QAController {
 	 * @return An incremental result that will be populated with the results
 	 */
 	public IncrementalResult getChildren(QAModel item, IItemComparator sort) {
+		if (null == item) {
+			return null;
+		}
+		
+		return getChildren(item.getUniqueId(), sort);
+	}
+	
+	/**
+	 * Get all of the children of the item with the given ID
+	 * @param question
+	 * @param sort
+	 * @return An incremental result that will be populated with the results
+	 */
+	public IncrementalResult getChildren(UniqueId item, IItemComparator sort) {
 		DataFilter filter = new DataFilter();
-		filter.addFieldFilter(AuthoredItem.FIELD_PARENT, item.getUniqueId().toString(), FilterComparison.EQUALS);
+		filter.addFieldFilter(AuthoredItem.FIELD_PARENT, item.toString(), FilterComparison.EQUALS);
 		return mDataManager.doQuery(filter, sort);
 	}
 	
@@ -118,14 +132,32 @@ public class QAController {
 	}
 	
 	/**
-	 * Create an answer object to a given question
-	 * @param parent
-	 * @param body
-	 * @return
+	 * Create an answer with the given parent. A parent must be supplied.
+	 * @param parent The object to use as the parent
+	 * @param body The body text to apply to the answer
+	 * @return The answer if it was created, or null if invalid.
 	 */
 	public AnswerItem createAnswer(QuestionItem parent, String body) {
+		if (null == parent) {
+			return null;
+		}
+		
+		return createAnswer(parent.getUniqueId(), body);
+	}
+	
+	/**
+	 * Create an answer with the given parent. A parent must be supplied.
+	 * @param parent The id of the object to use as parent
+	 * @param body The body text to apply to the answer
+	 * @return The answer if it was created, or null if invalid.
+	 */
+	public AnswerItem createAnswer(UniqueId parent, String body) {
+		if (null == parent) {
+			return null;
+		}
+		
 		UserContext creator = mDataManager.getUserContext();
-		AnswerItem item = new AnswerItem(new UniqueId(creator), parent.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime(), body, 0);
+		AnswerItem item = new AnswerItem(new UniqueId(creator), parent, creator.getUserName(), Calendar.getInstance().getTime(), body, 0);
 		item.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(item);
 		return item;	
@@ -141,14 +173,32 @@ public class QAController {
 	}
 	
 	/**
-	 * Create a comment
-	 * @param parent
-	 * @param body
-	 * @return
+	 * Create a comment with the given parent. A parent must be supplied.
+	 * @param parent The object to use as the parent
+	 * @param body The body text to apply to the comment
+	 * @return The comment if it was created, or null if invalid.
 	 */
 	public CommentItem createComment(AuthoredTextItem parent, String body) {
+		if (null == parent) {
+			return null;
+		}
+		
+		return createComment(parent.getUniqueId(), body);
+	}
+	
+	/**
+	 * Create a comment with the given parent. A parent must be supplied.
+	 * @param parent The id of the object to use as parent
+	 * @param body The body text to apply to the comment
+	 * @return The comment if it was created, or null if invalid.
+	 */
+	public CommentItem createComment(UniqueId parent, String body) {
+		if (null == parent) {
+			return null;
+		}
+		
 		UserContext creator = mDataManager.getUserContext();
-		CommentItem item = new CommentItem(new UniqueId(creator), parent.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime(), body, 0);
+		CommentItem item = new CommentItem(new UniqueId(creator), parent, creator.getUserName(), Calendar.getInstance().getTime(), body, 0);
 		item.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(item);
 		return item;
