@@ -40,9 +40,9 @@ public class QuestionViewActivity extends Activity {
 	// Test - can be deleted later
 	private final static boolean GENERATE_TEST_DATA = false;
 	
-	private QuestionContent mContent;
-	private QAController mController; 	
-	private ArrayAdapter mAdapter;
+	protected QuestionContent mContent;
+	protected QAController mController; 	
+	protected ArrayAdapter mAdapter;
 	
 	/**
 	 * Listener that opens a pop-up to creating an answer
@@ -172,6 +172,10 @@ public class QuestionViewActivity extends Activity {
 	 */
 	public QuestionViewActivity() {
 		mContent = new QuestionContent();		
+	}
+	
+	public void setContent(QuestionContent content) {
+		mContent = content;
 	}
 		
 	/**
