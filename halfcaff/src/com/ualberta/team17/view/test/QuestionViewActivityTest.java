@@ -1,16 +1,17 @@
 package com.ualberta.team17.view.test;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.view.QuestionContent;
 import com.ualberta.team17.view.QuestionViewActivity;
 
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -76,5 +77,23 @@ public class QuestionViewActivityTest extends ActivityInstrumentationTestCase2<Q
 		
 		assertEquals("answer author", authorText.getText().toString());
 		assertEquals("answer body", bodyText.getText().toString());
+	}
+	
+	/**
+	 * Tests that the activity can display a comment.
+	 * 
+	 * Because commenting is agnostic to whether it's on a Question or Answer, we don't need seperate tests for each. 
+	 */
+	public void test_QVA3_displayComment() {
+		CommentItem comment = new CommentItem(new UniqueId(), mContent.getQuestion().mUniqueId, "comment author", null, "comment body", 0);
+		mContent.addComments(comment);
+		
+		View questionBody = mListView.getChildAt(0);
+		LinearLayout comments = (LinearLayout) questionBody.findViewById(R.id.commentView);
+		TextView commentText = (TextView) comments.getChildAt(0);
+		TextView authorText = (TextView) comments.getChildAt(1);
+		
+		assertEquals("comment body", commentText.getText().toString());
+		assertEquals("comment author", authorText.getText().toString());
 	}
 }
