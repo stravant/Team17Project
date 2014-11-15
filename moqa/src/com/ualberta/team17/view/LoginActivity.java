@@ -53,7 +53,7 @@ public class LoginActivity extends Activity {
 			if (username.length() >= 4 && username.length() <= 20 && !username.contains(" ")) {
 				// Create the user context.
 				QAController.getInstance().login(new UserContext(username));
-				Intent intent = new Intent(LoginActivity.this, QuestionTaxonomyActivity.class);
+				Intent intent = new Intent(LoginActivity.this, QuestionListActivity.class);
 				startActivity(intent);
 			}
 			else {
