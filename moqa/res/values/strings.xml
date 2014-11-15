@@ -20,4 +20,15 @@
     <string name="createAnswer">Add Answer!</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="createComment">Add Comment</string>
+	<string-array name="taxonomies">
+        <item>All Questions</item>
+        <item>My Activity</item>
+        <item>Favorites</item>
+        <item>Most Upvoted Questions</item>
+        <item>Most Upvoted Answers</item>
+        <item>Recently Viewed</item>
+    </string-array>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
 </resources>

@@ -3,9 +3,14 @@ package com.ualberta.team17.view;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,8 +47,11 @@ public class QuestionListActivity extends Activity {
 	
 	public static final String FILTER_EXTRA = "FILTER";
 	
-	private QuestionTaxonomyActivity.taxonomies mTaxonomy;
 	private IncrementalResult mIR;
+    private String[] myTaxonomy;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
 	
 	/**
 	 * The adapter for QAModel. Binds the title of the question, the upvote count
@@ -106,56 +114,43 @@ public class QuestionListActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_question_list);
+		setContentView(R.layout.question_list);
 		
-		Intent filterIntent = this.getIntent();
-		mTaxonomy = (QuestionTaxonomyActivity.taxonomies) filterIntent.getSerializableExtra(FILTER_EXTRA);
-		if (null == mTaxonomy) {
-			System.out.println("No taxonomy specified -- defaulting to all questions");
-			mTaxonomy = QuestionTaxonomyActivity.taxonomies.AllQuestions;
-		}
+		myTaxonomy = getResources().getStringArray(R.array.taxonomies);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, myTaxonomy));
+
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,                  
+                mDrawerLayout,
+                R.drawable.ic_drawer,  
+                R.string.drawer_open,  
+                R.string.drawer_close  
+                ) {
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(getTitle());
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(getTitle());
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        if (savedInstanceState == null) {
+            selectItem(0);
+        }
 		
-		IItemComparator comp;
-		DataFilter df = new DataFilter();
 		
-		switch (mTaxonomy) {
-		case AllQuestions:
-			comp = new DateComparator();
-			df.setTypeFilter(ItemType.Question);
-			mIR = QAController.getInstance().getObjects(df, comp);
-			break;
-		case MyActivity:
-			
-			break;
-		case Favorites:
-			mIR = QAController.getInstance().getFavorites();
-			break;
-		case MostUpvotedQs:
-			comp = new UpvoteComparator();
-			df.setTypeFilter(ItemType.Question);
-			mIR = QAController.getInstance().getObjects(df, comp);
-			break;	
-		case MostUpvotedAs:
-			comp = new UpvoteComparator();
-			df.setTypeFilter(ItemType.Answer);
-			mIR = QAController.getInstance().getObjects(df, comp);
-			break;
-		case RecentlyViewed:
-			mIR = QAController.getInstance().getRecentItems();
-		}
-		
-		this.addObserver(mIR);		
-		
-		ListView qList = (ListView) findViewById(R.id.questionListView);
-		qList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> av, View view, int i, long l) {
-				QuestionListActivity.this.handleListViewItemClick(av, view, i, l);
-			}
-		});
-		
-		if (mIR != null) {
-			qList.setAdapter(new QuestionListAdapter(this, R.id.questionListView, mIR.getCurrentResults()));
-		}
 	}
 	
 	/**
@@ -219,6 +214,9 @@ public class QuestionListActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
 		if (id == R.id.action_new_question) {
 			createNewQuestion();
 			return true;
@@ -295,5 +293,121 @@ public class QuestionListActivity extends Activity {
 	 */
 	private void search() {
 		
+	}
+	
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
+    private void selectItem(int position) {
+        // update the main content by replacing fragments
+        QuestionListFragment fragment = new QuestionListFragment();
+        Bundle args = new Bundle();
+        args.putInt(QuestionListFragment.TAXONOMY_NUM, position);
+        fragment.setArguments(args);
+
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        // update selected item and title, then close the drawer
+        mDrawerList.setItemChecked(position, true);
+        setTitle(myTaxonomy[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        CharSequence mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }
+
+    /**
+     * When using the ActionBarDrawerToggle, you must call it during
+     * onPostCreate() and onConfigurationChanged()...
+     */
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+	
+	public class QuestionListFragment extends Fragment {
+		public static final String TAXONOMY_NUM = "taxonomy_number";
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.activity_question_list, container, false);
+		    int mTaxonomy = getArguments().getInt(TAXONOMY_NUM);
+		    
+			IItemComparator comp;
+			DataFilter df = new DataFilter();
+			
+			switch (mTaxonomy) {
+			case 0:
+				comp = new DateComparator();
+				df.setTypeFilter(ItemType.Question);
+				mIR = QAController.getInstance().getObjects(df, comp);
+				break;
+			case 1:
+				
+				break;
+			case 2:
+				mIR = QAController.getInstance().getFavorites();
+				break;
+			case 3:
+				comp = new UpvoteComparator();
+				df.setTypeFilter(ItemType.Question);
+				mIR = QAController.getInstance().getObjects(df, comp);
+				break;	
+			case 4:
+				comp = new UpvoteComparator();
+				df.setTypeFilter(ItemType.Answer);
+				mIR = QAController.getInstance().getObjects(df, comp);
+				break;
+			case 5:
+				mIR = QAController.getInstance().getRecentItems();
+			}
+			
+			addObserver(mIR);		
+			ListView qList = (ListView) rootView.findViewById(R.id.questionListView);
+			qList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> av, View view, int i, long l) {
+					handleListViewItemClick(av, view, i, l);
+				}
+			});
+			
+			if (mIR != null) {
+				qList.setAdapter(new QuestionListAdapter(QuestionListActivity.this, R.id.questionListView, mIR.getCurrentResults()));
+			}
+			
+			return rootView;
+	    }
+		
+	}
+	public static enum taxonomies {
+		AllQuestions(0), 
+		MyActivity(1),
+		Favorites(2) ,
+		MostUpvotedQs(3), 
+		MostUpvotedAs(4),
+		RecentlyViewed(5);
+		int value;
+		private taxonomies(int value) {
+			this.value = value;
+		}
+		public int getValue() {
+			return this.value;
+		}
 	}
 }
