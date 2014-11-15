@@ -1,0 +1,18 @@
+{
+	"mappings": {
+		"question": {},
+		"comment": {},
+		"answer": {},
+		"attachment": {},
+		"question_upvote": {
+			"_parent": {
+				"type": "question"
+			}
+		},
+		"answer_upvote": {
+			"_parent": {
+				"type": "answer"
+			}
+		}
+	}
+}
