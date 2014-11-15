@@ -6,10 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.WeakHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -32,6 +36,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
+import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
@@ -50,6 +55,11 @@ public class LocalDataManager implements IDataSourceManager {
 	 * Our set of in-memory data
 	 */
 	private volatile List<QAModel> mData;
+	
+	/**
+	 * Additional pointers to our data by ID
+	 */
+	private HashMap<UniqueId, WeakReference<QAModel>> mDataById = new HashMap<UniqueId, WeakReference<QAModel>>();
 	
 	/**
 	 * Do we need to do a save on the data?
@@ -250,6 +260,75 @@ public class LocalDataManager implements IDataSourceManager {
 	}
 	
 	/**
+	 * Get an item from the hashmap
+	 */
+	public QAModel getItemById(UniqueId id) {
+		Reference<QAModel> ref = mDataById.get(id);
+		if (ref != null) {
+			return ref.get();
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Used at startup by the Initial Data Query. Calculates the current 
+	 * derived info for all of the {@link QAModel} items that were loaded. 
+	 * Examples of derived info: Upvote Count & Reply Count
+	 */
+	private void calculateInitialDerivedInfo() {
+		// Initially all of the items will have UpvoteCount and ReplyCount = 0
+		// when they are first constructed.
+		// That means that we just have to iterate through all of the items and
+		// tally them to their parent item if it exists.
+		// That is, we call handleDerivedInfo on each of our items... elegant!
+		for (QAModel item: mData) {
+			updateParentDerivedInfo(item);
+		}
+	}
+	
+	/**
+	 * Apply an item to its parent items derived info, that is, if it is
+	 * an upvote, add an upvote to its parent's derived info, and if it is
+	 * an answer, add to its parent's reply count.
+	 * @param item
+	 */
+	private void updateParentDerivedInfo(QAModel item) {
+		if (item instanceof AuthoredItem) {
+			QAModel parentItem = getItemById(((AuthoredItem)item).getParentItem());
+			if (parentItem != null) {
+				if (parentItem instanceof AuthoredTextItem && item instanceof UpvoteItem) {
+					// Tally upvotes
+					((AuthoredTextItem)parentItem).upvote();
+				}
+				if (parentItem instanceof QuestionItem && item instanceof AnswerItem) {
+					// Tally replies
+					((QuestionItem)parentItem).incrementReplyCount();
+				}
+			}
+		} 	
+	}
+	
+	/**
+	 * Handle the derived information related to an item
+	 * that has just been added, updating it's parent's info
+	 * if it has a parent, and adding already present children's
+	 * info to this item.
+	 * @param item
+	 */
+	private void handleDerivedInfo(QAModel item) {
+		updateParentDerivedInfo(item);
+		for (QAModel child: mData) {
+			if (child instanceof AuthoredItem) {
+				QAModel parent = getItemById(((AuthoredItem)child).getParentItem());
+				if (parent == item) {
+					updateParentDerivedInfo(child);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Testing method: Write a test set of data to the file
 	 * @return Whether the write was successful
 	 */
@@ -340,8 +419,14 @@ public class LocalDataManager implements IDataSourceManager {
 				readItemData(in, result);
 			}
 			
-			// Actual line that sets our data
+			// Actual line that sets our data array and hashmap
 			mData = result;
+			for (QAModel item: mData) {
+				mDataById.put(item.getUniqueId(), new WeakReference<QAModel>(item));
+			}
+			
+			// Calculate the derived info
+			calculateInitialDerivedInfo();
 			
 			// Now available
 			mLastAvailable = Calendar.getInstance().getTime();
@@ -444,12 +529,10 @@ public class LocalDataManager implements IDataSourceManager {
 		maybeDoInitialDataQuery();
 		
 		//Log.i("lock", "doIdListQuery Lock");
-		for (QAModel item: mData) {
-			// TODO: Make this more efficient
-			for (UniqueId id: ids) {
-				if (item.getUniqueId().equals(id)) {
-					packedResult.add(item);
-				}
+		for (UniqueId id: ids) {
+			QAModel item = getItemById(id);
+			if (item != null) {
+				packedResult.add(item);
 			}
 		}
 		//Log.i("lock", "doIdListQuery Unlock");
@@ -465,7 +548,12 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param item The item to save.
 	 */
 	@Override
-	public boolean saveItem(QAModel item) {	
+	public boolean saveItem(QAModel item) {
+		// First, make a local copy of the item, without derived information in it
+		// Copy via a serialize / deserialize pair.
+		Gson gson = DataManager.getGsonObject();
+		item = (QAModel)gson.fromJson(gson.toJson(item, item.getClass()), item.getClass());
+		
 		// Add the item to our data array if it isn't there already, and if we
 		// have to add it, mark as dirty.
 		mDataLock.lock();
@@ -474,14 +562,17 @@ public class LocalDataManager implements IDataSourceManager {
 		maybeDoInitialDataQuery();
 		
 		//Log.i("lock", "saveItem Lock");
-		found: {
-			for (QAModel currentItem: mData) {
-				if (currentItem.getUniqueId().equals(item.getUniqueId())) {
-					break found;
-				}
-			}
+		if (getItemById(item.getUniqueId()) == null) {
+			// Add to our tracking
 			mData.add(item);
+			mDataById.put(item.getUniqueId(), new WeakReference<QAModel>(item));
+			
+			// Calculate derived info
+			handleDerivedInfo(item);
+			
+			// Mark us as needing a save
 			mDataDirty = true;
+			
 			Log.i("app", "LocalDataManager :: Item <" + item.getUniqueId() + "> added.");
 		}
 		

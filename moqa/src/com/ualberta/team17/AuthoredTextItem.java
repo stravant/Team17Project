@@ -34,6 +34,11 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 	public int getUpvoteCount() {
 		return mUpvoteCount;
 	}
+	
+	public void setUpvoteCount(int votes) {
+		mUpvoteCount = votes;
+		notifyViews();
+	}
 
 	public void upvote() {
 		mUpvoteCount++;

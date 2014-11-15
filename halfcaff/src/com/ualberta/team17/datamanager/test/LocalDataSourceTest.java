@@ -21,6 +21,7 @@ import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.UpvoteItem;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
@@ -138,6 +139,19 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 	}
 	
 	/**
+	 * Create a new upvote item
+	 * @param id
+	 * @param target
+	 * @return
+	 */
+	public UpvoteItem newUpvote(int id, UniqueId target) {
+		return new UpvoteItem(new UniqueId(Integer.toString(id)), 
+				target, 
+				userContext.getUserName(), 
+				new Date(0));
+	}
+	
+	/**
 	 * Test that the Filter & Sort part of the LocalDataManager works by
 	 * adding an item and then doing a query that should find it.
 	 */
@@ -205,7 +219,10 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		assertTrue("Didn't get a result", waitForResults(result, 1));
 		QuestionItem item = (QuestionItem)result.getCurrentResults().get(0);
 		assertEquals("c4ca4238a0b923820dcc509a6f75849b", item.getUniqueId().toString());
-		assertEquals(item.getTitle(), "testTitle");
+		assertEquals("testTitle", item.getTitle());
+		
+		// See if the items have the right derived information
+		assertEquals(2, item.getReplyCount());
 		
 		// Close down
 		dataManager.close();
@@ -237,6 +254,13 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		assertEquals(2, result.getCurrentResultsOfType(ItemType.Answer).size());
 		assertEquals(1, result.getCurrentResultsOfType(ItemType.Comment).size());
 		assertEquals(1, result.getCurrentResultsOfType(ItemType.Question).size());
+		
+		// Upvote one of the questions, and see if it works
+		QuestionItem q = ((QuestionItem)result.getCurrentResultsOfType(ItemType.Question).get(0));
+		UpvoteItem up = newUpvote(32, q.getUniqueId());
+		dataManager.saveItem(up);
+		dataManager.waitForSave();
+		assertEquals(1, q.getUpvoteCount());
 		
 		// Close down
 		dataManager.close();	
