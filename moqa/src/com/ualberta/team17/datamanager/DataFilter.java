@@ -18,12 +18,22 @@ public class DataFilter {
 	public class FieldFilter {
 		private String mField;
 		private String mFilter;
-		private FilterComparison mcomparisonMode;
+		private FilterComparison mComparisonMode;
+		private CombinationMode mCombinationMode;
 
-		private FieldFilter(String field, String filter, FilterComparison comparisonMode) {
+		private FieldFilter(String field, String filter, FilterComparison comparisonMode, CombinationMode combinationMode) {
 			mField = field;
 			mFilter = filter;
-			mcomparisonMode = comparisonMode;
+
+			if (null == comparisonMode) {
+				comparisonMode = FilterComparison.EQUALS;
+			}
+			mComparisonMode = comparisonMode;
+
+			if (null == combinationMode) {
+				combinationMode = CombinationMode.MUST;
+			}
+			mCombinationMode = combinationMode;
 		}
 
 		public String getField() {
@@ -35,7 +45,11 @@ public class DataFilter {
 		}
 
 		public FilterComparison getComparisonMode() {
-			return mcomparisonMode;
+			return mComparisonMode;
+		}
+
+		public CombinationMode getCombinationMode() {
+			return mCombinationMode;
 		}
 	}
 
@@ -53,6 +67,11 @@ public class DataFilter {
 		GREATER_THAN_OR_EQUAL
 	}
 
+	public enum CombinationMode {
+		MUST,
+		SHOULD
+	}
+
 	public void setTypeFilter(ItemType type) {
 		mTypeFilter = type;
 	}
@@ -62,7 +81,11 @@ public class DataFilter {
 	}
 
 	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode) {
-		mFieldFilters.add(new FieldFilter(field, filter, comparisonMode));
+		addFieldFilter(field, filter, comparisonMode, null);
+	}
+
+	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode, CombinationMode combinationMode) {
+		mFieldFilters.add(new FieldFilter(field, filter, comparisonMode, combinationMode));
 	}
 	
 	public List<FieldFilter> getFieldFilters() {

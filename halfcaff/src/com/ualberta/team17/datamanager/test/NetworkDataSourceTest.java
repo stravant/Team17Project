@@ -281,12 +281,14 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	public void test_BlankDataFilter() {
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
+		dataFilter.setMaxResults(50);
+
 		dataManager.query(dataFilter, comparator, result);
 
-		assertTrue("Results arrived", waitForResults(result, 9));
+		assertTrue("Results arrived", waitForResults(result, 31));
 
 		// Verify this against the expected test dataset
-		assertEquals("Item count", 9, result.getCurrentResults().size());
+		assertEquals("Item count", 31, result.getCurrentResults().size());
 
 		// Ensure all the right items were returned
 		assertEquals("Answer count", 5, result.getCurrentResultsOfType(ItemType.Answer).size());
@@ -425,7 +427,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 		// Use the previous test to query for questions, and assert that they were all notified on
 		test_FilterTypeQuestion();
-		assertEquals(5, loadedListener.timesNotified);
+		assertEquals(2 + 3 + 9 + 5, loadedListener.timesNotified);
 	}
 
 	/**
