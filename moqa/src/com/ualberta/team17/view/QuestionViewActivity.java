@@ -52,29 +52,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	protected ArrayAdapter mAdapter;	
 	
 	
-	/**
-	 * Listener that opens a pop-up to creating an answer
-	 * @author Joel
-	 *
-	 */
-	private class CreateAnswerListener implements View.OnClickListener {
-		private Context mContext;
-		
-		public CreateAnswerListener(Context context){
-			mContext = context;
-		}
-		public void onClick(View v){
-					
-			
-
-		}
-	}
-	
-	
-		public void createComment(final View v){
-			
-
-		}
 		
 	/**
 	 * Method that sets the question for mContent
@@ -157,7 +134,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
 		
-		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));		
+		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
 		mAdapter = getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView);
 		
 		// get question from controller somehow
@@ -173,36 +150,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			if(GENERATE_TEST_DATA) {
 				//mContent.generateTestData();
 			} else {
-				final LinearLayout layout = new LinearLayout(this);
-				final EditText titleText = new EditText(this);
-				final EditText bodyText = new EditText(this);
-				
-				layout.addView(titleText);
-				layout.addView(bodyText);
-				
-				new AlertDialog.Builder(this)
-					.setTitle("New Question")
-					.setView(layout)
-					.setPositiveButton("add", new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							String title = titleText.getText().toString();
-							String body = bodyText.getText().toString();
-							QuestionItem newQuestion = mController.createQuestion(title, body);
-							loadContent(newQuestion);							
-						}
-						
-					})
-					.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// probably go back to the previous view, otherwise we get a blank view 
-						}
-						
-					})
-					.show();
+				AddQuestionPopup popup = new AddQuestionPopup(QuestionViewActivity.this);
+				popup.show();
 					
 			}
 			
@@ -386,6 +335,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			
 			Button createCommentBtn = (Button) qaItemView.findViewById(R.id.createCommentButton);			
 			createCommentBtn.setTag(mObjects.get(position).parent.getUniqueId());
+			createCommentBtn.setOnClickListener(new AddCommentListener(createCommentBtn));
 			
 			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
 			
@@ -460,18 +410,22 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			AddAnswerPopup popup = new AddAnswerPopup(QuestionViewActivity.this);
 			popup.show();
 			
-		}
-		
+		}		
 	}
 	
 	private class AddCommentListener implements View.OnClickListener {
+		private View view;
+		
+		public AddCommentListener(View v) {
+			super();
+			view = v;
+		}
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
-		}
-		
+			AddCommentPopup popup = new AddCommentPopup(QuestionViewActivity.this, (UniqueId) view.getTag());	
+			popup.show();
+		}		
 	}
 	
 	private class UpvoteListener implements View.OnClickListener {
@@ -514,6 +468,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 	}
 	
+	private class PopupCancelListener implements DialogInterface.OnClickListener {
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			//do nothing
+		}
+	}	
+	
 	private class AddAnswerPopup extends AlertDialog.Builder {
 		private EditText answerBody;
 		
@@ -522,47 +483,72 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			answerBody = new EditText(context);	
 			this.setTitle("Add an Answer");
 			this.setView(answerBody);
-			this.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						String body = answerBody.getText().toString();
-						AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
-						addAnswers(newAnswer);
-						loadContent(getQuestion());
-					}
-			});
-			this.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton)
-				{
-				// Do Nothing!
-				}
-			});
+			this.setPositiveButton("Submit", new AnswerPopupSubmitListener());
+			this.setNegativeButton("Cancel", new PopupCancelListener());		
+		}
+		
+		private class AnswerPopupSubmitListener implements DialogInterface.OnClickListener {					
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String body = answerBody.getText().toString();
+				AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
+				addAnswers(newAnswer);
+				loadContent(getQuestion());
+			}
 		}		
 	}
 	
-	/*private class AddCommentPopup extends AlertDialog.Builder {
-		final EditText commentBody = new EditText(QuestionViewActivity.this);			
-		AddCommentPopup(Context context, UniqueId parentId) {
+	private class AddCommentPopup extends AlertDialog.Builder {
+		private EditText commentBody;	
+		private UniqueId parentId;
+		
+		AddCommentPopup(Context context, UniqueId pId) {
 			super(context);
+			commentBody = new EditText(context);
+			parentId = pId;
 			this.setTitle("Add an Comment");
 			this.setView(commentBody);
-			this.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						String body = commentBody.getText().toString();
-						CommentItem newComment = mController.createComment(parentId, body);								
-						addComments(newComment);
-						loadContent(getQuestion());
-					}
-			});
-			this.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int whichButton)
-				{
-				// Do Nothing!
-				}
-			});
+			this.setPositiveButton("Submit", new CommentPopupSubmitListener());
+			this.setNegativeButton("Cancel", new PopupCancelListener());
 		}
-	}*/
-	
-	/*private class AddQuestionPopup extends AlertDialog.Builder {
 		
-	}*/
+		private class CommentPopupSubmitListener implements DialogInterface.OnClickListener {					
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String body = commentBody.getText().toString();
+				CommentItem newComment = mController.createComment(parentId, body);								
+				addComments(newComment);
+				loadContent(getQuestion());			
+			}
+		}			
+	}
+	
+	private class AddQuestionPopup extends AlertDialog.Builder {
+		private LinearLayout layout;
+		private EditText titleText;
+		private EditText bodyText;		
+		
+		AddQuestionPopup(Context context) {
+			super(context);
+			layout = new LinearLayout(context);
+			titleText = new EditText(context);
+			bodyText = new EditText(context);
+			layout.addView(titleText);
+			layout.addView(bodyText);
+			this.setTitle("New Question");
+			this.setView(layout);
+			this.setPositiveButton("add", new QuestionPopupSubmitListener());
+			this.setNegativeButton("cancel", new PopupCancelListener());
+		}
+		
+		private class QuestionPopupSubmitListener implements DialogInterface.OnClickListener {					
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String title = titleText.getText().toString();
+				String body = bodyText.getText().toString();
+				QuestionItem newQuestion = mController.createQuestion(title, body);
+				loadContent(newQuestion);	
+			}
+		}	
+	}
 }
