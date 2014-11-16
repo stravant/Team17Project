@@ -39,7 +39,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class QuestionViewActivity extends Activity {
+public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
 	
 	// Test - can be deleted later
@@ -97,6 +97,30 @@ public class QuestionViewActivity extends Activity {
 	public void setContent(QuestionContent content) {
 		//mContent = content;
 	}
+
+	/**
+	 * Inherited from IQAView
+	 * 
+	 * Updates the view when a model is changed.
+	 * @param model The model that was changed.
+	 */
+	@Override
+	public void update(QAModel model) {
+		// we don't need to do any real work here, it will all happen in the adapter.
+		refresh();
+	}
+	
+	/**
+	 * Refreshes the view.
+	 * 
+	 * Remakes the adapter so the view will redraw itself.
+	 */
+	private void refresh() {
+		ListView qaList = (ListView) findViewById(R.id.qaItemView);
+		mAdapter = new QABodyAdapter(this, R.id.qaItemView, mQABodies);
+		qaList.invalidate();
+		qaList.setAdapter(mAdapter);		
+	}
 		
 	/**
 	 * Initializes data depending on what is passed in the intent. Creates adapters and
@@ -110,7 +134,7 @@ public class QuestionViewActivity extends Activity {
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
 		
-		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));		
+		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
 		mAdapter = getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView);
 		
 		// get question from controller somehow
@@ -183,6 +207,7 @@ public class QuestionViewActivity extends Activity {
 		}
 		
 		mQuestion = question;
+		mQuestion.addView(this);
 		if(question != null) {
 			// Make sure that the question is the first item in the list.
 			List<QABody> oldList = mQABodies;
@@ -200,6 +225,7 @@ public class QuestionViewActivity extends Activity {
 	public void addAnswers(AnswerItem... answers) {
 		for(AnswerItem answer : answers) {
 			if (!exists(answer)) {
+				answer.addView(this);
 				QABody answerBody = new QABody(answer);
 				mQABodies.add(answerBody);
 			}			
@@ -226,8 +252,9 @@ public class QuestionViewActivity extends Activity {
 			QABody parentBody = findById(comment.getParentItem());
 			if(parentBody != null) {
 				if (!parentBody.comments.contains(comment)) {
+					comment.addView(this);
 					parentBody.comments.add(comment);
-				}				
+				}
 			}
 			else {
 				// maybe some kind of error
