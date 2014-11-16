@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
@@ -25,7 +26,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,9 +45,12 @@ public class QuestionViewActivity extends Activity {
 	// Test - can be deleted later
 	private final static boolean GENERATE_TEST_DATA = false;
 	
-	protected QuestionContent mContent;
+	//protected QuestionContent mContent;
+	private QuestionItem mQuestion;
+	private ArrayList<QABody> mQABodies;
 	protected QAController mController; 	
-	protected ArrayAdapter mAdapter;
+	protected ArrayAdapter mAdapter;	
+	
 	
 	/**
 	 * Listener that opens a pop-up to creating an answer
@@ -64,9 +72,9 @@ public class QuestionViewActivity extends Activity {
 					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int whichButton) {
 								String body = answerBody.getText().toString();
-								AnswerItem newAnswer = mController.createAnswer(mContent.getQuestion(), body);								
-								mContent.addAnswers(newAnswer);
-								loadContent(mContent.getQuestion());
+								AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
+								addAnswers(newAnswer);
+								loadContent(getQuestion());
 							}
 					})
 					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -91,8 +99,8 @@ public class QuestionViewActivity extends Activity {
 								String body = commentBody.getText().toString();
 								QuestionItem badQuestion = new QuestionItem(UniqueId.fromString(v.getTag().toString()), null, null, null, null, 0, null);
 								CommentItem newComment = QAController.getInstance().createComment(badQuestion, body);								
-								mContent.addComments(newComment);
-								loadContent(mContent.getQuestion());
+								addComments(newComment);
+								loadContent(getQuestion());
 							}
 					})
 					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -112,39 +120,16 @@ public class QuestionViewActivity extends Activity {
 	 */
 	private void loadContent(QuestionItem question) {
 		// make sure we aren't loading a mix of two questions at the same time		
-		mContent = new QuestionContent();
-		mContent.setQuestion(question);
+		//mContent = new QuestionContent();
+		setQuestion(question);
 		TextView title = (TextView)findViewById(R.id.titleView);
 		ListView listview = (ListView)findViewById(R.id.qaItemView);
-		listview.setAdapter(mContent.getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));
-		title.setText(mContent.getQuestion().getTitle());
-		IncrementalResult iRAC = mController.getChildren(question, new DateComparator());
-		iRAC.addObserver(new IIncrementalObserver() {
-			@Override
-			public void itemsArrived(List<QAModel> item, int index) {				
-				ListView qaList = (ListView) findViewById(R.id.qaItemView);
-				List<CommentItem> comments = new ArrayList<CommentItem>();
-				for(QAModel qaitem : item ) {
-					switch(qaitem.mType) {
-					case Answer:
-						mContent.addAnswers((AnswerItem) qaitem);
-						break;
-					case Comment:
-						comments.add((CommentItem)qaitem);
-						break;
-					}
-				}
-				//this functionality should be moved to content
-				for (CommentItem comment : comments) {
-					mContent.addComments(comment);
-				}
-				qaList.invalidate();
-				qaList.setAdapter(mContent.getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));
-				//mAdapter.notifyDataSetChanged();
-			}
-		});
-		//mAdapter.notifyDataSetChanged();
-		
+		listview.setAdapter(getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));
+		title.setText(getQuestion().getTitle());
+		IncrementalResult iRA = mController.getChildren(question, new DateComparator());
+		iRA.addObserver(new AnswerResultListener(), ItemType.Answer);
+		IncrementalResult iRC = mController.getChildren(question, new DateComparator());
+		iRC.addObserver(new CommentResultListener(), ItemType.Comment);		
 	}	
 	
 	
@@ -159,23 +144,18 @@ public class QuestionViewActivity extends Activity {
 		dFilter.addFieldFilter(QAModel.FIELD_ID, id.toString(), FilterComparison.EQUALS);
 		IncrementalResult queryResult = mController.getObjects(dFilter, new IdComparator());
 		//set up observer
-		queryResult.addObserver(new IIncrementalObserver() {
-			@Override
-			public void itemsArrived(List<QAModel> item, int index) {						
-				loadContent((QuestionItem)item.get(0));
-			}			
-		});
+		queryResult.addObserver(new QuestionResultListener(), ItemType.Question);
 	}
 	
 	/**
 	 * Constructor
 	 */
 	public QuestionViewActivity() {
-		mContent = new QuestionContent();		
+		//mContent = new QuestionContent();		
 	}
 	
 	public void setContent(QuestionContent content) {
-		mContent = content;
+		//mContent = content;
 	}
 		
 	/**
@@ -191,7 +171,7 @@ public class QuestionViewActivity extends Activity {
 		mController = QAController.getInstance();		
 		
 		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new CreateAnswerListener(this));		
-		mAdapter = mContent.getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView);
+		mAdapter = getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView);
 		
 		// get question from controller somehow
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
@@ -204,7 +184,7 @@ public class QuestionViewActivity extends Activity {
 			
 			// Generate our own data to test displaying before the other modules work.
 			if(GENERATE_TEST_DATA) {
-				mContent.generateTestData();
+				//mContent.generateTestData();
 			} else {
 				final LinearLayout layout = new LinearLayout(this);
 				final EditText titleText = new EditText(this);
@@ -239,12 +219,12 @@ public class QuestionViewActivity extends Activity {
 					
 			}
 			
-			if (mContent.getQuestion() != null) {
+			if (getQuestion() != null) {
 				TextView title = (TextView) findViewById(R.id.titleView);
-				title.setText(mContent.getQuestion().getTitle());
+				title.setText(getQuestion().getTitle());
 				
 				ListView qaList = (ListView) findViewById(R.id.qaItemView);
-				ListAdapter adapter = mContent.getArrayAdapter(this, R.id.qaItemView);
+				ListAdapter adapter = getArrayAdapter(this, R.id.qaItemView);
 			
 			qaList.setAdapter(adapter);
 			//((BaseAdapter) adapter).notifyDataSetChanged();
@@ -255,9 +235,303 @@ public class QuestionViewActivity extends Activity {
 		}*/
 		
 	}
+	
+	
 
 	public void favoriteQuestion(View v) {
 		System.out.println("Favorite Question!");
-		QAController.getInstance().addFavorite(mContent.getQuestion());
+		QAController.getInstance().addFavorite(getQuestion());
+	}
+	
+	/**
+	 * Getter for the QuestionItem.
+	 * @return The question.
+	 */
+	public QuestionItem getQuestion() {
+		return mQuestion;
+	}
+	
+	/**
+	 * Getter for the QABodies.
+	 * @return The list of QABodies.
+	 */
+	public List<QABody> getQABodies() {
+		return mQABodies;
+	}
+	
+	/**
+	 * Sets the question.
+	 * 
+	 * Also removes the old question from the list of QABodies and adds the new one.
+	 * @param question The question to use.
+	 */
+	public void setQuestion(QuestionItem question) {
+		if(mQuestion != null) {
+			mQABodies.remove(mQuestion);
+		}
+		
+		mQuestion = question;
+		if(question != null) {
+			// Make sure that the question is the first item in the list.
+			List<QABody> oldList = mQABodies;
+			mQABodies = new ArrayList<QABody>();
+			mQABodies.add(new QABody(mQuestion));
+			mQABodies.addAll(oldList);
+		}
+	}
+	
+	/**
+	 * Adds all answers passed to it to the QABody list
+	 * 
+	 * @param answers A list of AnswerItems.
+	 */
+	public void addAnswers(AnswerItem... answers) {
+		for(AnswerItem answer : answers) {
+			if (!exists(answer)) {
+				QABody answerBody = new QABody(answer);
+				mQABodies.add(answerBody);
+			}			
+		}
+	}
+	
+	public boolean exists(AuthoredTextItem item) {
+		for (QABody body : mQABodies) {
+			if (body.parent.equals(item)) {
+				return true;
+			}			
+		}
+		return false;
+	}
+	
+	/**
+	 * Adds all comments to their corresponding parent
+	 * Question/Answer by the id.
+	 * 
+	 * @param comments A list of CommentItems.
+	 */
+	public void addComments(CommentItem... comments) {
+		for(CommentItem comment : comments) {
+			QABody parentBody = findById(comment.getParentItem());
+			if(parentBody != null) {
+				if (!parentBody.comments.contains(comment)) {
+					parentBody.comments.add(comment);
+				}				
+			}
+			else {
+				// maybe some kind of error
+			}
+		}
+	}
+	
+	/**
+	 * Creates an adapter for the question's list content.
+	 * @param context The context for the adapter.
+	 * @param textViewResourceId The id of the resource to connect to.
+	 * @return A new ListAdapter for this question's content.
+	 */
+	public ArrayAdapter getArrayAdapter(Context context, int textViewResourceId) {
+		return new QABodyAdapter(context, textViewResourceId, mQABodies);
+	}
+	
+	/**
+	 * Finds a QABody by its unique id. Returns null if not found.
+	 * 
+	 * @param id The id to search for.
+	 * @return The matching QABody.
+	 */
+	private QABody findById(UniqueId id) {
+		for(QABody body : mQABodies) {
+			if(id.equals(body.parent.mUniqueId)){
+				return body;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * This class holds a Question/Answer and its child Comments.
+	 * 
+	 * It's essentially a struct, so we just use public members.
+	 * 
+	 * @author Corey
+	 *
+	 */
+	private class QABody {
+		public AuthoredTextItem parent;
+		public List<CommentItem> comments;
+		
+		public QABody(AuthoredTextItem initParent) {
+			parent = initParent;
+			comments = new ArrayList<CommentItem>();
+		}
+	}	
+	
+	/**
+	 * Adapter for QABody. Connects the body of the Question/Answer
+	 * with the bodyText field and Comments with the comments field.
+	 * @author Corey + Joel
+	 *
+	 */
+	private class QABodyAdapter extends ArrayAdapter<QABody> {
+		Context mContext;
+		List<QABody> mObjects;
+		
+		public QABodyAdapter(Context context, int textViewResourceId,
+				List<QABody> objects) {
+			super(context, textViewResourceId, objects);
+			mContext = context;
+			mObjects = objects;
+		}		
+		
+		
+		/**
+		 * Returns the view after adding the list content.
+		 */
+		public View getView( int position, View convertView, ViewGroup parent ) {
+			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+			
+			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
+			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
+			
+			Button createCommentBtn = (Button) qaItemView.findViewById(R.id.createCommentButton);			
+			createCommentBtn.setTag(mObjects.get(position).parent.getUniqueId());
+			
+			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
+			
+			bodyTextView.setText(mObjects.get(position).parent.getBody());
+			authorTextView.setText(mObjects.get(position).parent.getAuthor());
+			
+			for (int i=0; i<mObjects.get(position).comments.size(); i++){
+				TextView comment = new TextView(mContext);
+				comment.setText(mObjects.get(position).comments.get(i).getBody());
+				
+				TextView commentAuthor = new TextView(mContext);
+				commentAuthor.setText("-" + mObjects.get(position).comments.get(i).getAuthor());	
+				commentAuthor.setGravity(Gravity.RIGHT);
+				
+				commentsView.addView(comment);
+				commentsView.addView(commentAuthor);
+			}			
+			// TODO: Implement favorite/upvote buttons.
+			return qaItemView;
+		}
+	}
+	
+	private class QuestionResultListener implements IIncrementalObserver {
+
+		@Override
+		public void itemsArrived(List<QAModel> item, int index) {
+			loadContent((QuestionItem)item.get(0));			
+		}
+		
+	}
+	
+	private class AnswerResultListener implements IIncrementalObserver {
+
+		@Override
+		public void itemsArrived(List<QAModel> item, int index) {				
+			ListView qaList = (ListView) findViewById(R.id.qaItemView);
+			for(QAModel qaitem : item ) {
+				if (qaitem.mType == ItemType.Answer) {				
+					addAnswers((AnswerItem) qaitem);									
+				}
+			}			
+			qaList.invalidate();
+			qaList.setAdapter(getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));			
+		}
+		
+	}
+	
+	private class CommentResultListener implements IIncrementalObserver {
+
+		@Override
+		public void itemsArrived(List<QAModel> item, int index) {				
+			ListView qaList = (ListView) findViewById(R.id.qaItemView);
+			List<CommentItem> comments = new ArrayList<CommentItem>();
+			for(QAModel qaitem : item ) {				
+				if (qaitem.mType == ItemType.Comment) {
+					comments.add((CommentItem)qaitem);					
+				}
+			}			
+			for (CommentItem comment : comments) {
+				addComments(comment);
+			}
+			qaList.invalidate();
+			qaList.setAdapter(getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));			
+		}
+		
+	}
+	
+	private class AddAnswerListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class AddCommentListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class UpvoteListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class FavoriteListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class ViewAttachmentListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class AddAttachmentListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	}
+	
+	private class AddAnswerPopup  {
+	
+	}
+	
+	private class AddCommentPopup  {
+		
+	}
+	
+	private class AddQuestionPopup  {
+		
 	}
 }
