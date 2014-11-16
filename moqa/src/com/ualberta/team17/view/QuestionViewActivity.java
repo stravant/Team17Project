@@ -64,52 +64,15 @@ public class QuestionViewActivity extends Activity {
 			mContext = context;
 		}
 		public void onClick(View v){
-			final EditText answerBody = new EditText(mContext);
+					
 			
-			new AlertDialog.Builder(mContext)
-					.setTitle("Add an Answer")
-					.setView(answerBody)
-					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int whichButton) {
-								String body = answerBody.getText().toString();
-								AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
-								addAnswers(newAnswer);
-								loadContent(getQuestion());
-							}
-					})
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton)
-						{
-						// Do Nothing!
-						}
-					})
-					.show();
 
 		}
 	}
 	
 	
 		public void createComment(final View v){
-			final EditText commentBody = new EditText(QuestionViewActivity.this);			
-			new AlertDialog.Builder(QuestionViewActivity.this)
-					.setTitle("Add an Comment")
-					.setView(commentBody)
-					.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int whichButton) {
-								String body = commentBody.getText().toString();
-								QuestionItem badQuestion = new QuestionItem(UniqueId.fromString(v.getTag().toString()), null, null, null, null, 0, null);
-								CommentItem newComment = QAController.getInstance().createComment(badQuestion, body);								
-								addComments(newComment);
-								loadContent(getQuestion());
-							}
-					})
-					.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int whichButton)
-						{
-						// Do Nothing!
-						}
-					})
-					.show();
+			
 
 		}
 		
@@ -467,7 +430,8 @@ public class QuestionViewActivity extends Activity {
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
+			AddAnswerPopup popup = new AddAnswerPopup(QuestionViewActivity.this);
+			popup.show();
 			
 		}
 		
@@ -523,15 +487,55 @@ public class QuestionViewActivity extends Activity {
 		
 	}
 	
-	private class AddAnswerPopup  {
-	
-	}
-	
-	private class AddCommentPopup  {
+	private class AddAnswerPopup extends AlertDialog.Builder {
+		private EditText answerBody;
 		
+		AddAnswerPopup (Context context) {
+			super(context);
+			answerBody = new EditText(context);	
+			this.setTitle("Add an Answer");
+			this.setView(answerBody);
+			this.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						String body = answerBody.getText().toString();
+						AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
+						addAnswers(newAnswer);
+						loadContent(getQuestion());
+					}
+			});
+			this.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton)
+				{
+				// Do Nothing!
+				}
+			});
+		}		
 	}
 	
-	private class AddQuestionPopup  {
+	private class AddCommentPopup extends AlertDialog.Builder {
+		final EditText commentBody = new EditText(QuestionViewActivity.this);			
+		AddCommentPopup(Context context, UniqueId parentId) {
+			super(context);
+			this.setTitle("Add an Comment");
+			this.setView(commentBody);
+			this.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						String body = commentBody.getText().toString();
+						CommentItem newComment = mController.createComment(parentId, body);								
+						addComments(newComment);
+						loadContent(getQuestion());
+					}
+			});
+			this.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton)
+				{
+				// Do Nothing!
+				}
+			});
+		}
+	}
+	
+	private class AddQuestionPopup extends AlertDialog.Builder {
 		
 	}
 }
