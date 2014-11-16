@@ -4,6 +4,17 @@
     android:layout_height="match_parent" >
 
     <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:text="title" >
+	</TextView>
+    
+    <TextView
         android:id="@+id/bodyText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -11,8 +22,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:ems="10" >
-
-        <requestFocus />
     </TextView>
 
     <Button
@@ -51,5 +60,16 @@
         android:layout_toRightOf="@+id/upvoteButton"
         android:text="@string/createComment"
         android:onClick="createComment" />
+    
+    <Button
+        android:id="@+id/favoriteButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/upvoteButton"
+        android:layout_alignRight="@+id/authorText"
+        android:layout_toRightOf="@+id/createCommentButton"
+        android:text="@string/favorite" />
+        
 
 </RelativeLayout>
