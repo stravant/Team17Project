@@ -356,8 +356,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		public void itemsArrived(List<QAModel> item, int index) {				
 			ListView qaList = (ListView) findViewById(R.id.qaItemView);
 			for(QAModel qaitem : item ) {
-				if (qaitem.mType == ItemType.Answer) {				
-					addAnswers((AnswerItem) qaitem);									
+				if (qaitem.mType == ItemType.Answer) {
+					AnswerItem answer = (AnswerItem) qaitem;
+					addAnswers(answer);
+					IncrementalResult answerChildrenResult = mController.getChildren(answer, new DateComparator());
+					answerChildrenResult.addObserver(new CommentResultListener(), ItemType.Comment);
 				}
 			}			
 			qaList.invalidate();
