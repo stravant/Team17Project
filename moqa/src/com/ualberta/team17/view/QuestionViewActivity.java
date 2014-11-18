@@ -48,7 +48,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	//protected QuestionContent mContent;
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
-	protected QAController mController; 	
+	protected QAController mController;	
 	protected ArrayAdapter mAdapter;	
 	
 	
@@ -62,10 +62,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		// make sure we aren't loading a mix of two questions at the same time		
 		//mContent = new QuestionContent();
 		setQuestion(question);
-		TextView title = (TextView)findViewById(R.id.titleView);
 		ListView listview = (ListView)findViewById(R.id.qaItemView);
 		listview.setAdapter(getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));
-		title.setText(getQuestion().getTitle());
 		IncrementalResult iRA = mController.getChildren(question, new DateComparator());
 		iRA.addObserver(new AnswerResultListener(), ItemType.Answer);
 		IncrementalResult iRC = mController.getChildren(question, new DateComparator());
@@ -91,11 +89,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 * Constructor
 	 */
 	public QuestionViewActivity() {
-		//mContent = new QuestionContent();		
-	}
-	
-	public void setContent(QuestionContent content) {
-		//mContent = content;
+		mQABodies = new ArrayList<QABody>();
 	}
 
 	/**
@@ -155,14 +149,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					
 			}
 			
-			if (getQuestion() != null) {
-				TextView title = (TextView) findViewById(R.id.titleView);
-				title.setText(getQuestion().getTitle());
-				
+			if (getQuestion() != null) {				
 				ListView qaList = (ListView) findViewById(R.id.qaItemView);
 				ListAdapter adapter = getArrayAdapter(this, R.id.qaItemView);
 			
-			qaList.setAdapter(adapter);
+				qaList.setAdapter(adapter);
 			//((BaseAdapter) adapter).notifyDataSetChanged();
 			}
 		}
@@ -330,8 +321,32 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
 			
+			TextView titleTextView = (TextView) qaItemView.findViewById(R.id.titleText);
 			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
 			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
+			
+			Button favoriteButton = (Button) qaItemView.findViewById(R.id.favoriteButton);
+			Button attachmentButton = (Button) qaItemView.findViewById(R.id.viewAttachmentButton);
+			Button commentButton = (Button) qaItemView.findViewById(R.id.createCommentButton);
+			Button upvoteButton = (Button) qaItemView.findViewById(R.id.upvoteButton);
+			
+			QABody qaItem = mObjects.get(position);
+			if(qaItem.parent.mType == ItemType.Question) {
+				QuestionItem question = (QuestionItem) qaItem.parent;
+				
+				titleTextView.setVisibility(View.VISIBLE);
+				favoriteButton.setVisibility(View.VISIBLE);
+				attachmentButton.setVisibility(View.VISIBLE);
+				
+				titleTextView.setText(question.getTitle());
+			} else if (qaItem.parent.mType == ItemType.Answer) {
+				titleTextView.setVisibility(View.GONE);
+				favoriteButton.setVisibility(View.GONE);
+				attachmentButton.setVisibility(View.GONE);
+			} else {
+				// This should never happen. If it does, a bad object was added to the list.
+				throw new IllegalStateException();
+			}
 			
 			Button createCommentBtn = (Button) qaItemView.findViewById(R.id.createCommentButton);			
 			createCommentBtn.setTag(mObjects.get(position).parent.getUniqueId());

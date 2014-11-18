@@ -13,42 +13,6 @@
         android:ems="10"
         android:text="title" >
 	</TextView>
-    
-    <TextView
-        android:id="@+id/bodyText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:ems="10" >
-    </TextView>
-
-    <Button
-        android:id="@+id/upvoteButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/bodyText"
-        android:text="@string/upvote" />
-
-    <TextView
-        android:id="@+id/authorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/upvoteButton"
-        android:ems="10" />
-
-    <LinearLayout
-        android:id="@+id/commentView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/authorText"
-        android:orientation="vertical" >
-    </LinearLayout>
 
     <Button
         android:id="@+id/createCommentButton"
@@ -56,20 +20,63 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/upvoteButton"
-        android:layout_alignRight="@+id/authorText"
         android:layout_toRightOf="@+id/upvoteButton"
-        android:text="@string/createComment"
-        android:onClick="createComment" />
-    
+        android:onClick="createComment"
+        android:text="@string/createComment" />
+
     <Button
         android:id="@+id/favoriteButton"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/upvoteButton"
-        android:layout_alignRight="@+id/authorText"
+        android:layout_alignTop="@+id/createCommentButton"
         android:layout_toRightOf="@+id/createCommentButton"
         android:text="@string/favorite" />
-        
+
+    <Button
+        android:id="@+id/viewAttachmentButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/favoriteButton"
+        android:layout_alignBottom="@+id/favoriteButton"
+        android:layout_toRightOf="@+id/favoriteButton"
+        android:text="Attch" />
+
+    <TextView
+        android:id="@+id/bodyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/titleText"
+        android:ems="10"
+        android:text="body" />
+
+    <TextView
+        android:id="@+id/authorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bodyText"
+        android:ems="10"
+        android:text="author" />
+
+    <LinearLayout
+        android:id="@+id/commentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/createCommentButton"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/upvoteButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/authorText"
+        android:text="@string/upvote" />
 
 </RelativeLayout>
