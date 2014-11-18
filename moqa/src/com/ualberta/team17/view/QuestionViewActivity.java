@@ -42,16 +42,17 @@ import android.widget.TextView;
 public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
 	
-	// Test - can be deleted later
-	private final static boolean GENERATE_TEST_DATA = false;
-	
-	//protected QuestionContent mContent;
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
 	protected QAController mController;	
 	protected ArrayAdapter mAdapter;	
 	
-	
+	/**
+	 * Constructor
+	 */
+	public QuestionViewActivity() {
+		mQABodies = new ArrayList<QABody>();
+	}
 		
 	/**
 	 * Method that sets the question for mContent
@@ -59,15 +60,12 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 * @param question
 	 */
 	private void loadContent(QuestionItem question) {
-		// make sure we aren't loading a mix of two questions at the same time		
-		//mContent = new QuestionContent();
 		setQuestion(question);
-		ListView listview = (ListView)findViewById(R.id.qaItemView);
-		listview.setAdapter(getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));
-		IncrementalResult iRA = mController.getChildren(question, new DateComparator());
-		iRA.addObserver(new AnswerResultListener(), ItemType.Answer);
-		IncrementalResult iRC = mController.getChildren(question, new DateComparator());
-		iRC.addObserver(new CommentResultListener(), ItemType.Comment);		
+		ListView listview = (ListView) findViewById(R.id.qaItemView);
+		listview.setAdapter(createNewAdapter());
+		IncrementalResult questionChildrenResult = mController.getChildren(question, new DateComparator());
+		questionChildrenResult.addObserver(new AnswerResultListener(), ItemType.Answer);
+		questionChildrenResult.addObserver(new CommentResultListener(), ItemType.Comment);		
 	}	
 	
 	
@@ -83,13 +81,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		IncrementalResult queryResult = mController.getObjects(dFilter, new IdComparator());
 		//set up observer
 		queryResult.addObserver(new QuestionResultListener(), ItemType.Question);
-	}
-	
-	/**
-	 * Constructor
-	 */
-	public QuestionViewActivity() {
-		mQABodies = new ArrayList<QABody>();
 	}
 
 	/**
@@ -129,37 +120,20 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		mController = QAController.getInstance();		
 		
 		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
-		mAdapter = getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView);
+		mAdapter = createNewAdapter();
 		
-		// get question from controller somehow
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
 			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
 			queryQuestion(id);			
-		}		
-		
-		if(intent.getSerializableExtra(QUESTION_ID_EXTRA) == null) {
-			// TODO: implement Question Creation.
-			
-			// Generate our own data to test displaying before the other modules work.
-			if(GENERATE_TEST_DATA) {
-				//mContent.generateTestData();
-			} else {
-				AddQuestionPopup popup = new AddQuestionPopup(QuestionViewActivity.this);
-				popup.show();
-					
-			}
+		} else {
+			AddQuestionPopup popup = new AddQuestionPopup(QuestionViewActivity.this);
+			popup.show();
 			
 			if (getQuestion() != null) {				
 				ListView qaList = (ListView) findViewById(R.id.qaItemView);
-				ListAdapter adapter = getArrayAdapter(this, R.id.qaItemView);
-			
-				qaList.setAdapter(adapter);
-			//((BaseAdapter) adapter).notifyDataSetChanged();
+				qaList.setAdapter(mAdapter);
 			}
 		}
-		/*else {
-			// TODO: Implement interactions with the controller to get Answers/Comments.
-		}*/
 		
 	}
 	
@@ -193,19 +167,14 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 * @param question The question to use.
 	 */
 	public void setQuestion(QuestionItem question) {
-		if(mQuestion != null) {
-			mQABodies.remove(mQuestion);
-		}
-		
+		resetContent();
 		mQuestion = question;
-		mQuestion.addView(this);
-		if(question != null) {
-			// Make sure that the question is the first item in the list.
-			List<QABody> oldList = mQABodies;
-			mQABodies = new ArrayList<QABody>();
-			mQABodies.add(new QABody(mQuestion));
-			mQABodies.addAll(oldList);
-		}
+		mQABodies.add(new QABody(question));
+	}
+	
+	private void resetContent() {
+		mQuestion = null;
+		mQABodies = new ArrayList<QABody>();
 	}
 	
 	/**
@@ -254,13 +223,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	}
 	
 	/**
-	 * Creates an adapter for the question's list content.
-	 * @param context The context for the adapter.
-	 * @param textViewResourceId The id of the resource to connect to.
-	 * @return A new ListAdapter for this question's content.
+	 * Creates a new adapter for the list content.
+	 * @return A new QABody adapter.
 	 */
-	public ArrayAdapter getArrayAdapter(Context context, int textViewResourceId) {
-		return new QABodyAdapter(context, textViewResourceId, mQABodies);
+	public QABodyAdapter createNewAdapter() {
+		return new QABodyAdapter(this, R.id.qaItemView, mQABodies);
 	}
 	
 	/**
@@ -393,7 +360,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				}
 			}			
 			qaList.invalidate();
-			qaList.setAdapter(getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));			
+			qaList.setAdapter(createNewAdapter());			
 		}
 		
 	}
@@ -413,7 +380,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				addComments(comment);
 			}
 			qaList.invalidate();
-			qaList.setAdapter(getArrayAdapter(QuestionViewActivity.this, R.id.qaItemView));			
+			qaList.setAdapter(createNewAdapter());			
 		}
 		
 	}
