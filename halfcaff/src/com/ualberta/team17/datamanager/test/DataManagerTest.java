@@ -97,9 +97,8 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		// User context
 		userContext = new UserContext("test_user");
 		
-		// Make local data manager, and set the data to the test data set
+		// Make local data manager
 		dataManager = new LocalDataManager(getActivity());
-		dataManager.writeTestData(TEST_DATA);
 		
 		// Make net data manager
 		Resources resources = getInstrumentation().getTargetContext().getResources();
@@ -113,6 +112,9 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		// Make the controller
 		controller = new QAController(manager);
 		controller.login(userContext);
+		
+		// Set the data to the test data set
+		dataManager.writeTestData(TEST_DATA);
 	}
 	
 	/**

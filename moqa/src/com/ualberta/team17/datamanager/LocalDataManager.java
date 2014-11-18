@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executors;
@@ -57,9 +58,15 @@ public class LocalDataManager implements IDataSourceManager {
 	private volatile List<QAModel> mData;
 	
 	/**
-	 * Additional pointers to our data by ID
+	 * Set of items which have been saved locally, by ID
 	 */
-	private HashMap<UniqueId, WeakReference<QAModel>> mDataById = new HashMap<UniqueId, WeakReference<QAModel>>();
+	private HashSet<UniqueId> mDataSetById = new HashSet<UniqueId>();
+	
+	/**
+	 * Pointers to the items that we have processed, items which may or may not be
+	 * currently locally stored, but which have come our way through saveItem() calls.
+	 */
+	private HashMap<UniqueId, QAModel> mItemRefById = new HashMap<UniqueId, QAModel>();
 	
 	/**
 	 * Do we need to do a save on the data?
@@ -172,7 +179,7 @@ public class LocalDataManager implements IDataSourceManager {
 	}
 	
 	/**
-	 * Close down the local data manager for the current context / usercontext
+	 * Close down the local data manager for the current context
 	 * Closes any file handles or tasks currently open.
 	 */
 	public void close() {
@@ -263,12 +270,7 @@ public class LocalDataManager implements IDataSourceManager {
 	 * Get an item from the hashmap
 	 */
 	public QAModel getItemById(UniqueId id) {
-		Reference<QAModel> ref = mDataById.get(id);
-		if (ref != null) {
-			return ref.get();
-		} else {
-			return null;
-		}
+		return mItemRefById.get(id);
 	}
 	
 	/**
@@ -422,7 +424,8 @@ public class LocalDataManager implements IDataSourceManager {
 			// Actual line that sets our data array and hashmap
 			mData = result;
 			for (QAModel item: mData) {
-				mDataById.put(item.getUniqueId(), new WeakReference<QAModel>(item));
+				mItemRefById.put(item.getUniqueId(), item);
+				mDataSetById.add(item.getUniqueId());
 			}
 			
 			// Calculate the derived info
@@ -541,19 +544,89 @@ public class LocalDataManager implements IDataSourceManager {
 		return packedResult;
 	}
 	
+	/**
+	 * Determine if we should save a given item, using the items that we currently
+	 * have tracked by this LocalDataManager.
+	 * Conditions to save under:
+	 *  
+	 */
+	private boolean shouldSaveLocally(QAModel item, UserContext ctx) {
+		// Item itself is interesting?
+		if (ctx.isInteresting(item.getUniqueId())) {
+			return true;
+		}
+		
+		// Otherwise, check if it has inherited interestingness or is authored by us
+		if (item instanceof AuthoredItem) {
+			AuthoredItem authoredItem = (AuthoredItem)item;
+			
+			// Are we authored by the user?
+			if (authoredItem.getAuthor().equals(ctx.getUserName())) {
+				return true;
+			}
+			
+			// Is our parent interesting?
+			QAModel parentItem = mItemRefById.get(authoredItem.getParentItem());
+			if (parentItem == null) {
+				// No parent item -> Not interesting
+				return false;
+			} else if (mDataSetById.contains(parentItem.getUniqueId())) {
+				// Parent is saved? -> We are interesting
+				return true;
+			} else {
+				// Parent is not saved, we may or may not be interesting, look further
+				return shouldSaveLocally(parentItem, ctx);
+			}
+		} else {
+			return false;
+		}
+	}
 
+	/**
+	 * Recursively promote an item and its children from not saved to saved if they
+	 * are not already saved. Called to propagate saved-ness down from an item to
+	 * all of it's descendants when it is favorited or viewed or some other action
+	 * that causes it to become saved.
+	 */
+	private void propogateSave(QAModel parentItem) {
+		// Add to our tracking
+		mData.add(parentItem);
+		mDataSetById.add(parentItem.getUniqueId());
+		
+		// See if any of the children are not saved
+		for (QAModel item: mItemRefById.values()) {
+			if (item instanceof AuthoredItem) {
+				AuthoredItem authItem = (AuthoredItem)item;
+				UniqueId parentId = authItem.getParentItem();
+				if (parentId != null && parentId.equals(parentItem.getUniqueId())) {
+					// This is a child item
+					if (!mDataSetById.contains(authItem)) {
+						// Haven't saved it yet, save
+						propogateSave(authItem);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Save an item from a UniqueId if we have the item for that UniqueId cached
+	 * @param itemId The Id of the item to save, as opposed to the item itself.
+	 */
+	public void saveItemIfCached(UniqueId itemId, UserContext ctx) {
+		QAModel item = mItemRefById.get(itemId);
+		if (item != null) {
+			saveItem(item, ctx);
+		}
+	}
+	
 	/**
 	 * Main save item method. Saves an item to the local storage. If the item
 	 * already exists, do nothing.
 	 * @param item The item to save.
 	 */
 	@Override
-	public boolean saveItem(QAModel item) {
-		// First, make a local copy of the item, without derived information in it
-		// Copy via a serialize / deserialize pair.
-		Gson gson = DataManager.getGsonObject();
-		item = (QAModel)gson.fromJson(gson.toJson(item, item.getClass()), item.getClass());
-		
+	public boolean saveItem(QAModel item, UserContext ctx) {
 		// Add the item to our data array if it isn't there already, and if we
 		// have to add it, mark as dirty.
 		mDataLock.lock();
@@ -561,14 +634,19 @@ public class LocalDataManager implements IDataSourceManager {
 		// Test
 		maybeDoInitialDataQuery();
 		
-		//Log.i("lock", "saveItem Lock");
-		if (getItemById(item.getUniqueId()) == null) {
-			// Add to our tracking
-			mData.add(item);
-			mDataById.put(item.getUniqueId(), new WeakReference<QAModel>(item));
+		// Tracking for items, regardless of whether they are saved or not
+		if (mItemRefById.get(item.getUniqueId()) == null) {
+			// Add the item to our item tracking if it isn't already there
+			mItemRefById.put(item.getUniqueId(), item);
 			
-			// Calculate derived info
+			// And apply it's derived info
 			handleDerivedInfo(item);
+		}
+		
+		// Saving of items that should be saved, which we haven't saved already
+		if (!mDataSetById.contains(item.getUniqueId()) && shouldSaveLocally(item, ctx)) {
+			// Save the item and it's children
+			propogateSave(item);
 			
 			// Mark us as needing a save
 			mDataDirty = true;
@@ -580,6 +658,7 @@ public class LocalDataManager implements IDataSourceManager {
 		if (mDataDirty) {
 			if (mCurrentSaveWorker == null) {
 				// Schedule a save
+				Log.i("save", "LocalDataManager :: Save Scheduled...");
 				mCurrentSaveWorker = mSaveWorkerPool.schedule(new Runnable() {	
 					@Override
 					public void run() {
@@ -589,7 +668,6 @@ public class LocalDataManager implements IDataSourceManager {
 			}
 		}
 		
-		//Log.i("lock", "saveItem Unlock");
 		mDataLock.unlock();
 		
 		return true;
@@ -617,7 +695,7 @@ public class LocalDataManager implements IDataSourceManager {
 		//Log.i("lock", "doSave Unlock");
 		mDataLock.unlock();
 		
-		Log.i("app", "LocalDataManager :: Data Saved");
+		Log.i("save", "LocalDataManager :: Data Saved");
 	}
 
 	@Override

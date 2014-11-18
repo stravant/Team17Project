@@ -38,6 +38,7 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.NetworkDataManager;
+import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 
 @SuppressLint("DefaultLocale")
@@ -56,6 +57,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	DataFilter dataFilter;
 	IncrementalResult result;
 	NetworkDataManager dataManager;
+	UserContext userContext;
 
 	/**
 	 * Waits for at least numResults results to arrive in the IncrementalResult before returning, or before 
@@ -129,7 +131,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		}
 
 		DataItemSavedListener savedListener = new DataItemSavedListener();
-		dataManager.saveItem(item, savedListener);
+		dataManager.saveItem(item, userContext, savedListener);
 
 		lock.lock();
 		boolean success = false;
@@ -182,6 +184,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 		dataManager = new NetworkDataManager(mEsServerUrl, mEsServerIndex);
 		dataFilter = new DataFilter();
+		userContext = new UserContext("test_username");
 	}
 
 	/**
@@ -552,7 +555,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 			if (questionList.indexOf(item) == questionList.size()-1) {
 				assertTrue("Save success", waitForItemSaved(item));
 			} else {
-				dataManager.saveItem(item);
+				dataManager.saveItem(item, userContext);
 			}
 		}
 
