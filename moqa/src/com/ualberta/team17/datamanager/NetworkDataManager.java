@@ -2,11 +2,11 @@ package com.ualberta.team17.datamanager;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.apache.commons.lang3.NotImplementedException;
 
 import io.searchbox.client.JestClient;
 import io.searchbox.client.JestResult;
@@ -24,12 +24,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredItem;
+import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
+import com.ualberta.team17.datamanager.comparators.DateComparator;
 
 /**
  * Manages all interaction with the Elastic Search server.
@@ -57,7 +60,7 @@ import com.ualberta.team17.UpvoteItem;
 	 *
 	 * @author michaelblouin
 	 */
-	private class QueryTask extends AsyncTask<Void, Void, SearchResult> {
+	private class QueryTask extends AsyncTask<Void, Void, List<List<QAModel>>> {
 		private Search mSearch;
 		private IncrementalResult mResult;
 
@@ -67,23 +70,45 @@ import com.ualberta.team17.UpvoteItem;
 		}
 
 		@Override
-		protected SearchResult doInBackground(Void ... nothing) {
+		protected List<List<QAModel>> doInBackground(Void ... nothing) {
 			SearchResult searchResult = beginSearch(mSearch);
-
-			if (null == searchResult) {
+			final List<QAModel> results = parseSearchResults(searchResult);
+			final List<List<QAModel>> metaResults = queryModelMetaData(results);
+			
+			if (null == results) {
 				return null;
 			}
 
-			System.out.println(String.format("NetworkDataManager received %d results", searchResult.getTotal()));
+			System.out.println(String.format("NetworkDataManager received %d results", results.size()));
 			
-			return searchResult;
+			return new ArrayList<List<QAModel>>() {{
+				add(results);
+				addAll(metaResults);
+			}};
 		}
 
 		@Override
-		protected void onPostExecute(SearchResult searchResult) {
-			parseSearchResults(searchResult, mResult);
+		protected void onPostExecute(List<List<QAModel>> results) {
+			if (null == results) {
+				return;
+			}
+
+			for (List<QAModel> resultList: results) {
+				if (null == resultList) {
+					continue;
+				}
+
+				// Need to notify for every data item we load
+				for (QAModel result: resultList) {
+					notifyDataItemLoaded(result);
+				}
+			}
+
+			// Only add the first items, which are from the original result set
+			if (null != results.get(0)) {
+				mResult.addObjects(results.get(0));					
+			}
 		}
-		
 
 		/**
 		 * Begins the search against the elastic search server. This function blocks until the request has been completed.
@@ -137,13 +162,14 @@ import com.ualberta.team17.UpvoteItem;
 		 * @param searchResult The SearchResults to parse
 		 * @param IncrementalResult The incremental result to load parsed results into
 		 */
-		private void parseSearchResults(SearchResult searchResult, IncrementalResult result) {
+		private List<QAModel> parseSearchResults(SearchResult searchResult) {
 			if (null == searchResult) {
-				return;
+				return null;
 			}
 
 			Gson gson = DataManager.getGsonObject();
 			List<QAModel> objects = new ArrayList<QAModel>();
+			System.out.println(searchResult.getJsonString());
 			for (JsonElement element: searchResult.getJsonObject().getAsJsonObject("hits").getAsJsonArray("hits")) {
 				JsonObject obj = element.getAsJsonObject();
 				try {
@@ -178,16 +204,105 @@ import com.ualberta.team17.UpvoteItem;
 						continue;
 
 					objects.add(newObject);
-					notifyDataItemLoaded(newObject);
 				} catch (Exception e) {
 					System.out.println("Error occured parsing object: " + obj.toString());
 					e.printStackTrace();
 				}
 			}
 
-			if (null != result) {
-				result.addObjects(objects);
+			return objects;
+		}
+		
+		private List<List<QAModel>> queryModelMetaData(List<QAModel> results) {
+			List<List<QAModel>> resultsList = new ArrayList<List<QAModel>>();
+			if (null == results) {
+				return resultsList;
 			}
+
+			// Get the items we need to query for
+			Map<UniqueId, QAModel> answerCountQueryItems = new HashMap<UniqueId, QAModel>();
+			Map<UniqueId, QAModel> upvoteCountQueryItems = new HashMap<UniqueId, QAModel>();
+			for (QAModel result: results) {
+				if (ItemType.Question == result.getItemType()) {
+					answerCountQueryItems.put(result.getUniqueId(), result);
+					upvoteCountQueryItems.put(result.getUniqueId(), result);
+				} else if (ItemType.Answer == result.getItemType()) {
+					upvoteCountQueryItems.put(result.getUniqueId(), result);
+				}
+			}
+
+			// Build the queries
+			if (0 != upvoteCountQueryItems.size()) {
+				DataFilter filter = new DataFilter();
+				filter.setTypeFilter(ItemType.Upvote);
+				for (QAModel item: upvoteCountQueryItems.values()) {
+					filter.addFieldFilter(
+							AuthoredItem.FIELD_PARENT, 
+							item.getUniqueId().toString(), 
+							DataFilter.FilterComparison.EQUALS,
+							DataFilter.CombinationMode.SHOULD);
+				}
+				
+				filter.setMaxResults(ESSearchBuilder.MAX_ES_RESULTS);
+				ESSearchBuilder searchBuilder = new ESSearchBuilder(filter, null);
+				List<QAModel> metaResults = parseSearchResults(doMetaQuery(searchBuilder));
+				if (null != metaResults) {
+					resultsList.add(metaResults);
+				}
+			}
+			
+			if (0 != answerCountQueryItems.size()) {
+				DataFilter filter = new DataFilter();
+				filter.setTypeFilter(ItemType.Answer);
+				for (QAModel item: answerCountQueryItems.values()) {
+					filter.addFieldFilter(
+							AuthoredItem.FIELD_PARENT, 
+							item.getUniqueId().toString(), 
+							DataFilter.FilterComparison.EQUALS,
+							DataFilter.CombinationMode.SHOULD);
+				}
+				
+				filter.setMaxResults(ESSearchBuilder.MAX_ES_RESULTS);
+				ESSearchBuilder searchBuilder = new ESSearchBuilder(filter, null);
+				List<QAModel> metaResults = parseSearchResults(doMetaQuery(searchBuilder));
+				if (null != metaResults) {
+					resultsList.add(metaResults);
+				}
+			}
+			
+			return resultsList;
+		}
+		
+		private SearchResult doMetaQuery(ESSearchBuilder searchBuilder) {
+			Search search = 
+				searchBuilder
+				.getBuilder()
+				.addIndex(mEsServerIndex)
+				.build();
+
+			SearchResult searchResult = null;
+			boolean available = false;
+
+			mJestClientLock.lock();
+			try {
+				searchResult = mJestClient.execute(search);
+				available = true;
+			} catch (java.net.UnknownHostException e) {
+				System.out.println("Could not resolve server host");
+				available = false;
+			} catch (java.net.NoRouteToHostException e) {
+				System.out.println("Could not resolve server host");
+				available = false;
+			} catch (Exception e) {
+				System.out.println("Exception occured performing query");
+				e.printStackTrace();
+				available = false;
+			}
+			mJestClientLock.unlock();
+
+			setIsAvailable(available);
+
+			return searchResult;
 		}
 	}
 
