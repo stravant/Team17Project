@@ -12,7 +12,7 @@ public class ESSearchBuilder {
 	private JsonObject mQueryObject;
 	private DataFilter mFilter;
 	private IItemComparator mComparator;
-	
+
 	public ESSearchBuilder(DataFilter filter, IItemComparator comparator) {
 		mFilter = filter;
 		mComparator = comparator;
@@ -30,6 +30,10 @@ public class ESSearchBuilder {
 
 			if (null != mFilter.getPage())
 				builder.setParameter("from", maxResults * mFilter.getPage());
+		}
+
+		if (null != mFilter.getTypeFilter()) {
+			builder.addType(mFilter.getTypeFilter().toString().toLowerCase());
 		}
 
 		return builder;
@@ -107,23 +111,23 @@ public class ESSearchBuilder {
 					break;
 
 				case EQUALS:
-					addTermFilter(boolFilterObj, "must", filter);
+					addTermFilter(boolFilterObj, filter.getCombinationMode().toString().toLowerCase(), filter);
 					break;
 
 				case GREATER_THAN:
-					addRangeFilter(boolFilterObj, "must", filter, "gt");
+					addRangeFilter(boolFilterObj, filter.getCombinationMode().toString().toLowerCase(), filter, "gt");
 					break;
 
 				case GREATER_THAN_OR_EQUAL:
-					addRangeFilter(boolFilterObj, "must", filter, "gte");
+					addRangeFilter(boolFilterObj, filter.getCombinationMode().toString().toLowerCase(), filter, "gte");
 					break;
 
 				case LESS_THAN:
-					addRangeFilter(boolFilterObj, "must", filter, "lt");
+					addRangeFilter(boolFilterObj, filter.getCombinationMode().toString().toLowerCase(), filter, "lt");
 					break;
 
 				case LESS_THAN_OR_EQUAL:
-					addRangeFilter(boolFilterObj, "must", filter, "lte");
+					addRangeFilter(boolFilterObj, filter.getCombinationMode().toString().toLowerCase(), filter, "lte");
 					break;
 
 				case NOT_EQUAL:
@@ -132,9 +136,9 @@ public class ESSearchBuilder {
 			}
 		}
 
-		if (null != mFilter.getTypeFilter()) {
-			addTypeFilter(boolFilterObj, "must", mFilter.getTypeFilter());
-		}
+//		if (null != mFilter.getTypeFilter()) {
+//			addTypeFilter(boolFilterObj, "must", mFilter.getTypeFilter());
+//		}
 
 		if (!filteredQueryObj.has("query")) {
 			filteredQueryObj.add("query", getJsonObjectWithProperty("match_all", new JsonObject()));

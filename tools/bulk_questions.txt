@@ -1,6 +1,24 @@
 { "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "ecf5165525f1fde44c1ebbb55a0f2d1b" } }
-{ "title": "This is the first question", "body": "This is the default question body", "mUpvoteCount": "0", "parent": "0", "author": "michaelblouin", "date": "2014-10-18T22:52:36Z", "type": "question", "id": "ecf5165525f1fde44c1ebbb55a0f2d1b" }
+{ "title": "This is the first question", "body": "This is the default question body", "upvoteCount": "0", "parent": "0", "author": "michaelblouin", "date": "2014-10-18T22:52:36Z", "type": "question", "id": "ecf5165525f1fde44c1ebbb55a0f2d1b" }
 { "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "703a31a2bf463ab46b7eba47a4801567" } }
-{ "title": "This is the second question", "body": "This is the second question body", "mUpvoteCount": "10", "parent": "0", "author": "testuser", "date": "2014-10-18T22:59:36Z", "type": "question", "id": "703a31a2bf463ab46b7eba47a4801567" }
+{ "title": "This is the second question", "body": "This is the second question body", "upvoteCount": "10", "parent": "0", "author": "testuser", "date": "2014-10-18T22:59:36Z", "type": "question", "id": "703a31a2bf463ab46b7eba47a4801567" }
 { "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "c5ed8aff3dbcd324730bd046c6d254a8" } }
-{ "title": "This is the third question", "body": "This is the third question body", "mUpvoteCount": "11", "parent": "0", "author": "michaelblouin", "date": "2014-10-18T23:52:36Z", "type": "question", "id": "c5ed8aff3dbcd324730bd046c6d254a8" }
+{ "title": "This is the third question", "body": "This is the third question body", "upvoteCount": "11", "parent": "0", "author": "michaelblouin", "date": "2014-10-18T23:52:36Z", "type": "question", "id": "c5ed8aff3dbcd324730bd046c6d254a8" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "Mike", "parent": "ecf5165525f1fde44c1ebbb55a0f2d1b", "id": "AUm1oU_uu7UI-k5dxA8q" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "Mark", "parent": "ecf5165525f1fde44c1ebbb55a0f2d1b", "id": "AUm1oU_uu7UI-k5dxA8a" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "marklangen", "parent": "ecf5165525f1fde44c1ebbb55a0f2d1b", "id": "AUm1oU_uu7UI-k5dxA8b" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "marklangen", "parent": "703a31a2bf463ab46b7eba47a4801567", "id": "AUm1oU_uu7UI-k5dxA8c" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "marklangen", "parent": "703a31a2bf463ab46b7eba47a4801567", "id": "AUm1oU_uu7UI-k5dxA8d" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "marklangen", "parent": "703a31a2bf463ab46b7eba47a4801567", "id": "AUm1oU_uu7UI-k5dxA8e" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "marklangen", "parent": "703a31a2bf463ab46b7eba47a4801567", "id": "AUm1oU_uu7UI-k5dxA8f" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "marklangen", "parent": "703a31a2bf463ab46b7eba47a4801567", "id": "AUm1oU_uu7UI-k5dxA8g" }
+{ "create" : { "_index" : "moqatest", "_type" : "upvote" }
+{ "author": "marklangen", "parent": "703a31a2bf463ab46b7eba47a4801567", "id": "AUm1oU_uu7UI-k5dxA8h" }
