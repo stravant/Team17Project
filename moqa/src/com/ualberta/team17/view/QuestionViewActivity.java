@@ -297,6 +297,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			Button commentButton = (Button) qaItemView.findViewById(R.id.createCommentButton);
 			Button upvoteButton = (Button) qaItemView.findViewById(R.id.upvoteButton);
 			
+			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);
+			
 			QABody qaItem = mObjects.get(position);
 			if(qaItem.parent.mType == ItemType.Question) {
 				QuestionItem question = (QuestionItem) qaItem.parent;
@@ -314,26 +316,23 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				// This should never happen. If it does, a bad object was added to the list.
 				throw new IllegalStateException();
 			}
-			
-			Button createCommentBtn = (Button) qaItemView.findViewById(R.id.createCommentButton);			
-			createCommentBtn.setTag(mObjects.get(position).parent.getUniqueId());
-			createCommentBtn.setOnClickListener(new AddCommentListener(createCommentBtn));
-			
-			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);			
+						
+			commentButton.setTag(mObjects.get(position).parent.getUniqueId());
+			commentButton.setOnClickListener(new AddCommentListener(commentButton));			
 			
 			bodyTextView.setText(mObjects.get(position).parent.getBody());
 			authorTextView.setText(mObjects.get(position).parent.getAuthor());
 			
 			for (int i=0; i<mObjects.get(position).comments.size(); i++){
-				TextView comment = new TextView(mContext);
-				comment.setText(mObjects.get(position).comments.get(i).getBody());
+				View commentView = inflater.inflate(R.layout.comment, parent, false);
+				TextView commentBody = (TextView) commentView.findViewById(R.id.commentText);
+				commentBody.setText(mObjects.get(position).comments.get(i).getBody());
 				
-				TextView commentAuthor = new TextView(mContext);
+				TextView commentAuthor = (TextView) commentView.findViewById(R.id.commentAuthor);
 				commentAuthor.setText("-" + mObjects.get(position).comments.get(i).getAuthor());	
 				commentAuthor.setGravity(Gravity.RIGHT);
 				
-				commentsView.addView(comment);
-				commentsView.addView(commentAuthor);
+				commentsView.addView(commentView);
 			}			
 			// TODO: Implement favorite/upvote buttons.
 			return qaItemView;
@@ -411,21 +410,50 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	}
 	
 	private class UpvoteListener implements View.OnClickListener {
-
+		private QAModel mItem;
+		
+		public UpvoteListener(QAModel item) {
+			mItem = item;
+		}
+		
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
+			QAController controller = QAController.getInstance();
+			/*
+			 * TODO: Implement this once the upvote API is finalized.
+			 * Something like:
+			 * 
+			 * controller.upvote(item);
+			 */
 		}
 		
 	}
 	
 	private class FavoriteListener implements View.OnClickListener {
-
+		private QAModel mItem;
+		
+		public FavoriteListener(QAModel item) {
+			mItem = item;
+		}
+		
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
+			QAController controller = QAController.getInstance();
+			controller.addFavorite(mItem);
+			/*
+			 * TODO: Right now you can't unfavorite an item.
+			 * It should eventually look something like this:
+			 * 
+			 * if(controller.hasFavorite(mItem)) {
+			 * 		controller.removeFavorite(mItem);
+			 * } else {
+			 * 		controller.addFavorite(mItem);
+			 * }
+			 * 
+			 * OR
+			 * 
+			 * controller.toggleFavorite(mItem);
+			 */
 		}
 		
 	}
