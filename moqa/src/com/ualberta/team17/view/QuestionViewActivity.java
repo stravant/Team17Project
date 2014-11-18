@@ -317,19 +317,21 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				throw new IllegalStateException();
 			}
 						
-			commentButton.setTag(mObjects.get(position).parent.getUniqueId());
+			commentButton.setTag(qaItem.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));			
 			
-			bodyTextView.setText(mObjects.get(position).parent.getBody());
-			authorTextView.setText(mObjects.get(position).parent.getAuthor());
+			bodyTextView.setText(qaItem.parent.getBody());
+			authorTextView.setText(qaItem.parent.getAuthor());
 			
-			for (int i=0; i<mObjects.get(position).comments.size(); i++){
+			for (int i = 0; i < qaItem.comments.size(); i++){
+				CommentItem comment = qaItem.comments.get(i);
+				
 				View commentView = inflater.inflate(R.layout.comment, parent, false);
 				TextView commentBody = (TextView) commentView.findViewById(R.id.commentText);
-				commentBody.setText(mObjects.get(position).comments.get(i).getBody());
+				commentBody.setText(comment.getBody());
 				
 				TextView commentAuthor = (TextView) commentView.findViewById(R.id.commentAuthor);
-				commentAuthor.setText("-" + mObjects.get(position).comments.get(i).getAuthor());	
+				commentAuthor.setText("-" + comment.getAuthor());	
 				commentAuthor.setGravity(Gravity.RIGHT);
 				
 				commentsView.addView(commentView);
