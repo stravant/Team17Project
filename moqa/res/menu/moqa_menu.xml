@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
     <group android:id="@+id/questionlist_group" >        
         
         <item 
 	        android:id="@+id/action_search"
+	        android:title="@string/action_search"
 	        android:showAsAction="always"/>           
         <item 
 	        android:id="@+id/action_new_question"
@@ -21,11 +23,12 @@
     <group android:id="@+id/questionview_group">
 	    
         <item 
-	        android:id="@+id/action_search"
+	        android:id="@+id/action_search2"
+	        android:title="@string/action_search"
 	        android:showAsAction="always"/>
         
         <item 
-	        android:id="@+id/action_new_question"
+	        android:id="@+id/action_new_question2"
 	        android:title="@string/action_new_question"
 	        android:icon="@android:drawable/ic_menu_add"
 	        android:showAsAction="always"/>
