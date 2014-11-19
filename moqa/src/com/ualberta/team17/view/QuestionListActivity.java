@@ -78,7 +78,12 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.question_list_actions, menu);
+		getMenuInflater().inflate(R.menu.moqa_menu, menu);
+		
+		// Get the search menu item
+		MenuItem mi = menu.findItem(R.id.action_search);
+		SearchItem si = new SearchItem(this.getBaseContext());
+		mi.setActionView(si);
 		return true;
 	}
 

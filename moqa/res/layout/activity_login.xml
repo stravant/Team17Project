@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:textAlignment="center"
     tools:context="com.ualberta.team17.view.LoginActivity" >
 
     <EditText
@@ -15,8 +14,7 @@
         android:layout_marginTop="114dp"
         android:ems="10"
         android:gravity="center"
-        android:text="username"
-        android:textAlignment="center" >
+        android:text="username" >
 
         <requestFocus />
     </EditText>
