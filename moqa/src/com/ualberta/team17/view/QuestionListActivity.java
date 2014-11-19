@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.ualberta.team17.R;
+import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
 
 /**
  * This class displays the list of requested questions and answers. It receives an intent
@@ -26,16 +27,16 @@ import com.ualberta.team17.R;
  * @author Jared
  *
  */
-public class QuestionListActivity extends Activity {
+public class QuestionListActivity extends Activity implements OnItemSelectedListener{
 
-	private String[] myTaxonomy;
+	
 	private String[] sortOptions;
-	private DrawerLayout mDrawerLayout;
 	private DrawerLayout rightDrawerLayout;
-	private ListView mDrawerList;
 	private ListView rightDrawerList;
-	private ActionBarDrawerToggle mDrawerToggle;
 	private ActionBarDrawerToggle rightDrawerToggle;
+	TaxonomyMenuFragment leftDrawer = new TaxonomyMenuFragment();
+	SortMenuFragment rightDrawer = new SortMenuFragment();
+	ListFragment fragment = new ListFragment();
 
 
 	/**
@@ -49,8 +50,7 @@ public class QuestionListActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_list);	
 		if (savedInstanceState == null) {
-			TaxonomyMenuFragment leftDrawer = new TaxonomyMenuFragment();
-			SortMenuFragment rightDrawer = new SortMenuFragment();
+
 			FragmentManager fragmentManager = getFragmentManager();
 			fragmentManager.beginTransaction().add(R.id.content_frame, leftDrawer).commit();
 			fragmentManager.beginTransaction().replace(R.id.content_frame, rightDrawer).commit();
@@ -61,17 +61,14 @@ public class QuestionListActivity extends Activity {
 
 	private void selectItem(int position) {
 		// update the main content by replacing fragments
-		ListFragment fragment = new ListFragment();
+		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		Bundle args = new Bundle();
 		args.putInt(ListFragment.TAXONOMY_NUM, position);
-		fragment.setArguments(args);
-
+		fragment = new ListFragment();
 		FragmentManager fragmentManager = getFragmentManager();
+		fragment.setArguments(args);
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-		// update selected item and title, then close the drawer
-		mDrawerList.setItemChecked(position, true);
 		setTitle(myTaxonomy[position]);
-		mDrawerLayout.closeDrawer(mDrawerList);
 	}
 
 
@@ -93,92 +90,23 @@ public class QuestionListActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		ListFragment fragment = new ListFragment();
-
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		
+		if (leftDrawer.mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
 		if (id == R.id.action_new_question) {
 			fragment.createNewQuestion();
 			return true;
 		}
-		else if (id == R.id.action_sort) {
-			fragment.applySort();
-			return true;
-		}
-		else if (id == R.id.action_sort_date) {
+		if (id == R.id.action_sort_date) {
 			fragment.applyDateSort(item);
-
 			return true;
 		}
-		else if (id == R.id.action_search) {
-			fragment.search();
-			return true;
-		}
-
+		
 		return super.onOptionsItemSelected(item);
 	}
 
-	public class TaxonomyMenuFragment extends Fragment {
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-
-
-
-			myTaxonomy = getResources().getStringArray(R.array.taxonomies);
-			mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-			mDrawerList = (ListView) findViewById(R.id.left_drawer);
-			mDrawerList.setAdapter(new ArrayAdapter<String>(getActivity(),
-					R.layout.drawer_list_item, myTaxonomy));
-			mDrawerList.setOnItemClickListener(new LeftDrawerItemClickListener());
-
-			getActionBar().setDisplayHomeAsUpEnabled(true);
-			getActionBar().setHomeButtonEnabled(true);
-
-
-			mDrawerToggle = new ActionBarDrawerToggle(
-					getActivity(),                  
-					mDrawerLayout,
-					R.drawable.ic_drawer,  
-					R.string.drawer_open,  
-					R.string.drawer_close  
-					) {
-				public void onDrawerClosed(View view) {
-					getActionBar().setTitle(getTitle());
-					invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-				}
-
-				public void onDrawerOpened(View drawerView) {
-					getActionBar().setTitle(getTitle());
-					invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-				}
-			};
-			mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-			if (savedInstanceState == null) {
-				selectItem(0);
-			}
-
-			View rootView = inflater.inflate(R.layout.question_list, container, false);
-			return rootView;
-		}
-		private class LeftDrawerItemClickListener implements ListView.OnItemClickListener {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				selectItem(position);
-			}
-		}
-
-
-		@Override
-		public void onConfigurationChanged(Configuration newConfig) {
-			super.onConfigurationChanged(newConfig);
-			mDrawerToggle.onConfigurationChanged(newConfig);
-		}
-
-
-	}
+	
 	public class SortMenuFragment extends Fragment {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -213,6 +141,12 @@ public class QuestionListActivity extends Activity {
 			rightDrawerToggle.onConfigurationChanged(newConfig);
 		}
 
+	}
+
+
+	@Override
+	public void onItemSelected(int position) {
+		selectItem(position);
 	}
 
 }
