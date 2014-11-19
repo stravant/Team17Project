@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
@@ -8,7 +8,8 @@
         android:id="@+id/searchButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/small_indent" />
+        android:layout_marginLeft="@dimen/small_indent"
+        android:background="@null" />
 
     <EditText
         android:id="@+id/searchBar"
@@ -20,6 +21,7 @@
         android:layout_marginRight="@dimen/small_indent"
         android:layout_toRightOf="@+id/searchButton"
         android:background="@color/milk"
-        android:ems="10" />
+        android:ems="10"
+        android:visibility="gone" />
 
 </RelativeLayout>
