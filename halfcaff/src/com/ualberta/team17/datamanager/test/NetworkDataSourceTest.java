@@ -543,7 +543,10 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	 * the tools/add_es_test_documents.bat script on Windows or Linux.
 	 */
 	public void test_DataSourceMultipleItemSave() {
-		List<QAModel> questionList = new ArrayList<QAModel>() {{
+		List<QAModel> questionList = new ArrayList<QAModel>() {
+			private static final long serialVersionUID = 7524316168409756758L;
+
+		{
 			add(new QuestionItem(new UniqueId(), null, "author1", new Date(), "test_DataSourceMultipleItemSave", 0, "title1" ));
 			add(new CommentItem(new UniqueId(), null, "author2", new Date(), "test_DataSourceMultipleItemSave", 0));
 			add(new AnswerItem(new UniqueId(), null, "author3", new Date(), "test_DataSourceMultipleItemSave", 0));
