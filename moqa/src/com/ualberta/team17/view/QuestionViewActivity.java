@@ -38,9 +38,11 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
+	private final static int SELECT_PICTURE = 1;
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
@@ -245,6 +247,14 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		return null;
 	}
 	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode == RESULT_OK) {
+			if(requestCode == SELECT_PICTURE) {
+				Toast toast = Toast.makeText(this, "Image returned!", Toast.LENGTH_LONG);
+			}
+		}
+	}
+	
 	/**
 	 * This class holds a Question/Answer and its child Comments.
 	 * 
@@ -308,17 +318,25 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				attachmentButton.setVisibility(View.VISIBLE);
 				
 				titleTextView.setText(question.getTitle());
+				favoriteButton.setOnClickListener(new FavoriteListener(qaItem.parent));
+				
+				// Just for testing, this will have to be changed.
+				attachmentButton.setOnClickListener(new AddAttachmentListener());
+				
 			} else if (qaItem.parent.mType == ItemType.Answer) {
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);
 				attachmentButton.setVisibility(View.GONE);
+				
 			} else {
 				// This should never happen. If it does, a bad object was added to the list.
 				throw new IllegalStateException();
 			}
 						
 			commentButton.setTag(qaItem.parent.getUniqueId());
-			commentButton.setOnClickListener(new AddCommentListener(commentButton));			
+			commentButton.setOnClickListener(new AddCommentListener(commentButton));
+			
+			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
 			
 			bodyTextView.setText(qaItem.parent.getBody());
 			authorTextView.setText(qaItem.parent.getAuthor());
@@ -477,8 +495,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			
+			Intent intent = new Intent();
+			intent.setType("image/*");
+			intent.setAction(Intent.ACTION_GET_CONTENT);
+			startActivityForResult(Intent.createChooser(intent, "Choose an image to attach"), SELECT_PICTURE);
 		}
 		
 	}
@@ -562,7 +582,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				String title = titleText.getText().toString();
 				String body = bodyText.getText().toString();
 				QuestionItem newQuestion = mController.createQuestion(title, body);
-				loadContent(newQuestion);	
+				loadContent(newQuestion);
 			}
 		}	
 	}
