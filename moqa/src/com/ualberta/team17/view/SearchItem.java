@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -40,12 +41,44 @@ public class SearchItem extends LinearLayout {
 	
 	private void init() {
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService (Context.LAYOUT_INFLATER_SERVICE);
-		View view = inflater.inflate(R.layout.searchitem, this, true); /* DO I ADD IT TO THIS VIEW */
+		@SuppressWarnings("unused")
+		View view = inflater.inflate(R.layout.searchitem, this, true); 
 
 		ImageButton b = (ImageButton)this.findViewById(R.id.searchButton);
 		if (b != null) {
 			b.setImageResource(android.R.drawable.ic_menu_search);
+			
+			b.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View view) {
+
+					ViewGroup g = (ViewGroup) view.getParent();
+					if (g != null) {
+						
+						EditText et = (EditText) g.findViewById(R.id.searchBar);
+						if (et != null) {
+							
+							if (et.isShown()) {
+								// Do search things then hide the bar.
+								et.setVisibility(GONE);
+							}
+							else {
+								// Show the bar and activate it
+								et.setVisibility(VISIBLE);
+								et.setSelected(true);
+							}							
+						}
+					}					
+				}
+				
+			});
 		}		
+		
+		EditText et = (EditText)this.findViewById(R.id.searchBar);
+		if (et != null) {
+			et.setVisibility(GONE);
+		}
 	}
 	
 	public String getSearchTerm() {
