@@ -82,6 +82,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 		menu.setGroupVisible(R.id.questionlist_group, true);
 		menu.setGroupVisible(R.id.questionview_group, false);
 		
@@ -92,6 +93,8 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		menu.setGroupVisible(R.id.questionview_group, false);
 		
 >>>>>>> Added a decent looking menu bar. Added groups to the menu.
+=======
+>>>>>>> Added some icons. Very basic actionbar functionality.
 		// Get the search menu item
 		MenuItem mi = menu.findItem(R.id.action_search);
 		SearchItem si = new SearchItem(this.getBaseContext());
