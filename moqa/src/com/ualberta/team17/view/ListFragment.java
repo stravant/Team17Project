@@ -269,9 +269,12 @@ public class ListFragment extends Fragment {
 						return;
 					}
 					ListView qList = (ListView) activity.findViewById(R.id.questionListView);
-					qList.invalidate();
-					
-					qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
+
+					if (qList != null) {
+						qList.invalidate();
+						
+						qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
+					}					
 				}
 			});
 		}
