@@ -4,8 +4,9 @@
         
         <item 
 	        android:id="@+id/action_search"
+	        android:title="@string/action_search"
 	        android:showAsAction="always"/>           
-        
+	        
         <item 
 	        android:id="@+id/action_new_question"
 	        android:title="@string/action_new_question"
@@ -19,17 +20,19 @@
 	        android:showAsAction="always"/>
         
     </group>
+    
     <group android:id="@+id/questionview_group">
 	    
         <item 
-	        android:id="@+id/action_search"
+	        android:id="@+id/action_search2"
+	        android:title="@string/action_search"
 	        android:showAsAction="always"/>
         
         <item 
-	        android:id="@+id/action_new_question"
+	        android:id="@+id/action_new_question2"
 	        android:title="@string/action_new_question"
 	        android:icon="@android:drawable/ic_menu_add"
 	        android:showAsAction="always"/>
-        
+
     </group>
 </menu>

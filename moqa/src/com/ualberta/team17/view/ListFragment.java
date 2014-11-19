@@ -34,11 +34,11 @@ public class ListFragment extends Fragment {
 	public static final String FILTER_EXTRA = "FILTER";
 	
 	private IncrementalResult mIR;
-	private Context context;
+	private Context mContext;
 	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        context = getActivity();
+        mContext = getActivity();
     }
 	
 	/**

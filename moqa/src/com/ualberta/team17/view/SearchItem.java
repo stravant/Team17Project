@@ -41,6 +41,7 @@ public class SearchItem extends LinearLayout {
 	
 	private void init() {
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+
 		@SuppressWarnings("unused")
 		View view = inflater.inflate(R.layout.searchitem, this, true); 
 
