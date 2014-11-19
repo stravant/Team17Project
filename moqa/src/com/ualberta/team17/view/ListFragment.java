@@ -1,6 +1,8 @@
 package com.ualberta.team17.view;
 
 import java.util.List;
+
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -28,17 +30,17 @@ import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
-
+@TargetApi(14)
 public class ListFragment extends Fragment {
 	public static final String TAXONOMY_NUM = "taxonomy_number";
 	public static final String FILTER_EXTRA = "FILTER";
 	
 	private IncrementalResult mIR;
-	private Context context;
+	private Context mContext;
 	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        context = getActivity();
+        mContext = getActivity();
     }
 	
 	/**

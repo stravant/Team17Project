@@ -41,13 +41,13 @@ public class SearchItem extends LinearLayout {
 	
 	private void init() {
 		LayoutInflater inflater = (LayoutInflater) getContext().getSystemService (Context.LAYOUT_INFLATER_SERVICE);
+
 		@SuppressWarnings("unused")
 		View view = inflater.inflate(R.layout.searchitem, this, true); 
 
 		ImageButton b = (ImageButton)this.findViewById(R.id.searchButton);
 		if (b != null) {
 			b.setImageResource(android.R.drawable.ic_menu_search);
-			
 			b.setOnClickListener(new OnClickListener() {
 
 				@Override
