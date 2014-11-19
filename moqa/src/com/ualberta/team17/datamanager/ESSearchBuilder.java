@@ -1,12 +1,17 @@
 package com.ualberta.team17.datamanager;
 
+import java.util.List;
+
 import io.searchbox.core.Search.Builder;
 import android.annotation.SuppressLint;
+
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
+import com.ualberta.team17.datamanager.DataFilter.DataFilterType;
 
 public class ESSearchBuilder {
 	public static final Integer MAX_ES_RESULTS = 100;
@@ -103,6 +108,10 @@ public class ESSearchBuilder {
 		for (DataFilter.FieldFilter filter: mFilter.getFieldFilters()) {
 			switch (filter.getComparisonMode()) {
 				case QUERY_STRING:
+					if (DataFilterType.MORE_LIKE_THIS == mFilter.getDataFilterType()) {
+						throw new UnsupportedOperationException("Cannot perform a QUERY_STRING search on a MORE_LIKE_THIS query.");
+					}
+
 					if (!filteredQueryObj.has("query")) {
 						filteredQueryObj.add("query", new JsonObject());
 					}
@@ -137,7 +146,16 @@ public class ESSearchBuilder {
 			}
 		}
 
-		if (!filteredQueryObj.has("query")) {
+		if (mFilter instanceof MoreLikeThisFilter) {
+			MoreLikeThisFilter mltFilter = (MoreLikeThisFilter)mFilter;
+			Gson gson = DataManager.getGsonObject();
+			JsonObject mlt = new JsonObject();
+			mlt.add("ids", gson.toJsonTree(mltFilter.getMoreLikeThisIds(), List.class));
+			mlt.add("fields", gson.toJsonTree(mltFilter.getMLTFields(), List.class));
+			mlt.addProperty("min_doc_freq", MoreLikeThisFilter.MLTMinDocFreq);
+			mlt.addProperty("min_term_freq", MoreLikeThisFilter.MLTMinTermFreq);
+			filteredQueryObj.add("query", getJsonObjectWithProperty("more_like_this", mlt));
+		} else if (!filteredQueryObj.has("query")) {
 			filteredQueryObj.add("query", getJsonObjectWithProperty("match_all", new JsonObject()));
 		}
 

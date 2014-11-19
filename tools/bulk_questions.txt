@@ -1,7 +1,7 @@
 { "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "ecf5165525f1fde44c1ebbb55a0f2d1b" } }
-{ "title": "This is the first question", "body": "This is the default question body", "upvoteCount": "0", "parent": "0", "author": "michaelblouin", "date": "2014-10-18T22:52:36Z", "type": "question", "id": "ecf5165525f1fde44c1ebbb55a0f2d1b" }
+{ "title": "How do you create a cookie in Javascript?", "body": "I've been having trouble creating cookies in javascript. Can anyone give me any pointers?", "upvoteCount": "0", "parent": "0", "author": "MrStarTrekOMG", "date": "2014-10-18T22:52:36Z", "type": "question", "id": "ecf5165525f1fde44c1ebbb55a0f2d1b" }
 { "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "703a31a2bf463ab46b7eba47a4801567" } }
-{ "title": "This is the second question", "body": "This is the second question body", "upvoteCount": "10", "parent": "0", "author": "testuser", "date": "2014-10-18T22:59:36Z", "type": "question", "id": "703a31a2bf463ab46b7eba47a4801567" }
+{ "title": "What is the default format for a cookie date?", "body": "This is totally not for homework, but I need to parse a bunch of cookies in C and I'm having trouble figuring out what date strings are. Full examples with no lines greater than 80 characters are appreciated.", "upvoteCount": "10", "parent": "0", "author": "schoolofPWN", "date": "2014-10-18T22:59:36Z", "type": "question", "id": "703a31a2bf463ab46b7eba47a4801567" }
 { "create" : { "_index" : "moqatest", "_type" : "question", "_id" : "c5ed8aff3dbcd324730bd046c6d254a8" } }
 { "title": "This is the third question", "body": "This is the third question body", "upvoteCount": "11", "parent": "0", "author": "michaelblouin", "date": "2014-10-18T23:52:36Z", "type": "question", "id": "c5ed8aff3dbcd324730bd046c6d254a8" }
 { "create" : { "_index" : "moqatest", "_type" : "upvote" }
