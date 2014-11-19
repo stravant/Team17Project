@@ -34,7 +34,6 @@ import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
 import com.ualberta.team17.view.QuestionListActivity;
-import com.ualberta.team17.view.QuestionTaxonomyActivity;
 
 public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<QuestionListActivity> {
 	DataFilter dataFilter;

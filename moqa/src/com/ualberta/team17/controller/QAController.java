@@ -11,6 +11,7 @@ import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.StoragePolicy;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.UpvoteItem;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataManager;
 import com.ualberta.team17.datamanager.IItemComparator;
@@ -116,6 +117,17 @@ public class QAController {
 	 */
 	public void markRecentlyViewed(QAModel item) {
 		mDataManager.markRecentlyViewed(item.getUniqueId());
+	}
+	
+	/**
+	 * Upvote a given question or answer
+	 * @param target The item to upvote
+	 */
+	public void upvote(QAModel target) {
+		UserContext creator = mDataManager.getUserContext();
+		UpvoteItem up = new UpvoteItem(new UniqueId(creator), target.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime());
+		up.setStoragePolicy(StoragePolicy.Cached);
+		mDataManager.saveItem(up);
 	}
 	
 	/**
