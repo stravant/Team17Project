@@ -80,6 +80,9 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.moqa_menu, menu);
 		
+		menu.setGroupVisible(R.id.questionlist_group, true);
+		menu.setGroupVisible(R.id.questionview_group, false);
+		
 		// Get the search menu item
 		MenuItem mi = menu.findItem(R.id.action_search);
 		SearchItem si = new SearchItem(this.getBaseContext());
