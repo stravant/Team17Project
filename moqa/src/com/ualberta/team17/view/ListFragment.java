@@ -260,9 +260,12 @@ public class ListFragment extends Fragment {
 				@Override
 				public void itemsArrived(List<QAModel> item, int index) {
 					ListView qList = (ListView) ListFragment.this.getActivity().findViewById(R.id.questionListView);
-					qList.invalidate();
 					
-					qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
+					if (qList != null) {
+						qList.invalidate();
+						
+						qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
+					}					
 				}
 			});
 		}
