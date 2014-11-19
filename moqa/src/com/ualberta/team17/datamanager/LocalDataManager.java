@@ -6,10 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.WeakHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -31,12 +36,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredItem;
+import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
+import com.ualberta.team17.datamanager.DataFilter.FieldFilter;
 
 public class LocalDataManager implements IDataSourceManager {
 	/**
@@ -48,6 +56,17 @@ public class LocalDataManager implements IDataSourceManager {
 	 * Our set of in-memory data
 	 */
 	private volatile List<QAModel> mData;
+	
+	/**
+	 * Set of items which have been saved locally, by ID
+	 */
+	private HashSet<UniqueId> mDataSetById = new HashSet<UniqueId>();
+	
+	/**
+	 * Pointers to the items that we have processed, items which may or may not be
+	 * currently locally stored, but which have come our way through saveItem() calls.
+	 */
+	private HashMap<UniqueId, QAModel> mItemRefById = new HashMap<UniqueId, QAModel>();
 	
 	/**
 	 * Do we need to do a save on the data?
@@ -160,7 +179,7 @@ public class LocalDataManager implements IDataSourceManager {
 	}
 	
 	/**
-	 * Close down the local data manager for the current context / usercontext
+	 * Close down the local data manager for the current context
 	 * Closes any file handles or tasks currently open.
 	 */
 	public void close() {
@@ -245,6 +264,70 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Return the encoded data
 		return gson.toJson(array);
+	}
+	
+	/**
+	 * Get an item from the hashmap
+	 */
+	public QAModel getItemById(UniqueId id) {
+		return mItemRefById.get(id);
+	}
+	
+	/**
+	 * Used at startup by the Initial Data Query. Calculates the current 
+	 * derived info for all of the {@link QAModel} items that were loaded. 
+	 * Examples of derived info: Upvote Count & Reply Count
+	 */
+	private void calculateInitialDerivedInfo() {
+		// Initially all of the items will have UpvoteCount and ReplyCount = 0
+		// when they are first constructed.
+		// That means that we just have to iterate through all of the items and
+		// tally them to their parent item if it exists.
+		// That is, we call handleDerivedInfo on each of our items... elegant!
+		for (QAModel item: mData) {
+			updateParentDerivedInfo(item);
+		}
+	}
+	
+	/**
+	 * Apply an item to its parent items derived info, that is, if it is
+	 * an upvote, add an upvote to its parent's derived info, and if it is
+	 * an answer, add to its parent's reply count.
+	 * @param item
+	 */
+	private void updateParentDerivedInfo(QAModel item) {
+		if (item instanceof AuthoredItem) {
+			QAModel parentItem = getItemById(((AuthoredItem)item).getParentItem());
+			if (parentItem != null) {
+				if (parentItem instanceof AuthoredTextItem && item instanceof UpvoteItem) {
+					// Tally upvotes
+					((AuthoredTextItem)parentItem).upvote();
+				}
+				if (parentItem instanceof QuestionItem && item instanceof AnswerItem) {
+					// Tally replies
+					((QuestionItem)parentItem).incrementReplyCount();
+				}
+			}
+		} 	
+	}
+	
+	/**
+	 * Handle the derived information related to an item
+	 * that has just been added, updating it's parent's info
+	 * if it has a parent, and adding already present children's
+	 * info to this item.
+	 * @param item
+	 */
+	private void handleDerivedInfo(QAModel item) {
+		updateParentDerivedInfo(item);
+		for (QAModel child: mData) {
+			if (child instanceof AuthoredItem) {
+				QAModel parent = getItemById(((AuthoredItem)child).getParentItem());
+				if (parent == item) {
+					updateParentDerivedInfo(child);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -338,8 +421,15 @@ public class LocalDataManager implements IDataSourceManager {
 				readItemData(in, result);
 			}
 			
-			// Actual line that sets our data
+			// Actual line that sets our data array and hashmap
 			mData = result;
+			for (QAModel item: mData) {
+				mItemRefById.put(item.getUniqueId(), item);
+				mDataSetById.add(item.getUniqueId());
+			}
+			
+			// Calculate the derived info
+			calculateInitialDerivedInfo();
 			
 			// Now available
 			mLastAvailable = Calendar.getInstance().getTime();
@@ -442,12 +532,10 @@ public class LocalDataManager implements IDataSourceManager {
 		maybeDoInitialDataQuery();
 		
 		//Log.i("lock", "doIdListQuery Lock");
-		for (QAModel item: mData) {
-			// TODO: Make this more efficient
-			for (UniqueId id: ids) {
-				if (item.getUniqueId().equals(id)) {
-					packedResult.add(item);
-				}
+		for (UniqueId id: ids) {
+			QAModel item = getItemById(id);
+			if (item != null) {
+				packedResult.add(item);
 			}
 		}
 		//Log.i("lock", "doIdListQuery Unlock");
@@ -456,14 +544,89 @@ public class LocalDataManager implements IDataSourceManager {
 		return packedResult;
 	}
 	
+	/**
+	 * Determine if we should save a given item, using the items that we currently
+	 * have tracked by this LocalDataManager.
+	 * Conditions to save under:
+	 *  
+	 */
+	private boolean shouldSaveLocally(QAModel item, UserContext ctx) {
+		// Item itself is interesting?
+		if (ctx.isInteresting(item.getUniqueId())) {
+			return true;
+		}
+		
+		// Otherwise, check if it has inherited interestingness or is authored by us
+		if (item instanceof AuthoredItem) {
+			AuthoredItem authoredItem = (AuthoredItem)item;
+			
+			// Are we authored by the user?
+			if (authoredItem.getAuthor().equals(ctx.getUserName())) {
+				return true;
+			}
+			
+			// Is our parent interesting?
+			QAModel parentItem = mItemRefById.get(authoredItem.getParentItem());
+			if (parentItem == null) {
+				// No parent item -> Not interesting
+				return false;
+			} else if (mDataSetById.contains(parentItem.getUniqueId())) {
+				// Parent is saved? -> We are interesting
+				return true;
+			} else {
+				// Parent is not saved, we may or may not be interesting, look further
+				return shouldSaveLocally(parentItem, ctx);
+			}
+		} else {
+			return false;
+		}
+	}
 
+	/**
+	 * Recursively promote an item and its children from not saved to saved if they
+	 * are not already saved. Called to propagate saved-ness down from an item to
+	 * all of it's descendants when it is favorited or viewed or some other action
+	 * that causes it to become saved.
+	 */
+	private void propogateSave(QAModel parentItem) {
+		// Add to our tracking
+		mData.add(parentItem);
+		mDataSetById.add(parentItem.getUniqueId());
+		
+		// See if any of the children are not saved
+		for (QAModel item: mItemRefById.values()) {
+			if (item instanceof AuthoredItem) {
+				AuthoredItem authItem = (AuthoredItem)item;
+				UniqueId parentId = authItem.getParentItem();
+				if (parentId != null && parentId.equals(parentItem.getUniqueId())) {
+					// This is a child item
+					if (!mDataSetById.contains(authItem)) {
+						// Haven't saved it yet, save
+						propogateSave(authItem);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Save an item from a UniqueId if we have the item for that UniqueId cached
+	 * @param itemId The Id of the item to save, as opposed to the item itself.
+	 */
+	public void saveItemIfCached(UniqueId itemId, UserContext ctx) {
+		QAModel item = mItemRefById.get(itemId);
+		if (item != null) {
+			saveItem(item, ctx);
+		}
+	}
+	
 	/**
 	 * Main save item method. Saves an item to the local storage. If the item
 	 * already exists, do nothing.
 	 * @param item The item to save.
 	 */
 	@Override
-	public boolean saveItem(QAModel item) {	
+	public boolean saveItem(QAModel item, UserContext ctx) {
 		// Add the item to our data array if it isn't there already, and if we
 		// have to add it, mark as dirty.
 		mDataLock.lock();
@@ -471,15 +634,23 @@ public class LocalDataManager implements IDataSourceManager {
 		// Test
 		maybeDoInitialDataQuery();
 		
-		//Log.i("lock", "saveItem Lock");
-		found: {
-			for (QAModel currentItem: mData) {
-				if (currentItem.getUniqueId().equals(item.getUniqueId())) {
-					break found;
-				}
-			}
-			mData.add(item);
+		// Tracking for items, regardless of whether they are saved or not
+		if (mItemRefById.get(item.getUniqueId()) == null) {
+			// Add the item to our item tracking if it isn't already there
+			mItemRefById.put(item.getUniqueId(), item);
+			
+			// And apply it's derived info
+			handleDerivedInfo(item);
+		}
+		
+		// Saving of items that should be saved, which we haven't saved already
+		if (!mDataSetById.contains(item.getUniqueId()) && shouldSaveLocally(item, ctx)) {
+			// Save the item and it's children
+			propogateSave(item);
+			
+			// Mark us as needing a save
 			mDataDirty = true;
+			
 			Log.i("app", "LocalDataManager :: Item <" + item.getUniqueId() + "> added.");
 		}
 		
@@ -487,6 +658,7 @@ public class LocalDataManager implements IDataSourceManager {
 		if (mDataDirty) {
 			if (mCurrentSaveWorker == null) {
 				// Schedule a save
+				Log.i("save", "LocalDataManager :: Save Scheduled...");
 				mCurrentSaveWorker = mSaveWorkerPool.schedule(new Runnable() {	
 					@Override
 					public void run() {
@@ -496,7 +668,6 @@ public class LocalDataManager implements IDataSourceManager {
 			}
 		}
 		
-		//Log.i("lock", "saveItem Unlock");
 		mDataLock.unlock();
 		
 		return true;
@@ -524,7 +695,7 @@ public class LocalDataManager implements IDataSourceManager {
 		//Log.i("lock", "doSave Unlock");
 		mDataLock.unlock();
 		
-		Log.i("app", "LocalDataManager :: Data Saved");
+		Log.i("save", "LocalDataManager :: Data Saved");
 	}
 
 	@Override

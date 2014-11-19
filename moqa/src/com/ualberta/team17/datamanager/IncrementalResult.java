@@ -117,9 +117,13 @@ public class IncrementalResult {
 			// Otherwise, compare them with the comparator, and 
 			int result = mBaseComparator.compare(lhs, rhs);
 			if (result == 0) {
+				// If they are identical items, just return 0, don't want to double insert
 				if (lhs.hashCode() == rhs.hashCode())
 					return 0;
-				return (lhs.hashCode() < rhs.hashCode()) ? -1 : 1;	
+				// If they are just equal under the sort, force the item to the end of the array (less than all)
+				//  -> The last among a set of sort-wise equal items added will be the last in the 
+				//     IncrementalResult order.
+				return -1;
 			} else {
 				return result;
 			}

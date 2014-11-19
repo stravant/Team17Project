@@ -12,11 +12,27 @@ public class QuestionItem extends AuthoredTextItem {
 	public static final String FIELD_TITLE = "title";
 
 	private String mTitle;
+	private transient int mReplyCount;
 	
 	/* Ctor */
 	public QuestionItem(UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount, String title) {
 		super(ItemType.Question, id, parentId, author, date, body, upvoteCount);
 		mTitle = title;
+	}
+	
+	/* Reply count */
+	public int getReplyCount() {
+		return mReplyCount;
+	}
+	
+	public void setReplyCount(int replies) {
+		mReplyCount = replies;
+		notifyViews();
+	}
+	
+	public void incrementReplyCount() {
+		++mReplyCount;
+		notifyViews();
 	}
 	
 	/* Getters */

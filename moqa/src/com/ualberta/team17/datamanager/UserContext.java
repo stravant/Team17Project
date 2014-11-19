@@ -5,8 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import android.content.Context;
 import android.util.Log;
@@ -27,10 +32,18 @@ import com.ualberta.team17.UniqueId;
 public class UserContext implements Serializable {
 	private static final long serialVersionUID = -4375680346934596406L;
 	
+	public static final int MAX_RECENT = 20;
+	
 	/**
 	 * The user's name
 	 */
 	private String mUserName;
+	
+	/**
+	 * Is the user context currently tracking a given item
+	 * in any of it's lists?
+	 */
+	private Set<UniqueId> mAllItemSet;
 	
 	/**
 	 * The user's favorites
@@ -43,17 +56,28 @@ public class UserContext implements Serializable {
 	private List<UniqueId> mUserReplies;
 	
 	/**
+	 * Recently viewed items
+	 */
+	private List<UniqueId> mRecentlyViewed;
+	
+	/**
 	 * The items that we have stored locally, waiting to be
 	 * pushed to the network when we next connect.
 	 */
 	private List<UniqueId> mLocalOnlyItems;
 	
 	/**
-	 * Recently viewed items
+	 * Local only items lock, as LocalOnlyItems may be asynchronously
+	 * saved out to the network, causing them to be removed from the
+	 * tracking list without a corresponding user action ocurring.
 	 */
-	private List<UniqueId> mRecentlyViewed;
+	private ReadWriteLock mLocalOnlyItemsLock = new ReentrantReadWriteLock();
 	
+	/**
+	 * Constructor, creates a new blank user context
+	 */
 	public UserContext() {
+		mAllItemSet = new HashSet<UniqueId>();
 		mUserFavorites = new ArrayList<UniqueId>();
 		mUserReplies = new ArrayList<UniqueId>();
 		mLocalOnlyItems = new ArrayList<UniqueId>();
@@ -62,7 +86,7 @@ public class UserContext implements Serializable {
 	
 	/**
 	 * Construct a user context from the name of a user
-	 * @param username The username of the user
+	 * @param username The username of the userobject
 	 */
 	public UserContext(String username) {
 		this();
@@ -131,6 +155,15 @@ public class UserContext implements Serializable {
 	}
 	
 	/**
+	 * Is an item "interesting", that is, is it either
+	 * recently viewed, favorited, or an item that we have
+	 * posted?
+	 */
+	public boolean isInteresting(UniqueId id) {
+		return mAllItemSet.contains(id);
+	}
+	
+	/**
 	 * Get the user's name
 	 * @return The user's name
 	 */
@@ -151,8 +184,10 @@ public class UserContext implements Serializable {
 	 * @param itemId
 	 */
 	public void addFavorite(UniqueId itemId) {
-		if (!mUserFavorites.contains(itemId))
+		if (!mUserFavorites.contains(itemId)) {
 			mUserFavorites.add(itemId);
+			mAllItemSet.add(itemId);
+		}
 	}
 	
 	/**
@@ -168,8 +203,23 @@ public class UserContext implements Serializable {
 	 * @param itemId
 	 */
 	public void addReply(UniqueId itemId) {
-		if (!mUserReplies.contains(itemId))
+		if (!mUserReplies.contains(itemId)) {
 			mUserReplies.add(itemId);
+			mAllItemSet.add(itemId);
+		}
+	}
+	
+	/**
+	 * Check if an item is referenced in any of our lists, and if not
+	 * remove it from the allItemSet
+	 */
+	private void maybeRemoveFromAllItemSet(UniqueId id) {
+		if (!mRecentlyViewed.contains(id) &&
+			!mUserReplies.contains(id) &&
+			!mUserFavorites.contains(id)) 
+		{
+			mAllItemSet.remove(id);
+		}
 	}
 	
 	/**
@@ -189,6 +239,15 @@ public class UserContext implements Serializable {
 		
 		// Insert the item at the start
 		mRecentlyViewed.add(0, itemId);
+		mAllItemSet.add(itemId);
+		
+		// If there are extra items, remove them
+		while (mRecentlyViewed.size() > MAX_RECENT) {
+			UniqueId removed = mRecentlyViewed.remove(mRecentlyViewed.size() - 1);
+			
+			// Check if the removed item is still in the all item set
+			maybeRemoveFromAllItemSet(removed);
+		}
 	}
 	
 	/**
@@ -196,5 +255,46 @@ public class UserContext implements Serializable {
 	 */
 	public List<UniqueId> getRecentItems() {
 		return mRecentlyViewed;
+	}
+	
+	/**
+	 * Add a local only item (item that has not been saved yet)
+	 * For use by the DataManager
+	 */
+	public void addLocalOnlyItem(UniqueId id) {
+		mLocalOnlyItemsLock.writeLock().lock();
+		mLocalOnlyItems.add(id);
+		mLocalOnlyItemsLock.writeLock().unlock();
+	}
+	
+	/**
+	 * Remove a local only item
+	 * For use by the DataManager
+	 */
+	public void removeLocalOnlyItem(UniqueId id) {
+		mLocalOnlyItemsLock.writeLock().lock();
+		mLocalOnlyItems.remove(id);
+		mLocalOnlyItemsLock.writeLock().unlock();
+	}
+	
+	/**
+	 * Get local only items
+	 * For use by the DataManager
+	 */
+	public List<UniqueId> getLocalOnlyItems() {
+		mLocalOnlyItemsLock.readLock().lock();
+		List<UniqueId> items = new ArrayList<UniqueId>(mLocalOnlyItems);
+		mLocalOnlyItemsLock.readLock().unlock();
+		return items;
+	}
+	
+	/**
+	 * Clear the local only items
+	 * For use by the DataManager
+	 */
+	public void clearLocalOnlyItems() {
+		mLocalOnlyItemsLock.writeLock().lock();
+		mLocalOnlyItems.clear();
+		mLocalOnlyItemsLock.writeLock().unlock();
 	}
 }

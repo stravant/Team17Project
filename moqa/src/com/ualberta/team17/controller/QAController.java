@@ -18,6 +18,7 @@ import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
+import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 
 public class QAController {
 	private static QAController mControllerInstance;
@@ -105,7 +106,7 @@ public class QAController {
 	public IncrementalResult getRecentItems() {
 		return mDataManager.doQuery(
 				mDataManager.getUserContext().getRecentItems(), 
-				new DateComparator());
+				new IdentityComparator()); // that is, no comparator
 	}
 	
 	/**

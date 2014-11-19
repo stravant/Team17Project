@@ -379,11 +379,11 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 	}
 
 	@Override
-	public boolean saveItem(QAModel item) {
-		return saveItem(item, null);
+	public boolean saveItem(QAModel item, UserContext ctx) {
+		return saveItem(item, ctx, null);
 	}
 
-	public boolean saveItem(QAModel item, IDataItemSavedListener listener) {
+	public boolean saveItem(QAModel item, UserContext ctx, IDataItemSavedListener listener) {
 		if (null == mJestClient) {
 			initJestClient();
 		}

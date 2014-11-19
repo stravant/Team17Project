@@ -27,6 +27,8 @@ import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.StoragePolicy;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
+import com.ualberta.team17.datamanager.comparators.IdComparator;
+import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 
 public class DataManager {
 	/**
@@ -83,7 +85,7 @@ public class DataManager {
 			@Override
 			public void dataItemLoaded(IDataSourceManager manager, QAModel item) {
 				if (mUserContext != null) {
-					mLocalDataStore.saveItem(item);
+					mLocalDataStore.saveItem(item, mUserContext);
 				}
 			}
 		});
@@ -121,9 +123,17 @@ public class DataManager {
 	 *  1) For now, just save all items to the network and local
 	 * @param item
 	 */
-	public void saveItem(QAModel item) {
-		mNetworkDataStore.saveItem(item);
-		mLocalDataStore.saveItem(item);
+	public void saveItem(final QAModel item) {
+		// Do the save to the local and network managers
+		((NetworkDataManager)mNetworkDataStore).saveItem(item, mUserContext, new IDataItemSavedListener() {
+			@Override
+			public void dataItemSaved(boolean success, Exception e) {
+				if (!success) {
+					mUserContext.addLocalOnlyItem(item.getUniqueId());
+				}
+			}
+		});
+		mLocalDataStore.saveItem(item, mUserContext);
 	}
 	
 	/**
@@ -133,6 +143,9 @@ public class DataManager {
 	public void favoriteItem(QAModel item) {
 		saveItem(item);
 		mUserContext.addFavorite(item.getUniqueId());
+		
+		// We might may need to update the saved-ness of this item locally
+		mLocalDataStore.saveItem(item, mUserContext);
 		
 		// TODO: Make call async
 		saveUserContextData(mUserContext);
@@ -145,6 +158,9 @@ public class DataManager {
 	public void markRecentlyViewed(UniqueId item) {
 		mUserContext.addRecentItem(item);
 		
+		// We may need to update the saved-ness of this item locally
+		((LocalDataManager)mLocalDataStore).saveItemIfCached(item, mUserContext);
+		
 		// TODO: Async call async
 		saveUserContextData(mUserContext);
 	}
@@ -155,6 +171,36 @@ public class DataManager {
 	 */
 	private void saveUserContextData(UserContext context) {
 		DataManager.writeLocalData(mContext, USER_CONTEXT_STORAGE, mUserContext.saveToJson().toString());
+	}
+	
+	/**
+	 * Try to save out any local only data that we currently have
+	 * to the network data source if it is available.
+	 */
+	private void saveLocalOnlyData() {
+		// Create a new IncrementalResult that will save items to the network as they arrive
+		IncrementalResult toSave = new IncrementalResult(new IdentityComparator());
+		toSave.addObserver(new IIncrementalObserver() {	
+			@Override
+			public void itemsArrived(List<QAModel> items, int index) {
+				for (QAModel item: items) {
+					// Save the item that we got
+					final QAModel itemToSave = item;
+					((NetworkDataManager)mNetworkDataStore).saveItem(itemToSave, mUserContext, new IDataItemSavedListener() {
+						@Override
+						public void dataItemSaved(boolean success, Exception e) {
+							// If the save succeeded, remove the item from the local only list
+							if (success) {
+								mUserContext.removeLocalOnlyItem(itemToSave.getUniqueId());
+							}
+						}
+					});
+				}
+			}
+		});
+		
+		// Fire off the query for the local only items to save
+		mLocalDataStore.query(mUserContext.getLocalOnlyItems(), toSave);
 	}
 	
 	/**
@@ -181,6 +227,9 @@ public class DataManager {
 		
 		// Load in the user context data
 		loadUserContextData(mUserContext);
+		
+		// Try to save out any local only items
+		saveLocalOnlyData();
 	}
 
 	public UserContext getUserContext() {
