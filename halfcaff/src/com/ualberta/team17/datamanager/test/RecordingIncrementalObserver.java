@@ -3,11 +3,9 @@ package com.ualberta.team17.datamanager.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.res.Resources.NotFoundException;
 
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
-import com.ualberta.team17.datamanager.IItemComparator;
 
 /*
  * Dummy Incremental Observer that simply records every call to itemsArrived()

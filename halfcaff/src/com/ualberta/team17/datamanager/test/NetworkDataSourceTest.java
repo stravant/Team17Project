@@ -38,6 +38,7 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.NetworkDataManager;
+import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 
 @SuppressLint("DefaultLocale")
@@ -56,6 +57,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	DataFilter dataFilter;
 	IncrementalResult result;
 	NetworkDataManager dataManager;
+	UserContext userContext;
 
 	/**
 	 * Waits for at least numResults results to arrive in the IncrementalResult before returning, or before 
@@ -129,7 +131,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		}
 
 		DataItemSavedListener savedListener = new DataItemSavedListener();
-		dataManager.saveItem(item, savedListener);
+		dataManager.saveItem(item, userContext, savedListener);
 
 		lock.lock();
 		boolean success = false;
@@ -182,6 +184,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 		dataManager = new NetworkDataManager(mEsServerUrl, mEsServerIndex);
 		dataFilter = new DataFilter();
+		userContext = new UserContext("test_username");
 	}
 
 	/**
@@ -281,12 +284,14 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	public void test_BlankDataFilter() {
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
+		dataFilter.setMaxResults(50);
+
 		dataManager.query(dataFilter, comparator, result);
 
-		assertTrue("Results arrived", waitForResults(result, 9));
+		assertTrue("Results arrived", waitForResults(result, 31));
 
 		// Verify this against the expected test dataset
-		assertEquals("Item count", 9, result.getCurrentResults().size());
+		assertEquals("Item count", 31, result.getCurrentResults().size());
 
 		// Ensure all the right items were returned
 		assertEquals("Answer count", 5, result.getCurrentResultsOfType(ItemType.Answer).size());
@@ -425,7 +430,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 		// Use the previous test to query for questions, and assert that they were all notified on
 		test_FilterTypeQuestion();
-		assertEquals(5, loadedListener.timesNotified);
+		assertEquals(2 + 3 + 9 + 5, loadedListener.timesNotified);
 	}
 
 	/**
@@ -538,7 +543,10 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 	 * the tools/add_es_test_documents.bat script on Windows or Linux.
 	 */
 	public void test_DataSourceMultipleItemSave() {
-		List<QAModel> questionList = new ArrayList<QAModel>() {{
+		List<QAModel> questionList = new ArrayList<QAModel>() {
+			private static final long serialVersionUID = 7524316168409756758L;
+
+		{
 			add(new QuestionItem(new UniqueId(), null, "author1", new Date(), "test_DataSourceMultipleItemSave", 0, "title1" ));
 			add(new CommentItem(new UniqueId(), null, "author2", new Date(), "test_DataSourceMultipleItemSave", 0));
 			add(new AnswerItem(new UniqueId(), null, "author3", new Date(), "test_DataSourceMultipleItemSave", 0));
@@ -552,7 +560,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 			if (questionList.indexOf(item) == questionList.size()-1) {
 				assertTrue("Save success", waitForItemSaved(item));
 			} else {
-				dataManager.saveItem(item);
+				dataManager.saveItem(item, userContext);
 			}
 		}
 
