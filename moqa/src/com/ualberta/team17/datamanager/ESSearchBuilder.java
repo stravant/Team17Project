@@ -15,7 +15,7 @@ public class ESSearchBuilder {
 
 	public ESSearchBuilder(DataFilter filter, IItemComparator comparator) {
 		mFilter = filter;
-		mComparator = comparator;
+		mComparator = comparator; 
 	}
 
 	public Builder getBuilder(Builder builder) {
