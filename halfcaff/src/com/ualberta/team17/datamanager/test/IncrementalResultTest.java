@@ -3,13 +3,9 @@ package com.ualberta.team17.datamanager.test;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
-import com.ualberta.team17.QuestionItem;
-import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.datamanager.IncrementalResult;
-import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 import com.ualberta.team17.test.utility.OrderedQAItem;
 import com.ualberta.team17.test.utility.OrderedQAItemComparator;
 

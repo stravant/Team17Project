@@ -8,9 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
-import android.util.Log;
 
-import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;

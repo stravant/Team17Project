@@ -1,7 +1,6 @@
 package com.ualberta.team17.datamanager.test;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -9,32 +8,24 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import android.test.ActivityInstrumentationTestCase;
 import android.test.ActivityInstrumentationTestCase2;
-import android.test.ActivityTestCase;
 import android.util.Log;
 
 import com.ualberta.team17.AnswerItem;
-import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
-import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
-import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
-import com.ualberta.team17.datamanager.IDataSourceManager;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.LocalDataManager;
-import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
 import com.ualberta.team17.view.QuestionListActivity;
-import com.ualberta.team17.view.QuestionTaxonomyActivity;
 
 public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<QuestionListActivity> {
 	DataFilter dataFilter;
