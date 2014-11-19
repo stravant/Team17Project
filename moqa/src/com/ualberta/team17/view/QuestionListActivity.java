@@ -57,7 +57,12 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 
 		}
 	}
-
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+	    super.onPostCreate(savedInstanceState);
+	    // Sync the toggle state after onRestoreInstanceState has occurred.
+	    leftDrawer.mDrawerToggle.syncState();
+	}
 
 	private void selectItem(int position) {
 		// update the main content by replacing fragments
