@@ -21,6 +21,7 @@ import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.UpvoteItem;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
@@ -138,19 +139,34 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 	}
 	
 	/**
+	 * Create a new upvote item
+	 * @param id
+	 * @param target
+	 * @return
+	 */
+	public UpvoteItem newUpvote(int id, UniqueId target) {
+		return new UpvoteItem(new UniqueId(Integer.toString(id)), 
+				target, 
+				userContext.getUserName(), 
+				new Date(0));
+	}
+	
+	/**
 	 * Test that the Filter & Sort part of the LocalDataManager works by
 	 * adding an item and then doing a query that should find it.
 	 */
 	public void test_SaveAndGetItem_Cycle() {		
+		Log.i("app", "===================================");
 		// Make and save an item
 		QuestionItem item = newQuestion(0, "testTitle", "testBody");
-		dataManager.saveItem(item);
+		dataManager.saveItem(item, userContext);
 		
 		// Query for it with a filter
 		dataFilter.addFieldFilter(QuestionItem.FIELD_TITLE, "testTitle", FilterComparison.EQUALS);
 		dataManager.query(dataFilter, new IdComparator(), result);
 		
 		// Wait for the results
+		Log.i("app", "========= waiting... ==============");
 		assertTrue(waitForResults(result, 1));
 		
 		// Check that we got the item back
@@ -158,6 +174,7 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		
 		// Close down
 		dataManager.close();
+		Log.i("app", "===================================");
 	}
 	
 	/**
@@ -167,24 +184,23 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 	public void test_WritingToLocalFile() {
 		// Add a question
 		QuestionItem item = newQuestion(1, "testTitle", "testBody");
-		dataManager.saveItem(item);
+		dataManager.saveItem(item, userContext);
 		
 		// Add an answer
 		AnswerItem answerItem = newAnswer(2, "testReply", item.getUniqueId());
-		dataManager.saveItem(answerItem);
+		dataManager.saveItem(answerItem, userContext);
 		
 		// Add another answer
-		dataManager.saveItem(newAnswer(3, "testReply2", item.getUniqueId()));
+		dataManager.saveItem(newAnswer(3, "testReply2", item.getUniqueId()), userContext);
 		
 		// Add a comment to the first answer
 		CommentItem commentItem = newComment(4, "comment!", answerItem.getUniqueId());
-		dataManager.saveItem(commentItem);
+		dataManager.saveItem(commentItem, userContext);
 		
 		// Wait for a save to happen
 		dataManager.waitForSave();
 		
 		// Dump the local data, see if it matches the TEST_DATA
-		Log.e("lock", dataManager.dumpLocalData());
 		assertEquals(TEST_DATA, dataManager.dumpLocalData());
 		
 		// Close down
@@ -205,7 +221,10 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		assertTrue("Didn't get a result", waitForResults(result, 1));
 		QuestionItem item = (QuestionItem)result.getCurrentResults().get(0);
 		assertEquals("c4ca4238a0b923820dcc509a6f75849b", item.getUniqueId().toString());
-		assertEquals(item.getTitle(), "testTitle");
+		assertEquals("testTitle", item.getTitle());
+		
+		// See if the items have the right derived information
+		assertEquals(2, item.getReplyCount());
 		
 		// Close down
 		dataManager.close();
@@ -237,6 +256,66 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		assertEquals(2, result.getCurrentResultsOfType(ItemType.Answer).size());
 		assertEquals(1, result.getCurrentResultsOfType(ItemType.Comment).size());
 		assertEquals(1, result.getCurrentResultsOfType(ItemType.Question).size());
+		
+		// Upvote one of the questions, and see if it works
+		QuestionItem q = ((QuestionItem)result.getCurrentResultsOfType(ItemType.Question).get(0));
+		UpvoteItem up = newUpvote(32, q.getUniqueId());
+		dataManager.saveItem(up, userContext);
+		dataManager.waitForSave();
+		assertEquals(1, q.getUpvoteCount());
+		
+		// Close down
+		dataManager.close();	
+	}
+	
+	
+	/**
+	 * Test that adding an upvote updates the derived info
+	 */
+	@SuppressWarnings("serial")
+	public void test_Derived_UpvoteCount() {
+		// Load in our test data
+		dataManager.writeTestData(TEST_DATA);
+		
+		// Get the items
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
+
+		// Check result count
+		assertTrue("Didn't get 1 results", waitForResults(result, 1));
+		assertEquals(1, result.getCurrentResults().size());
+		
+		// Upvote one of the questions, and see if it works
+		QuestionItem q = ((QuestionItem)result.getCurrentResults().get(0));
+		UpvoteItem up = newUpvote(32, q.getUniqueId());
+		dataManager.saveItem(up, userContext);
+		assertEquals(1, q.getUpvoteCount());
+		
+		// Close down
+		dataManager.close();	
+	}
+
+	/**
+	 * Test that adding an reply updates the derived info
+	 */
+	@SuppressWarnings("serial")
+	public void test_Derived_ReplyCount() {
+		// Load in our test data
+		dataManager.writeTestData(TEST_DATA);
+		
+		// Get the items
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
+
+		// Check result count
+		assertTrue("Didn't get 1 results", waitForResults(result, 1));
+		assertEquals(1, result.getCurrentResults().size());
+		
+		// Upvote one of the questions, and see if it works
+		QuestionItem q = ((QuestionItem)result.getCurrentResults().get(0));
+		AnswerItem answer = newAnswer(32, "TestBody", q.getUniqueId());
+		dataManager.saveItem(answer, userContext);
+		
+		// Test for 3 replies, there were already 2 in the TEST_DATA
+		assertEquals(3, q.getReplyCount());
 		
 		// Close down
 		dataManager.close();	

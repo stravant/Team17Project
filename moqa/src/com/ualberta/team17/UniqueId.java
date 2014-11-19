@@ -75,7 +75,7 @@ public class UniqueId {
 	 * @param context The user context to use in constructing the digest
 	 */
 	public UniqueId(UserContext context) {
-		String digestString = context.toString() + (new Date()).toString();
+		String digestString = context.toString() + (new Date()).toString() + System.nanoTime();
 		mId = digest(digestString);
 	}
 	

@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
@@ -96,15 +97,14 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		// User context
 		userContext = new UserContext("test_user");
 		
-		// Make local data manager, and set the data to the test data set
+		// Make local data manager
 		dataManager = new LocalDataManager(getActivity());
-		dataManager.writeTestData(TEST_DATA);
 		
 		// Make net data manager
 		Resources resources = getInstrumentation().getTargetContext().getResources();
 		netDataManager = new NetworkDataManager(
 				resources.getString(R.string.esTestServer),
-				resources.getString(R.string.esTestIndex));
+				resources.getString(R.string.esTestIndex) + "_DataManagerTest");
 		
 		// Make the manager
 		manager = new DataManager(getActivity(), dataManager, netDataManager);
@@ -112,6 +112,9 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		// Make the controller
 		controller = new QAController(manager);
 		controller.login(userContext);
+		
+		// Set the data to the test data set
+		dataManager.writeTestData(TEST_DATA);
 	}
 	
 	/**
@@ -129,23 +132,56 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		assertEquals("testReply", r.getCurrentResults().get(0).getField(AuthoredTextItem.FIELD_BODY));
 	}
 	
-//	/**
-//	 * Test adding several new answers to a question, and then querying back those
-//	 * answers via getChildren.
-//	 */
-//	public void test_AddSeveralChildren() {
-//		// Add the children
-//		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
-//		controller.createAnswer(q, "Answer 1 body.");
-//		controller.createAnswer(q, "Answer 2 body.");
-//		controller.createAnswer(q, "Answer 3 body.");
-//		controller.createComment(q, "Comment body.");
-//		
-//		// Query them back
-//		IncrementalResult r = controller.getChildren(q, new IdComparator());
-//		assertTrue("Did not get back 4 results.", waitForResults(r, 4));
-//		assertEquals(3, r.getCurrentResultsOfType(ItemType.Answer));
-//		assertEquals(1, r.getCurrentResultsOfType(ItemType.Comment));
-//		
-//	}
+	/**
+	 * Test adding several new answers to a question, and then querying back those
+	 * answers via getChildren.
+	 */
+	public void test_AddSeveralChildren() {
+		// Add the children
+		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
+		controller.createAnswer(q, "Answer 1 body.");
+		controller.createAnswer(q, "Answer 2 body.");
+		controller.createAnswer(q, "Answer 3 body.");
+		controller.createComment(q, "Comment body.");
+		
+		// Query them back
+		IncrementalResult r = controller.getChildren(q, new IdComparator());
+		assertTrue("Did not get back 4 results.", waitForResults(r, 4));
+		assertEquals(3, r.getCurrentResultsOfType(ItemType.Answer).size());
+		assertEquals(1, r.getCurrentResultsOfType(ItemType.Comment).size());
+	}
+	
+	/**
+	 * Favorite a question from the test data set and check for it
+	 */
+	public void test_FavoriteItem() {
+		// Add a question and favorite it
+		QuestionItem q = controller.createQuestion("Test", "Test");
+		controller.addFavorite(q);
+		
+		// Query it back
+		IncrementalResult r = controller.getFavorites();
+		assertTrue(waitForResults(r, 1));
+		assertEquals(1, r.getCurrentResults().size());
+		assertEquals(q.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
+	}
+	
+	/**
+	 * Add a couple of items to recently viewed and query them back
+	 */
+	public void test_RecentlyViewed() {
+		// Add the questions
+		QuestionItem q1 = controller.createQuestion("Question 1", "body.");
+		QuestionItem q2 = controller.createQuestion("Question 2", "body.");
+		
+		// Mark the questions as viewed
+		controller.markRecentlyViewed(q1);
+		controller.markRecentlyViewed(q2);
+		
+		// Query back recently viewed
+		IncrementalResult r = controller.getRecentItems();
+		assertTrue(waitForResults(r, 2));
+		assertEquals(q2.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
+		assertEquals(q1.getUniqueId(), r.getCurrentResults().get(1).getUniqueId());
+	}
 }
