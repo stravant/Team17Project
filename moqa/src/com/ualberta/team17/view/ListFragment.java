@@ -1,6 +1,8 @@
 package com.ualberta.team17.view;
 
 import java.util.List;
+
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -23,21 +25,21 @@ import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
-import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
+import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
-
+@TargetApi(14)
 public class ListFragment extends Fragment {
 	public static final String TAXONOMY_NUM = "taxonomy_number";
 	public static final String FILTER_EXTRA = "FILTER";
 	
 	private IncrementalResult mIR;
-	private Context context;
+	private Context mContext;
 	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        context = getActivity();
+        mContext = getActivity();
     }
 	
 	/**
@@ -50,6 +52,7 @@ public class ListFragment extends Fragment {
 	protected class QuestionListAdapter extends ArrayAdapter<QAModel> {
 		Context mContext;
 		List<QAModel> mObjects;
+		static final int titleSize = 300;
 		
 		public QuestionListAdapter(Context context, int textViewResourceId, List<QAModel> objects) {
 			super(context, textViewResourceId, objects);
@@ -63,24 +66,49 @@ public class ListFragment extends Fragment {
 				return convertView;
 			}
 			
+			if (item.getField("author") == null ||
+					item.getField("body") == null || 
+					item.getField("id") == null ||
+					item.getField("date") == null) {
+				// This info is required. If it isn't here, something is wrong.
+				return convertView;
+			}
+			
+			String body = (String)item.getField("body");
+			String author = (String) item.getField("author");
+			
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.qa_listview_item, parent, false);
+				convertView = inflater.inflate(R.layout.qa_listview_item, parent, false);  
 			}
 			
 			TextView titleTextView = (TextView) convertView.findViewById(R.id.titleText);
 			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentsText);
 			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
+			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
 			
-			QuestionItem qi = (QuestionItem)item;
-			if (qi != null) {
-				IItemComparator comp = new DateComparator();
-				IncrementalResult children = QAController.getInstance().getChildren(item, comp);
+			// Set the data using getField
+			IItemComparator comp = new DateComparator();
+			IncrementalResult children = QAController.getInstance().getChildren(item, comp);
 				
-				titleTextView.setText(qi.getTitle());
-				commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
-				upvoteTextView.setText(Integer.toString(-1));
-			}			
+			commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
+			upvoteTextView.setText(Integer.toString(-1));
+			userTextView.setText(author);
+			
+			if (item.getField("title") == null) {
+				// Must be an answer
+				titleTextView.setText(
+						body.length() > titleSize ? 
+						body.substring(0, titleSize) + "..." :
+						body
+				);
+			}
+			else {
+				String title = (String) item.getField("title");
+				if (title != null) {
+					titleTextView.setText(title);
+				}
+			}
 			
 			return convertView;
 		}
