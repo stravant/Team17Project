@@ -11,6 +11,7 @@ import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.StoragePolicy;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.UpvoteItem;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataManager;
 import com.ualberta.team17.datamanager.IItemComparator;
@@ -116,6 +117,25 @@ public class QAController {
 	 */
 	public void markRecentlyViewed(QAModel item) {
 		mDataManager.markRecentlyViewed(item.getUniqueId());
+	}
+	
+	/**
+	 * Upvote a given question or answer
+	 * @param target The item to upvote
+	 */
+	public void upvote(QAModel target) {
+		UserContext creator = mDataManager.getUserContext();
+		
+		// The UniqueId for the upvote is a mixture of the user upvoting and the item being upvoted.
+		// In that way a user will not be able to upvote the same item more than once, since both
+		// upvotes will have the same uniqueId, and the DataManager layer will ignore the later
+		// one.
+		UniqueId id = new UniqueId(creator.getUserName() + "_Upvote_" + target.getUniqueId().toString());
+		
+		// Create and save the upvote item
+		UpvoteItem up = new UpvoteItem(id, target.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime());
+		up.setStoragePolicy(StoragePolicy.Cached);
+		mDataManager.saveItem(up);
 	}
 	
 	/**

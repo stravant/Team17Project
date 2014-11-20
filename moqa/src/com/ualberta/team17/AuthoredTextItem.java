@@ -18,6 +18,7 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 
 	private String mBody;
 	private transient int mUpvoteCount;
+	private transient boolean mHasUpvoted = false;
 	
 	/* Ctor */
 	public AuthoredTextItem(ItemType type, UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount) {
@@ -36,13 +37,26 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 	}
 	
 	public void setUpvoteCount(int votes) {
-		mUpvoteCount = votes;
-		notifyViews();
+		if (mUpvoteCount != votes) {
+			mUpvoteCount = votes;
+			notifyViews();
+		}
 	}
 
 	public void upvote() {
 		mUpvoteCount++;
 		notifyViews();
+	}
+	
+	public void setHaveUpvoted() {
+		if (!mHasUpvoted) {
+			mHasUpvoted = true;
+			notifyViews();
+		}
+	}
+	
+	public boolean haveUpvoted() {
+		return mHasUpvoted;
 	}
 	
 	@Override

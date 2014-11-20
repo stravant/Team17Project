@@ -180,6 +180,13 @@ public class UserContext implements Serializable {
 	}
 	
 	/**
+	 * Is a given item favorited?
+	 */
+	public boolean isFavorited(UniqueId id) {
+		return mUserFavorites.contains(id);
+	}
+	
+	/**
 	 * Add a favorite to the user's list of favorites by UniqueId
 	 * @param itemId
 	 */
