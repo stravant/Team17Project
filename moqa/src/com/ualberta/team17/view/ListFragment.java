@@ -159,14 +159,21 @@ public class ListFragment extends Fragment {
 		
 		addObserver(mIR);		
 		ListView qList = (ListView) rootView.findViewById(R.id.questionListView);
-		qList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> av, View view, int i, long l) {
-				handleListViewItemClick(av, view, i, l);
-			}
-		});
+		
+		if (qList != null) {
+			qList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				public void onItemClick(AdapterView<?> av, View view, int i, long l) {
+					handleListViewItemClick(av, view, i, l);
+				}
+			});
+		}
 		
 		if (mIR != null) {
-			qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
+			Activity a = getActivity();
+			
+			if (a != null) {
+				qList.setAdapter(new QuestionListAdapter(a, R.id.questionListView, mIR.getCurrentResults()));
+			}			
 		}
 		
 		return rootView;
@@ -182,14 +189,17 @@ public class ListFragment extends Fragment {
 	 * @author Jared
 	 */
 	private void handleListViewItemClick(AdapterView<?> av, View view, int i, long l) {
-		QAModel qaModel = mIR.getCurrentResults().get(i);
+		QAModel qaModel = mIR.getCurrentResults().get(i); //TODO support answers
 		QuestionItem question = (QuestionItem) qaModel;
 		if (question != null) {
 			QAController.getInstance().markRecentlyViewed(qaModel);
 			
-			Intent intent = new Intent(this.getActivity(), QuestionViewActivity.class);
-			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, question.getUniqueId().toString());
-			startActivity(intent);
+			Activity a = getActivity();
+			if (a != null) {
+				Intent intent = new Intent(a, QuestionViewActivity.class);
+				intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, question.getUniqueId().toString());
+				startActivity(intent);
+			}			
 		}
 	}
 	
@@ -202,8 +212,11 @@ public class ListFragment extends Fragment {
 	 * @author Jared
 	 */
 	void createNewQuestion() {
-		Intent intent = new Intent(ListFragment.this.getActivity(), QuestionViewActivity.class);		
-		startActivity(intent);
+		Activity a = getActivity();
+		if (a != null) {
+			Intent intent = new Intent(a, QuestionViewActivity.class);		
+			startActivity(intent);
+		}		
 	}
 	
 	/**
@@ -265,13 +278,16 @@ public class ListFragment extends Fragment {
 	
 				@Override
 				public void itemsArrived(List<QAModel> item, int index) {
-					ListView qList = (ListView) ListFragment.this.getActivity().findViewById(R.id.questionListView);
+					Activity a = getActivity();
 					
-					if (qList != null) {
-						qList.invalidate();
+					if (a != null) {
+						ListView qList = (ListView) a.findViewById(R.id.questionListView);
 						
-						qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
-					}					
+						if (qList != null) {
+							qList.invalidate();							
+							qList.setAdapter(new QuestionListAdapter(a, R.id.questionListView, mIR.getCurrentResults()));
+						}	
+					}						
 				}
 			});
 		}
