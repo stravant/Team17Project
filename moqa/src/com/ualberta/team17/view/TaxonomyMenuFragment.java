@@ -23,7 +23,6 @@ public class TaxonomyMenuFragment extends Fragment {
 	private DrawerLayout mDrawerLayout;
 	private ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
-
 	OnItemSelectedListener mListener;
 	@Override
 	public void onAttach(Activity activity) {
@@ -44,9 +43,6 @@ public class TaxonomyMenuFragment extends Fragment {
 			Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		final Activity activity = getActivity();
-
-
-
 		myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		mDrawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) activity.findViewById(R.id.left_drawer);
@@ -74,11 +70,8 @@ public class TaxonomyMenuFragment extends Fragment {
 				activity.getActionBar().setTitle(activity.getTitle());
 				activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
 			}
-		};
-
-		
+		};	
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
-
 		if (savedInstanceState == null) {
 			mListener.onItemSelected(0);
 			mDrawerList.setItemChecked(0, true);
@@ -102,7 +95,6 @@ public class TaxonomyMenuFragment extends Fragment {
 		public void onItemSelected(int position);
 	}
 
-
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
@@ -119,5 +111,4 @@ public class TaxonomyMenuFragment extends Fragment {
 	
 		return super.onOptionsItemSelected(item);
 	}	
-
 }

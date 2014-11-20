@@ -28,8 +28,6 @@ import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
  *
  */
 public class QuestionListActivity extends Activity implements OnItemSelectedListener{
-
-	
 	private String[] sortOptions;
 	private DrawerLayout rightDrawerLayout;
 	private ListView rightDrawerList;
@@ -37,7 +35,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	TaxonomyMenuFragment leftDrawer = new TaxonomyMenuFragment();
 	SortMenuFragment rightDrawer = new SortMenuFragment();
 	ListFragment fragment = new ListFragment();
-
 
 	/**
 	 * Initializes data depending on what is passed in the intent. Creates adapters and
@@ -50,18 +47,16 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.question_list);	
 		if (savedInstanceState == null) {
-
 			FragmentManager fragmentManager = getFragmentManager();
 			fragmentManager.beginTransaction().add(R.id.content_frame, leftDrawer).commit();
 			fragmentManager.beginTransaction().replace(R.id.content_frame, rightDrawer).commit();
-
 		}
 	}
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
-	    super.onPostCreate(savedInstanceState);
-	    // Sync the toggle state after onRestoreInstanceState has occurred.
-	    leftDrawer.mDrawerToggle.syncState();
+		super.onPostCreate(savedInstanceState);
+		// Sync the toggle state after onRestoreInstanceState has occurred.
+		leftDrawer.mDrawerToggle.syncState();
 	}
 
 	private void selectItem(int position) {
@@ -95,7 +90,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		
+
 		if (leftDrawer.mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
@@ -106,12 +101,11 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		if (id == R.id.action_sort_date) {
 			fragment.applyDateSort(item);
 			return true;
-		}
-		
+		}	
 		return super.onOptionsItemSelected(item);
 	}
 
-	
+
 	public class SortMenuFragment extends Fragment {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -126,10 +120,9 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 			getActionBar().setHomeButtonEnabled(true);
-
-
-			
-
+			/*
+			 * TODO: add menu toggle button on top right
+			 */
 			View rootView = inflater.inflate(R.layout.question_list, container, false);
 			return rootView;
 		}
@@ -139,7 +132,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 				//Does Nothing
 			}
 		}
-
 		@Override
 		public void onConfigurationChanged(Configuration newConfig) {
 			super.onConfigurationChanged(newConfig);
@@ -147,8 +139,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}
 
 	}
-
-
 	@Override
 	public void onItemSelected(int position) {
 		selectItem(position);
