@@ -125,7 +125,15 @@ public class QAController {
 	 */
 	public void upvote(QAModel target) {
 		UserContext creator = mDataManager.getUserContext();
-		UpvoteItem up = new UpvoteItem(new UniqueId(creator), target.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime());
+		
+		// The UniqueId for the upvote is a mixture of the user upvoting and the item being upvoted.
+		// In that way a user will not be able to upvote the same item more than once, since both
+		// upvotes will have the same uniqueId, and the DataManager layer will ignore the later
+		// one.
+		UniqueId id = new UniqueId(creator.getUserName() + "_Upvote_" + target.getUniqueId().toString());
+		
+		// Create and save the upvote item
+		UpvoteItem up = new UpvoteItem(id, target.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime());
 		up.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(up);
 	}
