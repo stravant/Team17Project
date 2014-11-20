@@ -31,6 +31,9 @@ public class QuestionViewActivityTest extends ActivityInstrumentationTestCase2<Q
 	public void setUp() throws Exception {
 		super.setUp();
 		Instrumentation instrumentation = getInstrumentation();
+		
+		QuestionItem question = new QuestionItem(new UniqueId(), null, "question author", null, "question body", 0, "question title");
+		
 		UserContext userContext = new UserContext("test_user");		
 		mActivity = getActivity();
 		mDataManager = new DummyDataManager(userContext, mActivity);
