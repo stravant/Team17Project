@@ -1,7 +1,7 @@
 package com.ualberta.team17.view;
 
 import java.util.List;
-
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +33,12 @@ public class ListFragment extends Fragment {
 	public static final String FILTER_EXTRA = "FILTER";
 	
 	private IncrementalResult mIR;
+	private Context context;
+	@Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        context = getActivity();
+    }
 	
 	/**
 	 * The adapter for QAModel. Binds the title of the question, the upvote count

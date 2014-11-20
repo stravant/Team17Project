@@ -28,6 +28,10 @@
         <item>Most Upvoted Answers</item>
         <item>Recently Viewed</item>
     </string-array>
+    <string-array name="sortOptions">
+        <item>Sort By Date</item>
+        <item>More Stuff Here</item>
+    </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
