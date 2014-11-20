@@ -228,6 +228,9 @@ public class DataManager {
 		// Load in the user context data
 		loadUserContextData(mUserContext);
 		
+		// Set the local data store usercontext
+		((LocalDataManager)mLocalDataStore).setUserContext(userContext);
+		
 		// Try to save out any local only items
 		saveLocalOnlyData();
 	}

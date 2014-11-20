@@ -13,6 +13,7 @@ public class QuestionItem extends AuthoredTextItem {
 
 	private String mTitle;
 	private transient int mReplyCount;
+	private transient boolean mIsFavorited = false;
 	
 	/* Ctor */
 	public QuestionItem(UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount, String title) {
@@ -33,6 +34,18 @@ public class QuestionItem extends AuthoredTextItem {
 	public void incrementReplyCount() {
 		++mReplyCount;
 		notifyViews();
+	}
+	
+	/* Is favorited? */
+	public void setFavorited() {
+		if (!mIsFavorited) {
+			mIsFavorited = true;
+			notifyViews();
+		}
+	}
+	
+	public boolean isFavorited() {
+		return mIsFavorited;
 	}
 	
 	/* Getters */
