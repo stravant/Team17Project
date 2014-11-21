@@ -328,9 +328,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				titleTextView.setText(question.getTitle());
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 				
-				// Just for testing, this will have to be changed.
-				attachmentButton.setOnClickListener(new AddAttachmentListener());
-				
 			} else if (qaItem.parent.mType == ItemType.Answer) {
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);
@@ -488,10 +485,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
-			Intent intent = new Intent();
-			intent.setType("image/*");
-			intent.setAction(Intent.ACTION_GET_CONTENT);
-			startActivityForResult(Intent.createChooser(intent, "Choose an image to attach"), SELECT_PICTURE);
 		}
 		
 	}
