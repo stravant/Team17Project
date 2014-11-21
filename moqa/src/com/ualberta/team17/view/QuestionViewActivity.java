@@ -25,7 +25,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -317,8 +319,14 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				favoriteButton.setVisibility(View.VISIBLE);
 				attachmentButton.setVisibility(View.VISIBLE);
 				
+				if(question.isFavorited()) {
+					favoriteButton.setText("F!");
+				} else {
+					favoriteButton.setText("NF");
+				}
+				
 				titleTextView.setText(question.getTitle());
-				favoriteButton.setOnClickListener(new FavoriteListener(qaItem.parent));
+				favoriteButton.setOnClickListener(new FavoriteListener(question));
 				
 				// Just for testing, this will have to be changed.
 				attachmentButton.setOnClickListener(new AddAttachmentListener());
@@ -441,42 +449,29 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 		@Override
 		public void onClick(View v) {
-			QAController controller = QAController.getInstance();
-			/*
-			 * TODO: Implement this once the upvote API is finalized.
-			 * Something like:
-			 * 
-			 * controller.upvote(item);
-			 */
+			QAController controller = QAController.getInstance(); 
+			controller.upvote(mItem);
 		}
 		
 	}
 	
 	private class FavoriteListener implements View.OnClickListener {
-		private QAModel mItem;
+		private QuestionItem mItem;
 		
-		public FavoriteListener(QAModel item) {
+		public FavoriteListener(QuestionItem item) {
 			mItem = item;
 		}
 		
 		@Override
 		public void onClick(View v) {
 			QAController controller = QAController.getInstance();
-			controller.addFavorite(mItem);
-			/*
-			 * TODO: Right now you can't unfavorite an item.
-			 * It should eventually look something like this:
-			 * 
-			 * if(controller.hasFavorite(mItem)) {
-			 * 		controller.removeFavorite(mItem);
-			 * } else {
-			 * 		controller.addFavorite(mItem);
-			 * }
-			 * 
-			 * OR
-			 * 
-			 * controller.toggleFavorite(mItem);
-			 */
+			if(mItem.isFavorited()) {
+				Log.v("FavoriteListener", "Removing Favorite!");
+				controller.removeFavorite(mItem);
+			} else {
+				Log.v("FavoriteListener", "Adding Favorite!");
+				controller.addFavorite(mItem);
+			}
 		}
 		
 	}

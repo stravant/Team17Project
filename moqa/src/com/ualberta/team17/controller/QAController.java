@@ -100,6 +100,14 @@ public class QAController {
 	}
 	
 	/**
+	 * Removes an item from the user's favorites.
+	 * @param item The item to remove.
+	 */
+	public void removeFavorite(QAModel item) {
+		mDataManager.unFavoriteItem(item);
+	}
+	
+	/**
 	 * Get the recently items that have been marked as recently viewed
 	 * most recently with QAController::markRecentlyViewed
 	 * @return An IncrementalResult that will be populated with the recently viewed items

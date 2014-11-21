@@ -14,7 +14,8 @@ public class AttachmentItemTest extends TestCase {
 	boolean notified;
 	int notifyCount;
 	public void setUp() {
-		testAttachment = new AttachmentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", null);
+		byte[] image = {};
+		testAttachment = new AttachmentItem( new UniqueId(), new UniqueId(), "author", new Date(), "body", image);
 		notified = false;
 		notifyCount = 0;
 	}

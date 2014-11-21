@@ -172,6 +172,14 @@ public class LocalDataManager implements IDataSourceManager {
 	public void setUserContext(UserContext ctx) {
 		mUserContext = ctx;
 		mDataLock.lock();
+		
+		
+		if(mData == null) {
+			mDataLock.unlock();
+			return;
+		}
+		
+		
 		// Update all of our current data items to be favorited if they are favorited in the user context
 		for (UniqueId id: ctx.getFavorites()) {
 			QAModel item = mItemRefById.get(id);
