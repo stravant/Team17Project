@@ -20,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/createAnswer"
-        android:background="@color/coffee"
+        android:background="@color/milk"
+        android:layout_margin="1sp"
         android:divider="@color/compl_blue_split2"
         android:dividerHeight="3sp" >
     </ListView>

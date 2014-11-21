@@ -16,6 +16,7 @@
          android:layout_alignParentTop="true"
          android:ems="10"
          android:text="body"
+         android:textSize="12sp"
          android:textColor="@color/comment_grey" >
 
     </TextView>
@@ -30,6 +31,7 @@
          android:ems="10"
          android:gravity="right"
          android:text="author"
+         android:textSize="12sp"
          android:textColor="@color/comment_grey" />
 
 </RelativeLayout>
