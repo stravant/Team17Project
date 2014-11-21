@@ -1,7 +1,6 @@
 package com.ualberta.team17.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,17 +23,6 @@ public class SearchItem extends LinearLayout {
     
 	public SearchItem(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
-		TypedArray a = context.getTheme().obtainStyledAttributes(
-		        attrs,
-		        R.styleable.SearchItem,
-		        0, 0);
-		
-		try {
-
-		} finally {
-		       a.recycle();
-		}
 		
 		init();
 	}
