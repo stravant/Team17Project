@@ -11,7 +11,10 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:ems="10"
-        android:text="title" >
+        android:background="@color/milk2"
+        android:text="title"
+        android:textSize="24sp"
+        android:textColor="@color/compl_blue_split2" >
 	</TextView>
 
     <Button

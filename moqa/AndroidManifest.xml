@@ -38,6 +38,11 @@
             android:name=".view.QuestionTaxonomyActivity"
             android:label="@string/title_activity_taxonomy_view" >
         </activity>
+        <supports-screens android:resizeable="true"
+            				android:smallScreens="true"
+            				android:normalScreens="true"
+            				android:largeScreens="true"
+            				android:anyDensity="true" />
     </application>
 
 </manifest>
