@@ -36,6 +36,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
@@ -350,9 +351,14 @@ public class LocalDataManager implements IDataSourceManager {
 					// Tally upvotes
 					((AuthoredTextItem)parentItem).upvote();
 				}
-				if (parentItem instanceof QuestionItem && item instanceof AnswerItem) {
-					// Tally replies
-					((QuestionItem)parentItem).incrementReplyCount();
+				if (parentItem instanceof QuestionItem) {
+					if (item instanceof AnswerItem) {
+						// Tally replies
+						((QuestionItem)parentItem).incrementReplyCount();
+					} else if (item instanceof AttachmentItem) {
+						// Count attachments
+						((QuestionItem)parentItem).setHasAttachments();
+					}
 				}
 			}
 		} 	

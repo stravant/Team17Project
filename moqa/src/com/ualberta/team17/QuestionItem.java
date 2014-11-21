@@ -14,6 +14,7 @@ public class QuestionItem extends AuthoredTextItem {
 	private String mTitle;
 	private transient int mReplyCount;
 	private transient boolean mIsFavorited = false;
+	private transient boolean mIsAttached = false;
 	
 	/* Ctor */
 	public QuestionItem(UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount, String title) {
@@ -46,6 +47,18 @@ public class QuestionItem extends AuthoredTextItem {
 	
 	public boolean isFavorited() {
 		return mIsFavorited;
+	}
+	
+	/* Is attached to? */
+	public void setHasAttachments() {
+		if (!mIsAttached) {
+			mIsAttached = true;
+			notifyViews();
+		}
+	}
+	
+	public boolean hasAttachments() {
+		return mIsAttached;
 	}
 	
 	/* Getters */

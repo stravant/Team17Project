@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,9 @@ import org.apache.http.auth.AuthenticationException;
 
 import android.R;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.JsonWriter;
 import android.util.Log;
 
@@ -267,6 +271,16 @@ public class DataManager {
 	
 	//////////////////////////////////////////////////////////////////////////////
 
+	public Bitmap readImageFromUri(Uri uri) {
+		try {
+			return MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);	
+		} catch (IOException e) {
+			return null;
+		}
+	}
+	
+	//////////////////////////////////////////////////////////////////////////////
+	
 	/**
 	 * Get the file a handle to the source of settings data
 	 * @param ctx The context to get the source from

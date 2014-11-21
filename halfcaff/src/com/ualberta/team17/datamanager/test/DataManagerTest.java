@@ -1,5 +1,6 @@
 package com.ualberta.team17.datamanager.test;
 
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -7,9 +8,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
@@ -27,6 +31,7 @@ import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
+import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 import com.ualberta.team17.view.QuestionListActivity;
 
 public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionListActivity> {
@@ -219,5 +224,33 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		// in the upvote count.
 		controller.upvote(q);
 		assertEquals(1, q.getUpvoteCount());
+	}
+	
+	/**
+	 * Test attachment saving
+	 */
+	public void test_Attachment() {
+		// Add a question
+		QuestionItem q = controller.createQuestion("Question Title", "Body... I have an attachment, look:");
+		
+		// Check that we have no attachments
+		assertFalse(q.hasAttachments());
+		
+		// Create an image to attach
+		Bitmap b = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+		b.setPixel(0, 0, 0xFFFFFFFF);
+		byte[] bytes = AttachmentItem.encodeBitmap(b);
+
+		// Attach them
+		controller.createAttachment(q.getUniqueId(), "Image Attachment", b);
+		controller.createAttachment(q.getUniqueId(), "Bytes Attachment", bytes);
+		
+		// Check that we get them back
+		IncrementalResult r = controller.getChildren(q, new IdentityComparator());
+		waitForResults(r, 2);
+		assertEquals(2, r.getCurrentResultsOfType(ItemType.Attachment).size());
+		
+		// Check that the derived info is set
+		assertTrue(q.hasAttachments());
 	}
 }

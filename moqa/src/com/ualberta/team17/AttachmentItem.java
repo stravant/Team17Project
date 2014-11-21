@@ -52,7 +52,7 @@ public class AttachmentItem extends AuthoredItem {
 	 * @param image The image to encode
 	 * @return The encoded image
 	 */
-	private static byte[] encodeBitmap(Bitmap image) {
+	public static byte[] encodeBitmap(Bitmap image) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		image.compress(Bitmap.CompressFormat.PNG, 100, out);
 		return out.toByteArray();
@@ -63,7 +63,7 @@ public class AttachmentItem extends AuthoredItem {
 	 * @param data
 	 * @return The decoded image
 	 */
-	private static Bitmap decodeBitmap(byte[] data) {
+	public static Bitmap decodeBitmap(byte[] data) {
 		return BitmapFactory.decodeByteArray(data, 0, data.length);
 	}
 	
