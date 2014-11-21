@@ -8,6 +8,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
@@ -107,6 +108,9 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		// Make the manager
 		manager = new DataManager(getActivity(), dataManager, netDataManager);
 		
+		// Set the user context to blank
+		manager.resetUserContextData();
+		
 		// Make the controller
 		controller = new QAController(manager);
 		controller.login(userContext);
@@ -155,13 +159,21 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 	public void test_FavoriteItem() {
 		// Add a question and favorite it
 		QuestionItem q = controller.createQuestion("Test", "Test");
+		
+		// Check that isFavorited is not set
+		assertFalse(q.isFavorited());
+		
+		// Favorite the question
 		controller.addFavorite(q);
 		
-		// Query it back
+		// Query back and see if we get the favorited item
 		IncrementalResult r = controller.getFavorites();
 		assertTrue(waitForResults(r, 1));
 		assertEquals(1, r.getCurrentResults().size());
 		assertEquals(q.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
+		
+		// Check that the derived isFavorited flag is set
+		assertTrue(q.isFavorited());
 	}
 	
 	/**
@@ -181,5 +193,31 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		assertTrue(waitForResults(r, 2));
 		assertEquals(q2.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
 		assertEquals(q1.getUniqueId(), r.getCurrentResults().get(1).getUniqueId());
+	}
+	
+	/**
+	 * Check that the haveUpvoted field works (Have I upvoted an item), and that
+	 * calling Controller::upvote multiple times does not result in multiple upvotes
+	 * counted in upvotecount total.
+	 */
+	public void test_Upvoting() {
+		// Add a question and upvote it
+		QuestionItem q = controller.createQuestion("Question Title", "body.");
+		
+		// Check not upvoted yet, and the upvote count is right
+		assertFalse(q.haveUpvoted());
+		assertEquals(0, q.getUpvoteCount());
+		
+		// Upvote it
+		controller.upvote(q);
+		
+		// Check that we have upvoted, and the upvote count is right
+		assertTrue(q.haveUpvoted());
+		assertEquals(1, q.getUpvoteCount());
+		
+		// Upvote again and check that there is not an additional upvote
+		// in the upvote count.
+		controller.upvote(q);
+		assertEquals(1, q.getUpvoteCount());
 	}
 }

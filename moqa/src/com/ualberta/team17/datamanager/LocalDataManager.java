@@ -172,6 +172,10 @@ public class LocalDataManager implements IDataSourceManager {
 	public void setUserContext(UserContext ctx) {
 		mUserContext = ctx;
 		mDataLock.lock();
+		if (mData == null) {
+			mDataLock.unlock();
+			return;
+		}
 		// Update all of our current data items to be favorited if they are favorited in the user context
 		for (UniqueId id: ctx.getFavorites()) {
 			QAModel item = mItemRefById.get(id);
@@ -375,6 +379,8 @@ public class LocalDataManager implements IDataSourceManager {
 		}
 		
 		// Check favorited
+		Log.i("save", "Checking derived info <" + item.getUniqueId() + ">: " + 
+				mUserContext + ", " + item.getClass().getName() + ", " + mUserContext.isFavorited(item.getUniqueId()));
 		if (mUserContext != null && (item instanceof QuestionItem) && mUserContext.isFavorited(item.getUniqueId())) {
 			((QuestionItem)item).setFavorited();
 		}
@@ -472,6 +478,9 @@ public class LocalDataManager implements IDataSourceManager {
 			}
 			
 			// Actual line that sets our data array and hashmap
+			if (mData != null) {
+				throw new AssertionError("LocalDataManager attempted to set mData twice, not possible.");
+			}
 			mData = result;
 			for (QAModel item: mData) {
 				mItemRefById.put(item.getUniqueId(), item);
@@ -686,6 +695,8 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Tracking for items, regardless of whether they are saved or not
 		if (mItemRefById.get(item.getUniqueId()) == null) {
+			Log.i("save", "LocalDataManager :: Tracked Item <" + item.getUniqueId() + ">");
+			
 			// Add the item to our item tracking if it isn't already there
 			mItemRefById.put(item.getUniqueId(), item);
 			
@@ -695,13 +706,13 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Saving of items that should be saved, which we haven't saved already
 		if (!mDataSetById.contains(item.getUniqueId()) && shouldSaveLocally(item, ctx)) {
+			Log.i("save", "LocalDataManager :: Saved Item <" + item.getUniqueId() + ">");
+			
 			// Save the item and it's children
 			propogateSave(item);
 			
 			// Mark us as needing a save
 			mDataDirty = true;
-			
-			Log.i("app", "LocalDataManager :: Item <" + item.getUniqueId() + "> added.");
 		}
 		
 		// Do we need to save?

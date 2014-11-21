@@ -44,7 +44,7 @@ public class DataManager {
 	/**
 	 * Our local data storage location
 	 */
-	private IDataSourceManager mLocalDataStore;
+	private LocalDataManager mLocalDataStore;
 	
 	/**
 	 * Our network data storage location
@@ -141,13 +141,18 @@ public class DataManager {
 	 * @param item The item to favorite
 	 */
 	public void favoriteItem(QAModel item) {
-		saveItem(item);
+		// Add it to the favorites list
 		mUserContext.addFavorite(item.getUniqueId());
+		
+		// Update the favorited flag right away while we're at it if it's not already flagged
+		if (item instanceof QuestionItem && !((QuestionItem)item).isFavorited()) {
+			((QuestionItem)item).setFavorited();
+		}
 		
 		// We might may need to update the saved-ness of this item locally
 		mLocalDataStore.saveItem(item, mUserContext);
 		
-		// TODO: Make call async
+		// TODO: Maybe make call async
 		saveUserContextData(mUserContext);
 	}
 	
@@ -170,7 +175,7 @@ public class DataManager {
 	 * @param context
 	 */
 	private void saveUserContextData(UserContext context) {
-		DataManager.writeLocalData(mContext, USER_CONTEXT_STORAGE, mUserContext.saveToJson().toString());
+		DataManager.writeLocalData(mContext, USER_CONTEXT_STORAGE, context.saveToJson().toString());
 	}
 	
 	/**
@@ -204,6 +209,13 @@ public class DataManager {
 	}
 	
 	/**
+	 * Reset user context data
+	 */
+	public void resetUserContextData() {
+		saveUserContextData(new UserContext("<ignored>"));
+	}
+	
+	/**
 	 * Load user context data into a user context
 	 * @param context
 	 */
@@ -213,7 +225,7 @@ public class DataManager {
 		if (data != null) {
 			JsonElement tree = parser.parse(data);
 			if (tree != null) {
-				mUserContext.loadFromJson(tree);
+				context.loadFromJson(tree);
 			}
 		}
 	}
