@@ -15,7 +15,6 @@ import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
-import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
@@ -25,31 +24,24 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
-	private final static int SELECT_PICTURE = 1;
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
 	protected QAController mController;	
-	protected ArrayAdapter mAdapter;	
+	protected QABodyAdapter mAdapter;	
 	
 	/**
 	 * Constructor
@@ -249,14 +241,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		return null;
 	}
 	
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(resultCode == RESULT_OK) {
-			if(requestCode == SELECT_PICTURE) {
-				Toast toast = Toast.makeText(this, "Image returned!", Toast.LENGTH_LONG);
-			}
-		}
-	}
-	
 	/**
 	 * This class holds a Question/Answer and its child Comments.
 	 * 
@@ -368,6 +352,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		}
 	}
 	
+	/**
+	 * Listener for an incremental result's question.
+	 * @author Corey
+	 *
+	 */
 	private class QuestionResultListener implements IIncrementalObserver {
 
 		@Override
@@ -377,6 +366,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 	}
 	
+	/**
+	 * Listener for an incremental result's answers.
+	 * @author Corey
+	 *
+	 */
 	private class AnswerResultListener implements IIncrementalObserver {
 
 		@Override
@@ -396,6 +390,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 	}
 	
+	/**
+	 * Listener for an incremental result's comments.
+	 * @author Corey
+	 *
+	 */
 	private class CommentResultListener implements IIncrementalObserver {
 
 		@Override
