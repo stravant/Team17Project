@@ -11,7 +11,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:ems="10"
-        android:background="@color/milk2"
+        android:background="@color/milk"
         android:text="title"
         android:textSize="24sp"
         android:textColor="@color/compl_blue_split2" >
@@ -25,7 +25,9 @@
         android:layout_alignBottom="@+id/upvoteButton"
         android:layout_toRightOf="@+id/upvoteButton"
         android:onClick="createComment"
-        android:text="@string/createComment" />
+        android:text="@string/createComment"
+        android:background="@color/compl_blue_split1"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/favoriteButton"
@@ -34,7 +36,9 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/createCommentButton"
         android:layout_toRightOf="@+id/createCommentButton"
-        android:text="@string/favorite" />
+        android:text="@string/favorite"
+        android:background="@color/compl_blue_split1"
+        android:textColor="@color/white" />
 
     <Button
         android:id="@+id/viewAttachmentButton"
@@ -44,29 +48,25 @@
         android:layout_alignBaseline="@+id/favoriteButton"
         android:layout_alignBottom="@+id/favoriteButton"
         android:layout_toRightOf="@+id/favoriteButton"
-        android:text="Attch" />
+        android:text="Attch"
+        android:background="@color/compl_blue_split1"
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/bodyText"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/titleText"
         android:ems="10"
-        android:text="body" />
-
-    <TextView
-        android:id="@+id/authorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/bodyText"
-        android:ems="10"
-        android:text="author" />
+        android:text="body"
+        android:background="@color/milk2"
+        android:textSize="14sp"
+        android:textColor="@color/black" />
 
     <LinearLayout
         android:id="@+id/commentView"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/createCommentButton"
@@ -79,7 +79,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/authorText"
-        android:text="@string/upvote" />
+        android:layout_below="@+id/bodyText"
+        android:text="@string/upvote"
+        android:background="@color/compl_blue_split1"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/authorText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/viewAttachmentButton"
+        android:layout_below="@+id/bodyText"
+        android:layout_alignBottom="@+id/createCommentButton"
+        android:background="@color/coffee"
+        android:ems="10"
+        android:gravity="right|bottom"
+        android:text="author"
+        android:textColor="@color/compl_blue_split2" />
 
 </RelativeLayout>

@@ -3,23 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/cafe_noir" >
+    android:background="@color/coffee" >
+    
+    <Button
+        android:id="@+id/createAnswer"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/compl_blue_split1"
+        android:text="@string/createAnswer"
+        android:textColor="@color/white" />
 
     <ListView
         android:id="@+id/qaItemView"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@color/milk" >
+        android:layout_above="@id/createAnswer"
+        android:background="@color/coffee"
+        android:divider="@color/compl_blue_split2"
+        android:dividerHeight="3sp" >
     </ListView>
-
-    <Button
-        android:id="@+id/createAnswer"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_below="@id/qaItemView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/compl_blue_split1"
-        android:text="@string/createAnswer"
-        android:textColor="@color/milk" />
 	
 </RelativeLayout>

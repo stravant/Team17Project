@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/milk3"
     android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="@dimen/activity_horizontal_margin" >
+    android:layout_marginTop="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin" >
     
      <TextView
          android:id="@+id/commentText"
@@ -13,7 +15,8 @@
          android:layout_alignParentRight="true"
          android:layout_alignParentTop="true"
          android:ems="10"
-         android:text="body" >
+         android:text="body"
+         android:textColor="@color/comment_grey" >
 
     </TextView>
 
@@ -24,9 +27,9 @@
          android:layout_alignParentLeft="true"
          android:layout_alignParentRight="true"
          android:layout_below="@+id/commentText"
-         android:layout_marginRight="@dimen/activity_horizontal_margin"
          android:ems="10"
          android:gravity="right"
-         android:text="author" />
+         android:text="author"
+         android:textColor="@color/comment_grey" />
 
 </RelativeLayout>
