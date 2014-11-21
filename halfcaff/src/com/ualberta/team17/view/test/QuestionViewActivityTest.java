@@ -8,10 +8,10 @@ import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.controller.test.DummyDataManager;
 import com.ualberta.team17.datamanager.UserContext;
-import com.ualberta.team17.view.QuestionContent;
 import com.ualberta.team17.view.QuestionViewActivity;
 
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -33,8 +33,11 @@ public class QuestionViewActivityTest extends ActivityInstrumentationTestCase2<Q
 		Instrumentation instrumentation = getInstrumentation();
 		
 		QuestionItem question = new QuestionItem(new UniqueId(), null, "question author", null, "question body", 0, "question title");
+		Intent intent = new Intent(this.getActivity(), QuestionViewActivity.class);
+		intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, question.getUniqueId().toString());
 		
-		UserContext userContext = new UserContext("test_user");		
+		UserContext userContext = new UserContext("test_user");
+		setActivityIntent(intent);
 		mActivity = getActivity();
 		mDataManager = new DummyDataManager(userContext, mActivity);
 		mController = new QAController(mDataManager);
