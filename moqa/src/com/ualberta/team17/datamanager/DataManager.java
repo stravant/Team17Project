@@ -152,20 +152,6 @@ public class DataManager {
 	}
 	
 	/**
-	 * Removes an item from favorites.
-	 * @param item The item to remove.
-	 */
-	public void unFavoriteItem(QAModel item) {
-		saveItem(item);
-		mUserContext.removeFavorite(item.getUniqueId());
-		
-		mLocalDataStore.saveItem(item, mUserContext);
-		
-		// TODO: Make call async
-		saveUserContextData(mUserContext);
-	}
-	
-	/**
 	 * Mark an item as recently viewed at this time
 	 * @param item The uniqueId of the item to mark as recently viewed
 	 */

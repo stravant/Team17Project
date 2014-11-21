@@ -320,7 +320,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				attachmentButton.setVisibility(View.VISIBLE);
 				
 				if(question.isFavorited()) {
-					favoriteButton.setText("F!");
+					favoriteButton.setText("F!"); // Filled in star
 				} else {
 					favoriteButton.setText("NF");
 				}
@@ -344,6 +344,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			commentButton.setTag(qaItem.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
+			if(qaItem.parent.haveUpvoted()) {
+				upvoteButton.setText("U!"); // Filled in Up Arrow
+			} else {
+				upvoteButton.setText("NU!");
+			}
 			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
 			
 			bodyTextView.setText(qaItem.parent.getBody());
@@ -357,8 +362,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				commentBody.setText(comment.getBody());
 				
 				TextView commentAuthor = (TextView) commentView.findViewById(R.id.commentAuthor);
-				commentAuthor.setText("-" + comment.getAuthor());	
-				commentAuthor.setGravity(Gravity.RIGHT);
+				commentAuthor.setText("-" + comment.getAuthor());
 				
 				commentsView.addView(commentView);
 			}			
@@ -465,13 +469,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		@Override
 		public void onClick(View v) {
 			QAController controller = QAController.getInstance();
-			if(mItem.isFavorited()) {
-				Log.v("FavoriteListener", "Removing Favorite!");
-				controller.removeFavorite(mItem);
-			} else {
-				Log.v("FavoriteListener", "Adding Favorite!");
-				controller.addFavorite(mItem);
-			}
+			controller.addFavorite(mItem);
 		}
 		
 	}
