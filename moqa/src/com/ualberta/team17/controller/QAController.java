@@ -1,6 +1,11 @@
 package com.ualberta.team17.controller;
 
+import java.net.URI;
 import java.util.Calendar;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
@@ -185,15 +190,6 @@ public class QAController {
 	}
 	
 	/**
-	 * Create an attachment
-	 * @param parent
-	 * @return
-	 */
-	public AttachmentItem createAttachment(QuestionItem parent) {
-		throw new UnsupportedOperationException();
-	}
-	
-	/**
 	 * Create a comment with the given parent. A parent must be supplied.
 	 * @param parent The object to use as the parent
 	 * @param body The body text to apply to the comment
@@ -223,5 +219,56 @@ public class QAController {
 		item.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(item);
 		return item;
+	}
+	
+	/**
+	 * Create an AttachmentItem from compressed image data
+	 * @param parent The Id of the QuestionItem to have the attachment
+	 * @param name The name of the attachment
+	 * @param data The data contained in the attachment, compressed image 
+	 *              data in some supported image format should be passed.
+	 * @return The created and saved attachment item
+	 */
+	public AttachmentItem createAttachment(UniqueId parent, String name, byte[] data) {
+		UserContext creator = mDataManager.getUserContext();
+		AttachmentItem item = new AttachmentItem(new UniqueId(creator), 
+				parent, 
+				creator.getUserName(), 
+				Calendar.getInstance().getTime(), 
+				name, 
+				data);
+		mDataManager.saveItem(item);
+		return item;
+	}
+	
+	/**
+	 * Create an AttachmentItew from a bitmap image.
+	 * @param parent The Id of the QuestionItem to have the attachment
+	 * @param name The name of the attachment
+	 * @param image The image to attach
+	 * @return The created and saved attachment item
+	 */
+	public AttachmentItem createAttachment(UniqueId parent, String name, Bitmap image) {
+		UserContext creator = mDataManager.getUserContext();
+		AttachmentItem item = new AttachmentItem(new UniqueId(creator), 
+				parent, 
+				creator.getUserName(), 
+				Calendar.getInstance().getTime(), 
+				name, 
+				image);
+		mDataManager.saveItem(item);
+		return item;
+	}
+	
+	/**
+	 * Create an AttachmentItem from a URI of an image on the device. The image
+	 * will be synchronously loaded in.
+	 * @param parent The Id of the QuestionItem to have the attachment
+	 * @param name The name of the attachment
+	 * @param uri The URI of the image to attach
+	 * @return The created and saved attachment item
+	 */
+	public AttachmentItem createAttachment(UniqueId parent, String name, Uri imageUri) {
+		return createAttachment(parent, name, mDataManager.readImageFromUri(imageUri));
 	}
 }
