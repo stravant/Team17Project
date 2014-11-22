@@ -185,13 +185,15 @@ public class LocalDataManager implements IDataSourceManager {
 			}
 		}
 		// For each of our upvote items, mark hasUpvoted on it's parent
-		for (QAModel item: mData) {
-			if (item instanceof UpvoteItem) {
-				UpvoteItem upvote = ((UpvoteItem)item);
-				if (upvote.getAuthor().equals(mUserContext.getUserName())) {
-					AuthoredTextItem parent = (AuthoredTextItem)mItemRefById.get(upvote.getParentItem());
-					if (parent != null) {
-						parent.setHaveUpvoted();
+		if (mData != null) {
+			for (QAModel item: mData) {
+				if (item instanceof UpvoteItem) {
+					UpvoteItem upvote = ((UpvoteItem)item);
+					if (upvote.getAuthor().equals(mUserContext.getUserName())) {
+						AuthoredTextItem parent = (AuthoredTextItem)mItemRefById.get(upvote.getParentItem());
+						if (parent != null) {
+							parent.setHaveUpvoted();
+						}
 					}
 				}
 			}
