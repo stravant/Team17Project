@@ -78,7 +78,7 @@ public class ListFragment extends Fragment {
 				IncrementalResult children = QAController.getInstance().getChildren(item, comp);
 				
 				titleTextView.setText(qi.getTitle());
-				commentTextView.setText(Integer.toString(qi.getReplyCount()));
+				commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
 				upvoteTextView.setText(Integer.toString(-1));
 			}			
 			
