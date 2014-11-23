@@ -43,6 +43,8 @@ public class TaxonomyMenuFragment extends Fragment {
 			Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		final Activity activity = getActivity();
+		if(activity == null)
+			return null;
 		myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		mDrawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) activity.findViewById(R.id.left_drawer);

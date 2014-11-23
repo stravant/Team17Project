@@ -1,35 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/titleView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-    
-    <Button
-        android:id="@+id/favoriteButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/favorite"
-        android:onClick="favoriteQuestion" />
-
-    <Button
-        android:id="@+id/createAnswer"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/createAnswer" />
 
     <ListView
         android:id="@+id/qaItemView"
         android:layout_width="match_parent"
         android:layout_height="364dp" >
     </ListView>
+
+    <Button
+        android:id="@+id/createAnswer"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:text="@string/createAnswer" />
 	
 </LinearLayout>
