@@ -11,7 +11,7 @@
 	    android:layout_height="match_parent"
 	    android:orientation="vertical"
 	    android:background="@color/coffee"
-	    android:visibility="visible" >
+	    android:visibility="gone" >
 	    
 	    <Button
 	        android:id="@+id/createAnswer"
@@ -41,7 +41,36 @@
 	    android:layout_height="match_parent"
 	    android:orientation="vertical"
 	    android:background="@color/coffee"
-	    android:visibility="gone" >
+	    android:visibility="visible" >
+	    
+	    <EditText 
+	        android:id="@+id/createQuestionTitleView"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@color/milk"
+	        android:text="Title"
+	        />
+	    
+	    <EditText
+	        android:id="@+id/createQuestionBodyView"
+	        android:layout_below="@id/createQuestionTitleView"
+	        android:layout_above="@id/createQuestionBodyView"
+	        android:layout_width="match_parent"
+	        android:layout_height="fill_parent"
+	        android:gravity="left|top"
+	        android:background="@color/milk2"
+	        android:text="Body"
+	        />
+	    
+	    <Button
+	        android:id="@+id/createQuestionSubmitButton"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:background="@color/compl_blue_split1"
+	        android:gravity="center"
+	        android:text="Submit"
+	        android:textColor="@color/white" />
 	
 	</RelativeLayout>
 </RelativeLayout>
