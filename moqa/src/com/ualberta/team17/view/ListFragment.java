@@ -74,12 +74,9 @@ public class ListFragment extends Fragment {
 			
 			QuestionItem qi = (QuestionItem)item;
 			if (qi != null) {
-				IItemComparator comp = new DateComparator();
-				IncrementalResult children = QAController.getInstance().getChildren(item, comp);
-				
 				titleTextView.setText(qi.getTitle());
-				commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
-				upvoteTextView.setText(Integer.toString(-1));
+				commentTextView.setText(Integer.toString(qi.getReplyCount()));
+				upvoteTextView.setText(Integer.toString(qi.getUpvoteCount()));
 			}			
 			
 			return convertView;
