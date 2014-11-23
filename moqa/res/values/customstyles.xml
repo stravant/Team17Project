@@ -1,0 +1,59 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">	
+    
+	<style name="titleText1">
+	    <item name="android:background">@color/milk</item>	    
+	    <item name="android:textColor">@color/compl_blue_split2</item>
+	    <item name="android:textSize">@dimen/large_text</item>
+	</style>
+	
+	<style name="titleText2">
+	    <item name="android:background">@color/milk</item>	    
+	    <item name="android:textColor">@color/compl_blue_split2</item>
+	    <item name="android:textSize">@dimen/medium_text</item>	    
+	</style>
+	
+	<style name="bodyText1">
+	    <item name="android:background">@color/milk2</item>	    
+	    <item name="android:textColor">@color/black</item>
+	    <item name="android:textSize">@dimen/medium_text</item>	    
+	</style>
+	
+	<style name="bodyText1Alt">
+	    <item name="android:background">@color/compl_blue_split2</item>	    
+	    <item name="android:textColor">@color/white</item>
+	    <item name="android:textSize">@dimen/medium_text</item>	    
+	</style>
+	
+	<style name="bodyText2">
+	    <item name="android:background">@color/milk3</item>	    
+	    <item name="android:textColor">@color/comment_grey</item>
+	    <item name="android:textSize">@dimen/small_text</item>	    	    
+	</style>
+	
+	<style name="authorText1">
+	    <item name="android:background">@color/milk</item>	    
+	    <item name="android:textColor">@color/compl_blue_split2</item>
+	    <item name="android:textSize">@dimen/medium_text</item>	    	    
+	</style>
+	
+	<style name="authorText2">
+	    <item name="android:background">@color/milk3</item>	    
+	    <item name="android:textColor">@color/comment_grey</item>
+	    <item name="android:textSize">@dimen/small_text</item>	     
+	</style>	
+	
+	<style name="lightRelativeLayout">
+	    <item name="android:background">@color/milk</item>	    	        
+	</style>	
+	
+	<style name="mediumRelativeLayout">
+	    <item name="android:background">@color/milk3</item>	    	         
+	</style>
+	
+	<style name="darkRelativeLayout">
+	    <item name="android:background">@color/coffee</item>	 	    	     
+	</style>	
+	
+	
+	
+</resources>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/coffee" >
+    style="@style/darkRelativeLayout">    "
 
     <TextView
         android:id="@+id/titleText"
@@ -12,10 +12,9 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:ems="10"
-        android:background="@color/milk"
-        android:text="title"
-        android:textSize="24sp"
-        android:textColor="@color/compl_blue_split2" >
+        style="@style/titleText1"        
+        android:text="title"        
+        >
 	</TextView>
 	
 	<TextView
@@ -26,16 +25,16 @@
         android:layout_below="@+id/titleText"
         android:ems="10"
         android:text="body"
-        android:background="@color/milk2"
-        android:textSize="14sp"
-        android:textColor="@color/black" />
+        style="@style/bodyText1"
+        >
+     </TextView>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout 
         android:id="@+id/userBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/bodyText"
-        android:background="@color/milk" >
+        style="@style/lightRelativeLayout" >
         
 	    <ImageButton
 	        android:id="@+id/createCommentButton"
@@ -66,8 +65,7 @@
 	        android:id="@+id/upvoteButton"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_below="@+id/bodyText"
+	        android:layout_centerVertical="true"	        
 	        android:background="@drawable/ic_action_collapse" />
 	
 	    <TextView
@@ -76,12 +74,12 @@
 	        android:layout_height="wrap_content"
 	        android:layout_alignParentRight="true"
 	        android:layout_alignParentTop="true"
-	        android:layout_toRightOf="@+id/viewAttachmentButton"
-	        android:layout_below="@+id/bodyText"
+	        android:layout_toRightOf="@+id/viewAttachmentButton"	        
 	        android:ems="10"
 	        android:gravity="right|bottom"
 	        android:text="author"
-	        android:textColor="@color/compl_blue_split2" />
+	        style="@style/authorText1"
+	        />
     </RelativeLayout>
 
     <LinearLayout
@@ -99,9 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/commentView"
-        android:background="@color/compl_blue_split2"
-        android:textColor="@color/white"
-        android:textSize="14sp"
+       	style="@style/bodyText1Alt"
         android:text="5 Answers"
         android:gravity="center"/>
 
