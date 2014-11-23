@@ -198,21 +198,6 @@ public class UserContext implements Serializable {
 	}
 	
 	/**
-	 * Removes a favorite from the user's list of favorites by UniqueId.
-	 * @param itemId The item id to remove.
-	 */
-	public void removeFavorite(UniqueId itemId) {
-		if(mUserFavorites.contains(itemId)) {
-			mUserFavorites.remove(itemId);
-			
-			// Not sure about this part - maybe item is also a readlater or something.
-			/*if(mAllItemSet.contains(itemId)) {
-				mAllItemSet.remove(itemId);
-			}*/
-		}
-	}
-	
-	/**
 	 * Get the replies content that this user has authored
 	 * @return
 	 */

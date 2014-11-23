@@ -74,12 +74,9 @@ public class ListFragment extends Fragment {
 			
 			QuestionItem qi = (QuestionItem)item;
 			if (qi != null) {
-				IItemComparator comp = new DateComparator();
-				IncrementalResult children = QAController.getInstance().getChildren(item, comp);
-				
 				titleTextView.setText(qi.getTitle());
-				commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
-				upvoteTextView.setText(Integer.toString(-1));
+				commentTextView.setText(Integer.toString(qi.getReplyCount()));
+				upvoteTextView.setText(Integer.toString(qi.getUpvoteCount()));
 			}			
 			
 			return convertView;
@@ -237,7 +234,11 @@ public class ListFragment extends Fragment {
 	
 				@Override
 				public void itemsArrived(List<QAModel> item, int index) {
-					ListView qList = (ListView) ListFragment.this.getActivity().findViewById(R.id.questionListView);
+					Activity activity = ListFragment.this.getActivity();
+					if (activity == null) {
+						return;
+					}
+					ListView qList = (ListView) activity.findViewById(R.id.questionListView);
 					qList.invalidate();
 					
 					qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));

@@ -15,7 +15,6 @@ import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
-import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
@@ -25,32 +24,25 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
-	private final static int SELECT_PICTURE = 1;
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
 	protected QAController mController;	
-	protected ArrayAdapter mAdapter;	
+	protected QABodyAdapter mAdapter;	
 	
 	/**
 	 * Constructor
@@ -250,14 +242,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		return null;
 	}
 	
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if(resultCode == RESULT_OK) {
-			if(requestCode == SELECT_PICTURE) {
-				Toast toast = Toast.makeText(this, "Image returned!", Toast.LENGTH_LONG);
-			}
-		}
-	}
-	
 	/**
 	 * This class holds a Question/Answer and its child Comments.
 	 * 
@@ -305,7 +289,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			TextView titleTextView = (TextView) qaItemView.findViewById(R.id.titleText);
 			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
 			TextView answerCountView = (TextView) qaItemView.findViewById(R.id.answerCountView);
-			
 			TextView authorTextView = (TextView) userBar.findViewById(R.id.authorText);
 			
 			ImageButton favoriteButton = (ImageButton) userBar.findViewById(R.id.favoriteButton);
@@ -324,17 +307,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				attachmentButton.setVisibility(View.VISIBLE);
 				answerCountView.setVisibility(View.VISIBLE);
 				
-				if(question.isFavorited()) {
-					//favoriteButton.setText("F!");
-				} else {
-					//favoriteButton.setText("NF");
-				}
-				
 				titleTextView.setText(question.getTitle());
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
-				
-				// Just for testing, this will have to be changed.
-				attachmentButton.setOnClickListener(new AddAttachmentListener());
 				
 			} else if (qaItem.parent.mType == ItemType.Answer) {
 				titleTextView.setVisibility(View.GONE);
@@ -350,6 +324,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			commentButton.setTag(qaItem.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
+			if(qaItem.parent.haveUpvoted()) {
+				upvoteButton.setText("U!"); // Filled in Up Arrow
+			} else {
+				upvoteButton.setText("NU!");
+			}
 			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
 			
 			bodyTextView.setText(qaItem.parent.getBody());
@@ -363,8 +342,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				commentBody.setText(comment.getBody());
 				
 				TextView commentAuthor = (TextView) commentView.findViewById(R.id.commentAuthor);
-				commentAuthor.setText("-" + comment.getAuthor());	
-				commentAuthor.setGravity(Gravity.RIGHT);
+				commentAuthor.setText("-" + comment.getAuthor());
 				
 				commentsView.addView(commentView);
 			}			
@@ -373,6 +351,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		}
 	}
 	
+	/**
+	 * Listener for an incremental result's question.
+	 * @author Corey
+	 *
+	 */
 	private class QuestionResultListener implements IIncrementalObserver {
 
 		@Override
@@ -382,6 +365,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 	}
 	
+	/**
+	 * Listener for an incremental result's answers.
+	 * @author Corey
+	 *
+	 */
 	private class AnswerResultListener implements IIncrementalObserver {
 
 		@Override
@@ -401,6 +389,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 	}
 	
+	/**
+	 * Listener for an incremental result's comments.
+	 * @author Corey
+	 *
+	 */
 	private class CommentResultListener implements IIncrementalObserver {
 
 		@Override
@@ -471,13 +464,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		@Override
 		public void onClick(View v) {
 			QAController controller = QAController.getInstance();
-			if(mItem.isFavorited()) {
-				Log.v("FavoriteListener", "Removing Favorite!");
-				controller.removeFavorite(mItem);
-			} else {
-				Log.v("FavoriteListener", "Adding Favorite!");
-				controller.addFavorite(mItem);
-			}
+			controller.addFavorite(mItem);
 		}
 		
 	}
@@ -496,10 +483,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
-			Intent intent = new Intent();
-			intent.setType("image/*");
-			intent.setAction(Intent.ACTION_GET_CONTENT);
-			startActivityForResult(Intent.createChooser(intent, "Choose an image to attach"), SELECT_PICTURE);
 		}
 		
 	}
