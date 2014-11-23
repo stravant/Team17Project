@@ -3,27 +3,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/coffee" >
-    
-    <Button
-        android:id="@+id/createAnswer"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/compl_blue_split1"
-        android:text="@string/createAnswer"
-        android:textColor="@color/white" />
-
-    <ListView
-        android:id="@+id/qaItemView"
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/createAnswer"
-        android:background="@color/milk"
-        android:layout_margin="1sp"
-        android:divider="@color/compl_blue_split2"
-        android:dividerHeight="3sp" >
-    </ListView>
+    android:background="@color/coffee"
+    android:visibility="visible" >
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/displayQuestionView"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:background="@color/coffee"
+	    android:visibility="visible" >
+	    
+	    <Button
+	        android:id="@+id/createAnswer"
+	        style="?android:attr/buttonStyleSmall"
+	        android:layout_alignParentBottom="true"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@color/compl_blue_split1"
+	        android:text="@string/createAnswer"
+	        android:textColor="@color/white" />
 	
+	    <ListView
+	        android:id="@+id/qaItemView"
+	        android:layout_width="match_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_above="@id/createAnswer"
+	        android:background="@color/milk"
+	        android:layout_margin="1sp"
+	        android:divider="@color/compl_blue_split2"
+	        android:dividerHeight="3sp" >
+	    </ListView>
+		
+	</RelativeLayout>
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/createQuestionView"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:background="@color/coffee"
+	    android:visibility="gone" >
+	
+	</RelativeLayout>
 </RelativeLayout>

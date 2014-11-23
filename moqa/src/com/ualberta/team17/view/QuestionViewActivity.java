@@ -113,10 +113,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_questionview);
 		
+		View displayQuestionView = findViewById(R.id.displayQuestionView);
+		View createQuestionView = findViewById(R.id.createQuestionView);
+		
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
 		
-		((Button)findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
+		((Button) displayQuestionView.findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
 		mAdapter = createNewAdapter();
 		
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
@@ -127,7 +130,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			popup.show();
 			
 			if (getQuestion() != null) {				
-				ListView qaList = (ListView) findViewById(R.id.qaItemView);
+				ListView qaList = (ListView) displayQuestionView.findViewById(R.id.qaItemView);
 				qaList.setAdapter(mAdapter);
 			}
 		}
