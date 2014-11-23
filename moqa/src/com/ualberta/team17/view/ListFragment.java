@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -36,92 +37,11 @@ public class ListFragment extends Fragment {
 	public static final String FILTER_EXTRA = "FILTER";
 	
 	private IncrementalResult mIR;
-	private Context mContext;
+	
 	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mContext = getActivity();
     }
-	
-	/**
-	 * The adapter for QAModel. Binds the title of the question, the upvote count
-	 * and the comment count (the number of answers).
-	 * 
-	 * @author Jared
-	 *
-	 */
-	protected class QuestionListAdapter extends ArrayAdapter<QAModel> {
-		Context mContext;
-		List<QAModel> mObjects;
-		static final int titleSize = 300;
-		
-		public QuestionListAdapter(Context context, int textViewResourceId, List<QAModel> objects) {
-			super(context, textViewResourceId, objects);
-			mContext = context;
-			mObjects = objects;
-		}
-		
-		public View getView(int position, View convertView, ViewGroup parent) {
-			QAModel item = (QAModel) this.getItem(position);
-			if (item == null) {
-				return convertView;
-			}
-			
-			if (item.getField("author") == null ||
-					item.getField("body") == null || 
-					item.getField("id") == null ||
-					item.getField("date") == null) {
-				// This info is required. If it isn't here, something is wrong.
-				return convertView;
-			}
-			
-			String body = (String)item.getField("body");
-			String author = (String) item.getField("author");
-			
-			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.qa_listview_item, parent, false);  
-			}
-			
-			TextView titleTextView = (TextView) convertView.findViewById(R.id.titleText);
-			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentText);
-			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
-			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
-			
-			// Set the data using getField
-			IItemComparator comp = new DateComparator();
-			IncrementalResult children = QAController.getInstance().getChildren(item, comp);
-				
-			commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
-			upvoteTextView.setText(Integer.toString(-1));
-			userTextView.setText(author);
-
-			if (item.getField("title") == null) {
-				// Must be an answer
-				titleTextView.setText(
-						body.length() > titleSize ? 
-						body.substring(0, titleSize) + "..." :
-						body
-				);
-			}
-			else {
-				String title = (String) item.getField("title");
-				if (title != null) {
-					titleTextView.setText(title);
-				}
-			}
-			
-			return convertView;
-		}
-		
-		public void setItems(List<QAModel> qa) {
-			this.mObjects = qa;
-		}
-		
-		// TODO implement comment and upvote graphics
-	}
-	
-	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -160,11 +80,7 @@ public class ListFragment extends Fragment {
 		
 		addObserver(mIR);		
 		ListView qList = (ListView) rootView.findViewById(R.id.questionListView);
-		qList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			public void onItemClick(AdapterView<?> av, View view, int i, long l) {
-				handleListViewItemClick(av, view, i, l);
-			}
-		});
+		qList.setOnItemClickListener(new listItemClickedListener());
 		
 		if (mIR != null) {
 			qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
@@ -193,8 +109,6 @@ public class ListFragment extends Fragment {
 			startActivity(intent);
 		}
 	}
-	
-	
 	
 	/**
 	 * Creates an intent that is passed to QuestionViewActivity.
@@ -254,6 +168,7 @@ public class ListFragment extends Fragment {
 	void search() {
 		
 	}
+	
 	/**
 	 * A convenience function for adding an observer to ir.
 	 * @param ir The incremental result to observe.
@@ -279,6 +194,90 @@ public class ListFragment extends Fragment {
 					}					
 				}
 			});
+		}
+	}
+	
+	/**
+	 * Handles listview item click events.
+	 * 
+	 * @author Jared
+	 *
+	 */
+	private class listItemClickedListener implements AdapterView.OnItemClickListener {
+		
+		@Override
+		public void onItemClick(AdapterView<?> av, View view, int i, long l) {
+			handleListViewItemClick(av, view, i, l);
+		}
+	}
+	
+	/**
+	 * The adapter for QAModel. Binds the title of the question, the upvote count
+	 * and the comment count (the number of answers).
+	 * 
+	 * @author Jared
+	 *
+	 */
+	private class QuestionListAdapter extends ArrayAdapter<QAModel> {
+		Context mContext;
+		static final int titleSize = 300;
+		
+		public QuestionListAdapter(Context context, int textViewResourceId, List<QAModel> objects) {
+			super(context, textViewResourceId, objects);
+			mContext = context;
+		}
+		
+		public View getView(int position, View convertView, ViewGroup parent) {
+			QAModel item = (QAModel) this.getItem(position);
+			if (item == null) {
+				return convertView;
+			}
+			
+			if (item.getField("author") == null ||
+					item.getField("body") == null || 
+					item.getField("id") == null ||
+					item.getField("date") == null) {
+				// This info is required. If it isn't here, something is wrong.
+				return convertView;
+			}
+			
+			String body = (String)item.getField("body");
+			String author = (String) item.getField("author");
+			
+			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.qa_listview_item, parent, false);  
+			}
+			
+			TextView titleTextView = (TextView) convertView.findViewById(R.id.titleText);
+			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentText);
+			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
+			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
+			
+			// Set the data using getField
+			IItemComparator comp = new DateComparator();
+			IncrementalResult children = QAController.getInstance().getChildren(item, comp);
+				
+			commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
+			upvoteTextView.setText(Integer.toString(-1));
+			userTextView.setText(author);
+
+			if (item.getField("title") == null) {
+				// Must be an answer
+				titleTextView.setText(
+						body.length() > titleSize ? 
+						body.substring(0, titleSize) + "..." :
+						body
+				);
+			}
+			else {
+				String title = (String) item.getField("title");
+				if (title != null) {
+					titleTextView.setText(title);
+				}
+			}
+			
+			return convertView;
 		}
 	}
 	

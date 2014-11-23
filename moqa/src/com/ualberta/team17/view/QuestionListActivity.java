@@ -91,7 +91,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	}
 
 	/**
-	 * This handles the menu at the top of this view. This is temporary.
+	 * This handles the menu at the top of this view.
 	 * 
 	 * @author Jared
 	 */
@@ -147,6 +147,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}
 
 	}
+	
 	@Override
 	public void onItemSelected(int position) {
 		selectItem(position);

@@ -15,9 +15,9 @@
            android:id="@+id/linearLayout2"
            android:layout_width="wrap_content"
            android:layout_height="fill_parent"
-           android:layout_alignParentLeft="true"
            android:layout_alignParentTop="true"
            android:layout_toLeftOf="@+id/iconLinearLayout"
+           android:layout_toRightOf="@+id/linearLayout3"
            android:gravity="bottom|fill"
            android:orientation="vertical" >
 
@@ -29,17 +29,9 @@
                 android:layout_marginRight="@dimen/small_indent"
                 android:layout_marginTop="@dimen/small_indent"
                 android:ems="10"
-                android:text="@string/default_str" />
-
-            <View
-                android:id="@+id/View01"
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/min_listview_height"
-                android:layout_marginBottom="@dimen/tiny_indent"
-                android:layout_marginLeft="@dimen/tiny_indent"
-                android:layout_marginRight="@dimen/tiny_indent"
-                android:layout_marginTop="@dimen/tiny_indent"
-                android:background="@null" />
+                android:text="@string/default_str"
+                android:textColor="@color/compl_blue_split2"
+                android:textSize="@dimen/title_text" />
 
             <LinearLayout
                 android:id="@+id/linearLayout1"
@@ -52,10 +44,9 @@
                     android:id="@+id/splitter"
                     android:layout_width="fill_parent"
                     android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/tiny_indent"
                     android:layout_marginLeft="@dimen/tiny_indent"
                     android:layout_marginRight="@dimen/tiny_indent"
-                    android:layout_marginTop="@dimen/tiny_indent"
+                    android:layout_marginTop="@dimen/medium_indent"
                     android:background="@android:color/darker_gray" />
 
                 <RelativeLayout
@@ -67,17 +58,45 @@
                         android:id="@+id/relativeLayout1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/tiny_indent"
-                        android:layout_marginRight="@dimen/small_indent" >
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/relativeLayout4" >
 
                         <TextView
                             android:id="@+id/userText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/small_indent"
                             android:text="@string/default_user"
                             android:textAppearance="?android:attr/textAppearanceSmall" />
+
                     </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLayout4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true" >
+
+                        <ImageView
+                            android:id="@+id/favoriteImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerInParent="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/small_indent"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/favorite"
+                            android:maxHeight="24dp"
+                            android:maxWidth="24dp"
+                            android:src="@drawable/ic_action_favorite" />
+
+                    </RelativeLayout>
+
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
@@ -94,7 +113,8 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent" >
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="@dimen/small_indent" >
 
                 <ImageView
                     android:id="@+id/upvoteImage"
@@ -119,21 +139,6 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginBottom="@dimen/tiny_indent"
-                android:layout_marginTop="@dimen/tiny_indent" >
-
-                <ImageView
-                    android:id="@+id/favoriteImage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:contentDescription="@string/favorite"
-                    android:src="@drawable/ic_action_favorite" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
                 android:layout_height="fill_parent" >
 
                 <ImageView
@@ -154,6 +159,17 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             </RelativeLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical" >
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <View

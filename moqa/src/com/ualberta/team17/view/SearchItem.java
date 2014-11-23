@@ -12,6 +12,12 @@ import android.widget.LinearLayout;
 
 import com.ualberta.team17.R;
 
+/**
+ * Used to show a search bar on the action bar.
+ * 
+ * @author Jared
+ *
+ */
 public class SearchItem extends LinearLayout {
     
     boolean mShowSearchBar;
@@ -24,17 +30,6 @@ public class SearchItem extends LinearLayout {
     
 	public SearchItem(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
-		TypedArray a = context.getTheme().obtainStyledAttributes(
-		        attrs,
-		        R.styleable.SearchItem,
-		        0, 0);
-		
-		try {
-
-		} finally {
-		       a.recycle();
-		}
 		
 		init();
 	}
@@ -57,6 +52,11 @@ public class SearchItem extends LinearLayout {
 		}
 	}
 	
+	/**
+	 * Gets the value in the search bar.
+	 * 
+	 * @return the value inside the search bar.
+	 */
 	public String getSearchTerm() {
 		EditText textBar = (EditText) this.findViewById(R.id.searchBar);
 		
@@ -66,6 +66,11 @@ public class SearchItem extends LinearLayout {
 		return null;
 	}
 	
+	/**
+	 * Sets the value inside the search bar.
+	 * 
+	 * @param term the value to be displayed in the search bar.
+	 */
 	public void setSearchTerm(String term) {
 		EditText textBar = (EditText) this.findViewById(R.id.searchBar);
 		
@@ -77,6 +82,12 @@ public class SearchItem extends LinearLayout {
 		requestLayout();
 	}
 	
+	/**
+	 * Allows an activity to attach a specific click listener to be done 
+	 * when the search button is clicked.
+	 * 
+	 * @param l the listeber to execute upon the search buttons click.
+	 */
 	public void setOnClickListener(OnClickListener l) {
 		ImageButton b = (ImageButton)this.findViewById(R.id.searchButton);
 		if (b != null) {
@@ -84,17 +95,32 @@ public class SearchItem extends LinearLayout {
 		}
 	}
 	
-	
+	/**
+	 * Returns whether the search bar is being shown.
+	 * 
+	 * @return the search bars display state. False for hidden. True for shown.
+	 */
 	public boolean isShowingSearchBar() {
 		return mShowSearchBar;
 	}
 	
+	/**
+	 * Sets whether the searchbar is shown.
+	 * 
+	 * @param val Show or hide the search bar.
+	 */
 	public void setShowingSearchBar(boolean val) {
 		mShowSearchBar = val;
 		invalidate();
 		requestLayout();
 	}	
 	
+	/**
+	 * Triggered whenever the search button is clicked.
+	 * 
+	 * @author Jared
+	 *
+	 */
 	private class searchClickedListener implements OnClickListener {
 		
 		@Override
