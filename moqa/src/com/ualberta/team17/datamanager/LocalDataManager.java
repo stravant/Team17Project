@@ -342,14 +342,19 @@ public class LocalDataManager implements IDataSourceManager {
 		if (item instanceof AuthoredItem) {
 			QAModel parentItem = getItemById(((AuthoredItem)item).getParentItem());
 			if (parentItem != null) {
-				if (parentItem instanceof AuthoredTextItem && item instanceof UpvoteItem) {
-					// Mark I have upvoted if this is an upvote of mine on an item
-					if (mUserContext != null && ((AuthoredItem)item).getAuthor().equals(mUserContext.getUserName())) {
-						((AuthoredTextItem)parentItem).setHaveUpvoted();
+				if (parentItem instanceof AuthoredTextItem) {
+					if (item instanceof UpvoteItem) {
+						// Mark I have upvoted if this is an upvote of mine on an item
+						if (mUserContext != null && ((AuthoredItem)item).getAuthor().equals(mUserContext.getUserName())) {
+							((AuthoredTextItem)parentItem).setHaveUpvoted();
+						}
+						
+						// Tally upvotes
+						((AuthoredTextItem)parentItem).upvote();
+					} else if (item instanceof CommentItem) {
+						// Tally comments
+						((AuthoredTextItem)parentItem).incrementCommentCount();
 					}
-					
-					// Tally upvotes
-					((AuthoredTextItem)parentItem).upvote();
 				}
 				if (parentItem instanceof QuestionItem) {
 					if (item instanceof AnswerItem) {
@@ -385,8 +390,10 @@ public class LocalDataManager implements IDataSourceManager {
 		}
 		
 		// Check favorited
-		Log.i("save", "Checking derived info <" + item.getUniqueId() + ">: " + 
-				mUserContext + ", " + item.getClass().getName() + ", " + mUserContext.isFavorited(item.getUniqueId()));
+		if (mUserContext != null) {
+			Log.i("save", "Checking derived info <" + item.getUniqueId() + ">: " + 
+					mUserContext + ", " + item.getClass().getName() + ", " + mUserContext.isFavorited(item.getUniqueId()));
+		}
 		if (mUserContext != null && (item instanceof QuestionItem) && mUserContext.isFavorited(item.getUniqueId())) {
 			((QuestionItem)item).setFavorited();
 		}

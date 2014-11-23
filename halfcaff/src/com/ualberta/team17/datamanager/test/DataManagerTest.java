@@ -13,6 +13,7 @@ import android.graphics.BitmapFactory;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
+import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
@@ -82,7 +83,7 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 
 		boolean success = false;
 		try {
-			long maxWaitSeconds = 2;
+			long maxWaitSeconds = 8;
 			success = condition.await(maxWaitSeconds , TimeUnit.SECONDS) && dataManager.isAvailable();
 		} catch (InterruptedException e) {
 
@@ -252,5 +253,46 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		
 		// Check that the derived info is set
 		assertTrue(q.hasAttachments());
+	}
+	
+	/**
+	 * Test that derived fields like upvoteCount can also be gotten through
+	 * the getField interface of QAModel.
+	 */
+	public void test_GetField_DerivedField() {
+		// Add some stuff, Question
+		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
+		
+		// With two comments
+		controller.createComment(q, "Comment body.");	
+		controller.createComment(q, "Comment body 2.");
+		
+		// And three answers
+		controller.createAnswer(q, "Answer 1 body.");
+		controller.createAnswer(q, "Answer 2 body.");
+		AnswerItem ans = controller.createAnswer(q, "Answer 3 body.");
+		
+		// And one upvote
+		controller.upvote(q);
+		
+		// And upvote one of the answers
+		controller.upvote(ans);
+		
+		// Now check the derived props
+		
+		// Check replyCount
+		Object replyCount = q.getField(QuestionItem.FIELD_REPLIES);
+		assertTrue(replyCount instanceof Integer);
+		assertEquals(3, ((Integer)replyCount).intValue());
+		
+		// Check comment count
+		Object commentCount = q.getField(AuthoredTextItem.FIELD_COMMENTS);
+		assertTrue(commentCount instanceof Integer);
+		assertEquals(2, ((Integer)commentCount).intValue());
+		
+		// Check upvote count
+		Object upvoteCount = q.getField(AuthoredTextItem.FIELD_UPVOTES);
+		assertTrue(upvoteCount instanceof Integer);
+		assertEquals(1, ((Integer)upvoteCount).intValue());
 	}
 }

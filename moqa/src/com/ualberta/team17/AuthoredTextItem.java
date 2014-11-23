@@ -15,9 +15,12 @@ import com.google.gson.stream.JsonWriter;
  */
 public abstract class AuthoredTextItem extends AuthoredItem {
 	public static final String FIELD_BODY = "body";
+	public static final String FIELD_UPVOTES = "upvotes";
+	public static final String FIELD_COMMENTS = "comments";
 
 	private String mBody;
 	private transient int mUpvoteCount;
+	private transient int mCommentCount;
 	private transient boolean mHasUpvoted = false;
 	
 	/* Ctor */
@@ -25,6 +28,7 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 		super(type, id, parentId, author, date);
 		mBody = body;
 		mUpvoteCount = upvoteCount;
+		mCommentCount = 0;
 	}
 	
 	/* Getters */
@@ -32,6 +36,7 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 		return mBody;
 	}
 
+	/* Upvote Count */
 	public int getUpvoteCount() {
 		return mUpvoteCount;
 	}
@@ -48,6 +53,7 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 		notifyViews();
 	}
 	
+	/* Have upvoted */
 	public void setHaveUpvoted() {
 		if (!mHasUpvoted) {
 			mHasUpvoted = true;
@@ -58,16 +64,30 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 	public boolean haveUpvoted() {
 		return mHasUpvoted;
 	}
+
+	/* Comment Count */
+	public int getCommentCount() {
+		return mCommentCount;
+	}
+	
+	public void incrementCommentCount() {
+		++mCommentCount;
+		notifyViews();
+	}
+
 	
 	@Override
 	public Object getField(String fieldName) {
 		if (fieldName.equals(FIELD_BODY)) {
 			return getBody();
+		} else if (fieldName.equals(FIELD_UPVOTES)) {
+			return Integer.valueOf(getUpvoteCount());
+		} else if (fieldName.equals(FIELD_COMMENTS)) {
+			return Integer.valueOf(getCommentCount());
 		} else {
 			return super.getField(fieldName);
 		}
 	}
-
 	public static abstract class GsonTypeAdapter<T extends AuthoredTextItem> extends AuthoredItem.GsonTypeAdapter<T> {
 		@Override
 		public boolean parseField(T item, String name, JsonReader reader) throws IOException {

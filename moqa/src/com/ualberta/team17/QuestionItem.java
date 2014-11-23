@@ -10,6 +10,7 @@ import com.google.gson.stream.JsonWriter;
 
 public class QuestionItem extends AuthoredTextItem {	
 	public static final String FIELD_TITLE = "title";
+	public static final String FIELD_REPLIES = "replies";
 
 	private String mTitle;
 	private transient int mReplyCount;
@@ -70,6 +71,8 @@ public class QuestionItem extends AuthoredTextItem {
 	public Object getField(String fieldName) {
 		if (fieldName.equals(FIELD_TITLE)) {
 			return getTitle();
+		} else if (fieldName.equals(FIELD_REPLIES)) {
+			return getReplyCount();
 		} else {
 			return super.getField(fieldName);
 		}
