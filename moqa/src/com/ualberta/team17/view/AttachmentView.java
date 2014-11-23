@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ualberta.team17.AttachmentItem;
-import com.ualberta.team17.QAModel;
+import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 
 import android.app.Activity;
@@ -22,16 +22,15 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
-/**
- * TODO: document your custom view class.
- */
 public class AttachmentView extends HorizontalScrollView {
 	private static final int LAYOUT_VIEW_ID = 98169460;
 	private List<AttachmentItem> mAttachments = new ArrayList<AttachmentItem>();
 	private List<ImageView> mImageViews = new ArrayList<ImageView>();
 	private LinearLayout baseLayout;
 	private boolean mAddingEnabled = false;
-	private QAModel mParentItem;
+	private QuestionItem mParentItem;
+	private ImageView mAddAttachmentView;
+	private IAddAttachmentListener mAddAttachmentListener; 
 
 	public AttachmentView(Context context) {
 		super(context);
@@ -49,9 +48,19 @@ public class AttachmentView extends HorizontalScrollView {
 	}
 
 	private void init(AttributeSet attrs, int defStyle) {
+		// Create the linear layout
 		baseLayout = new LinearLayout(getContext());
 		baseLayout.setOrientation(LinearLayout.HORIZONTAL);
 		baseLayout.setId(LAYOUT_VIEW_ID);
+		
+		// Create the add attachment view
+		mAddAttachmentView = new ImageView(getContext());
+		mAddAttachmentView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_attachment_large));
+		mAddAttachmentView.setVisibility(getAddingEnabled() ? ImageView.VISIBLE : ImageView.GONE);
+		mAddAttachmentView.setLayoutParams(new LinearLayout.LayoutParams(this.getHeight(), LayoutParams.MATCH_PARENT));
+		mAddAttachmentView.setOnClickListener(new AddAttachmentOnClickListener());
+		baseLayout.addView(mAddAttachmentView);
+
 		this.addView(baseLayout);
 	}
 
@@ -72,8 +81,9 @@ public class AttachmentView extends HorizontalScrollView {
 							LayoutParams.MATCH_PARENT));
 
 			imageView.setOnClickListener(new ImageViewOnClickListener());
-			
+
 			baseLayout.addView(imageView);
+
 			mImageViews.add(imageView);
 		}
 	}
@@ -83,9 +93,11 @@ public class AttachmentView extends HorizontalScrollView {
 	 * @param enabled Whether to enable adding
 	 * @param parent The item to attach new items to.
 	 */
-	public void setAddingEnabled(boolean enabled, QAModel parent) {
+	public void setAddingEnabled(boolean enabled, QuestionItem parent, IAddAttachmentListener listener) {
 		mAddingEnabled = enabled;
 		mParentItem = parent;
+		mAddAttachmentListener = listener;
+		mAddAttachmentView.setVisibility(getAddingEnabled() ? ImageView.VISIBLE : ImageView.GONE);
 	}
 
 	/**
@@ -98,12 +110,26 @@ public class AttachmentView extends HorizontalScrollView {
 
 	@Override
 	public void onSizeChanged(int w, int h, int oldw, int oldh) {
+		mAddAttachmentView.setLayoutParams(
+				new LinearLayout.LayoutParams(
+						this.getHeight(),
+						LayoutParams.MATCH_PARENT));
+
 		for (ImageView imageView: mImageViews) {
 			Bitmap image = mAttachments.get(mImageViews.indexOf(imageView)).getImage();
 			imageView.setLayoutParams(
 					new LinearLayout.LayoutParams(
 							(int)(image.getWidth() * ((float)this.getHeight())/image.getHeight()),
 							LayoutParams.MATCH_PARENT));
+		}
+	}
+
+	private class AddAttachmentOnClickListener implements OnClickListener {
+		@Override
+		public void onClick(View arg0) {
+			if (null != mAddAttachmentListener) {
+				mAddAttachmentListener.addAttachment();
+			}
 		}
 	}
 
