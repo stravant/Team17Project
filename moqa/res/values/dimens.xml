@@ -3,9 +3,12 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="tiny_indent">8dp</dimen>
+    <dimen name="icon_side_bar_width">32dp</dimen><dimen name="mini_indent">4dp</dimen><dimen name="tiny_indent">8dp</dimen>
     <dimen name="small_indent">16dp</dimen>
     <dimen name="medium_indent">32dp</dimen>
+    
+    
+    <dimen name="min_listview_height">40dp</dimen>
     
 
 </resources>
