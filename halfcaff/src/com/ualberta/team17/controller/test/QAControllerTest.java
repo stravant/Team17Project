@@ -128,12 +128,12 @@ public class QAControllerTest extends ActivityTestCase {
 	}
 	
 	public void test_QAC4_CreateAttachment() {
-		AttachmentItem attachment1 = controller.createAttachment( parentQuestion );
+		AttachmentItem attachment1 = controller.createAttachment(parentQuestion.getUniqueId(), "AttachmentName", new byte[0]);
 		assertValidAttachment(attachment1, parentQuestion.getUniqueId());
 		
-		assertNull("Cant create comment without parent", controller.createAttachment( null ));
+		assertNull("Cant create comment without parent", controller.createAttachment(null, "AttachmentName", new byte[0]));
 		
-		CommentItem attachment2 = controller.createComment( parentQuestion, null );
+		CommentItem attachment2 = controller.createComment( parentQuestion, null);
 		assertValidAuthoredTextItem(attachment2, parentQuestion.getUniqueId(), null);
 		
 		assertDifferentIds(parentQuestion, attachment1, attachment2);

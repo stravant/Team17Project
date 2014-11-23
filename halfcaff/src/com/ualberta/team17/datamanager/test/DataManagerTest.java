@@ -1,5 +1,6 @@
 package com.ualberta.team17.datamanager.test;
 
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -7,8 +8,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
 
+import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
@@ -26,6 +32,7 @@ import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
+import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 import com.ualberta.team17.view.QuestionListActivity;
 
 public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionListActivity> {
@@ -76,7 +83,7 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 
 		boolean success = false;
 		try {
-			long maxWaitSeconds = 2;
+			long maxWaitSeconds = 8;
 			success = condition.await(maxWaitSeconds , TimeUnit.SECONDS) && dataManager.isAvailable();
 		} catch (InterruptedException e) {
 
@@ -106,6 +113,9 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		
 		// Make the manager
 		manager = new DataManager(getActivity(), dataManager, netDataManager);
+		
+		// Set the user context to blank
+		manager.resetUserContextData();
 		
 		// Make the controller
 		controller = new QAController(manager);
@@ -155,13 +165,21 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 	public void test_FavoriteItem() {
 		// Add a question and favorite it
 		QuestionItem q = controller.createQuestion("Test", "Test");
+		
+		// Check that isFavorited is not set
+		assertFalse(q.isFavorited());
+		
+		// Favorite the question
 		controller.addFavorite(q);
 		
-		// Query it back
+		// Query back and see if we get the favorited item
 		IncrementalResult r = controller.getFavorites();
 		assertTrue(waitForResults(r, 1));
 		assertEquals(1, r.getCurrentResults().size());
 		assertEquals(q.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
+		
+		// Check that the derived isFavorited flag is set
+		assertTrue(q.isFavorited());
 	}
 	
 	/**
@@ -181,5 +199,100 @@ public class DataManagerTest extends ActivityInstrumentationTestCase2<QuestionLi
 		assertTrue(waitForResults(r, 2));
 		assertEquals(q2.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
 		assertEquals(q1.getUniqueId(), r.getCurrentResults().get(1).getUniqueId());
+	}
+	
+	/**
+	 * Check that the haveUpvoted field works (Have I upvoted an item), and that
+	 * calling Controller::upvote multiple times does not result in multiple upvotes
+	 * counted in upvotecount total.
+	 */
+	public void test_Upvoting() {
+		// Add a question and upvote it
+		QuestionItem q = controller.createQuestion("Question Title", "body.");
+		
+		// Check not upvoted yet, and the upvote count is right
+		assertFalse(q.haveUpvoted());
+		assertEquals(0, q.getUpvoteCount());
+		
+		// Upvote it
+		controller.upvote(q);
+		
+		// Check that we have upvoted, and the upvote count is right
+		assertTrue(q.haveUpvoted());
+		assertEquals(1, q.getUpvoteCount());
+		
+		// Upvote again and check that there is not an additional upvote
+		// in the upvote count.
+		controller.upvote(q);
+		assertEquals(1, q.getUpvoteCount());
+	}
+	
+	/**
+	 * Test attachment saving
+	 */
+	public void test_Attachment() {
+		// Add a question
+		QuestionItem q = controller.createQuestion("Question Title", "Body... I have an attachment, look:");
+		
+		// Check that we have no attachments
+		assertFalse(q.hasAttachments());
+		
+		// Create an image to attach
+		Bitmap b = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+		b.setPixel(0, 0, 0xFFFFFFFF);
+		byte[] bytes = AttachmentItem.encodeBitmap(b);
+
+		// Attach them
+		controller.createAttachment(q.getUniqueId(), "Image Attachment", b);
+		controller.createAttachment(q.getUniqueId(), "Bytes Attachment", bytes);
+		
+		// Check that we get them back
+		IncrementalResult r = controller.getChildren(q, new IdentityComparator());
+		waitForResults(r, 2);
+		assertEquals(2, r.getCurrentResultsOfType(ItemType.Attachment).size());
+		
+		// Check that the derived info is set
+		assertTrue(q.hasAttachments());
+	}
+	
+	/**
+	 * Test that derived fields like upvoteCount can also be gotten through
+	 * the getField interface of QAModel.
+	 */
+	public void test_GetField_DerivedField() {
+		// Add some stuff, Question
+		QuestionItem q = controller.createQuestion("New Question", "Question body and stuff.");
+		
+		// With two comments
+		controller.createComment(q, "Comment body.");	
+		controller.createComment(q, "Comment body 2.");
+		
+		// And three answers
+		controller.createAnswer(q, "Answer 1 body.");
+		controller.createAnswer(q, "Answer 2 body.");
+		AnswerItem ans = controller.createAnswer(q, "Answer 3 body.");
+		
+		// And one upvote
+		controller.upvote(q);
+		
+		// And upvote one of the answers
+		controller.upvote(ans);
+		
+		// Now check the derived props
+		
+		// Check replyCount
+		Object replyCount = q.getField(QuestionItem.FIELD_REPLIES);
+		assertTrue(replyCount instanceof Integer);
+		assertEquals(3, ((Integer)replyCount).intValue());
+		
+		// Check comment count
+		Object commentCount = q.getField(AuthoredTextItem.FIELD_COMMENTS);
+		assertTrue(commentCount instanceof Integer);
+		assertEquals(2, ((Integer)commentCount).intValue());
+		
+		// Check upvote count
+		Object upvoteCount = q.getField(AuthoredTextItem.FIELD_UPVOTES);
+		assertTrue(upvoteCount instanceof Integer);
+		assertEquals(1, ((Integer)upvoteCount).intValue());
 	}
 }

@@ -70,7 +70,7 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 
 		boolean success = false;
 		try {
-			long maxWaitSeconds = 2;
+			long maxWaitSeconds = 8;
 			lock.lock();
 			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS) && dataManager.isAvailable();
 		} catch (InterruptedException e) {
@@ -310,5 +310,32 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 		
 		// Close down
 		dataManager.close();	
+	}
+	
+	/**
+	 * Test that adding comments updates the comment derived info
+	 */
+	@SuppressWarnings("serial")
+	public void test_Derived_CommentCount() {
+		// Load in our test data
+		dataManager.writeTestData(TEST_DATA);
+		
+		// Get the items
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
+
+		// Check result count
+		assertTrue("Didn't get 1 results", waitForResults(result, 1));
+		assertEquals(1, result.getCurrentResults().size());
+		
+		// Upvote one of the questions, and see if it works
+		QuestionItem q = ((QuestionItem)result.getCurrentResults().get(0));
+		CommentItem comment = newComment(32, "TestBody", q.getUniqueId());
+		dataManager.saveItem(comment, userContext);
+		
+		// Test for 1 replies, there were none in the test data
+		assertEquals(1, q.getCommentCount());
+		
+		// Close down
+		dataManager.close();			
 	}
 }
