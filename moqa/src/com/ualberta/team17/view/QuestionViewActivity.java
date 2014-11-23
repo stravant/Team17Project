@@ -340,8 +340,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				commentAuthor.setText("-" + comment.getAuthor());
 				
 				commentsView.addView(commentView);
-			}			
-			// TODO: Implement favorite/upvote buttons.
+			}					
 			return qaItemView;
 		}
 	}
