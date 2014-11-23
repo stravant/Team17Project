@@ -324,11 +324,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			commentButton.setTag(qaItem.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
-			if(qaItem.parent.haveUpvoted()) {
-				upvoteButton.setText("U!"); // Filled in Up Arrow
-			} else {
-				upvoteButton.setText("NU!");
-			}
 			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
 			
 			bodyTextView.setText(qaItem.parent.getBody());
