@@ -17,7 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
@@ -84,7 +84,7 @@ public class ListFragment extends Fragment {
 			}
 			
 			TextView titleTextView = (TextView) convertView.findViewById(R.id.titleText);
-			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentsText);
+			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentText);
 			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
 			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
 			
@@ -95,7 +95,7 @@ public class ListFragment extends Fragment {
 			commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
 			upvoteTextView.setText(Integer.toString(-1));
 			userTextView.setText(author);
-			
+
 			if (item.getField("title") == null) {
 				// Must be an answer
 				titleTextView.setText(
