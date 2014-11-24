@@ -255,11 +255,8 @@ public class ListFragment extends Fragment {
 			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
 			
 			// Set the data using getField
-			IItemComparator comp = new DateComparator();
-			IncrementalResult children = QAController.getInstance().getChildren(item, comp);
-				
-			commentTextView.setText(Integer.toString(children.getCurrentResults().size()));
-			upvoteTextView.setText(Integer.toString(-1));
+			commentTextView.setText(item.getField(AuthoredTextItem.FIELD_COMMENTS).toString());
+			upvoteTextView.setText(item.getField(AuthoredTextItem.FIELD_UPVOTES).toString());
 			userTextView.setText(author);
 
 			if (item.getField("title") == null) {
