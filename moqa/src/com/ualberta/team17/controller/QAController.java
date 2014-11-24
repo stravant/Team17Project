@@ -50,6 +50,10 @@ public class QAController {
 	public void login(UserContext ctx) {
 		mDataManager.setUserContext(ctx);
 	}
+
+	public UserContext getUserContext() {
+		return mDataManager.getUserContext();
+	}
 	
 	/**
 	 * Access existing objects via an arbitrary Filter & Sort

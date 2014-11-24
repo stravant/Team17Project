@@ -28,6 +28,7 @@ import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
+import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
@@ -60,7 +61,10 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(df, comp);
 			break;
 		case 1:
-			
+			comp = new DateComparator();
+			comp.setCompareDirection(SortDirection.Descending);
+			df.addFieldFilter(AuthoredItem.FIELD_AUTHOR, QAController.getInstance().getUserContext().getUserName(), FilterComparison.EQUALS);
+			mIR = QAController.getInstance().getObjects(df, comp);
 			break;
 		case 2:
 			mIR = QAController.getInstance().getFavorites();
