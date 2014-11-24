@@ -29,11 +29,18 @@
         >
      </TextView>
 
+	<com.ualberta.team17.view.AttachmentView
+	    android:id="@+id/attachmentView"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/attachment_view_height"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/bodyText"/>
+
     <RelativeLayout 
         android:id="@+id/userBar"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/bodyText"
+        android:layout_below="@+id/attachmentView"
         style="@style/lightRelativeLayout" >
         
 	    <ImageButton
