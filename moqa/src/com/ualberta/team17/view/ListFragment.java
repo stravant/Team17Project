@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
@@ -228,52 +229,45 @@ public class ListFragment extends Fragment {
 		}
 		
 		public View getView(int position, View convertView, ViewGroup parent) {
+			if (null == convertView) {
+				LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = inflater.inflate(R.layout.qa_listview_item, parent, false);
+			}
+
 			QAModel item = (QAModel) this.getItem(position);
 			if (item == null) {
 				return convertView;
 			}
-			
-			if (item.getField("author") == null ||
-					item.getField("body") == null || 
-					item.getField("id") == null ||
-					item.getField("date") == null) {
-				// This info is required. If it isn't here, something is wrong.
-				return convertView;
-			}
-			
-			String body = (String)item.getField("body");
-			String author = (String) item.getField("author");
-			
-			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.qa_listview_item, parent, false);  
-			}
-			
+
 			TextView titleTextView = (TextView) convertView.findViewById(R.id.titleText);
 			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentText);
 			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
 			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
 			
 			// Set the data using getField
-			commentTextView.setText(item.getField(AuthoredTextItem.FIELD_COMMENTS).toString());
-			upvoteTextView.setText(item.getField(AuthoredTextItem.FIELD_UPVOTES).toString());
-			userTextView.setText(author);
+			if (null != item.getField(AuthoredTextItem.FIELD_COMMENTS)) {
+				commentTextView.setText(item.getField(AuthoredTextItem.FIELD_COMMENTS).toString());
+			}
 
-			if (item.getField("title") == null) {
-				// Must be an answer
+			if (null != item.getField(AuthoredTextItem.FIELD_UPVOTES)) {
+				upvoteTextView.setText(item.getField(AuthoredTextItem.FIELD_UPVOTES).toString());
+			}
+
+			if (null != item.getField(AuthoredItem.FIELD_AUTHOR)) {
+				userTextView.setText(item.getField(AuthoredItem.FIELD_AUTHOR).toString());
+			}
+
+			if (null != item.getField(QuestionItem.FIELD_TITLE)) {
+				titleTextView.setText(item.getField(QuestionItem.FIELD_TITLE).toString());
+			} else if (null != item.getField(AuthoredTextItem.FIELD_BODY)) {
+				String body = (String)item.getField(AuthoredTextItem.FIELD_BODY);
 				titleTextView.setText(
 						body.length() > titleSize ? 
 						body.substring(0, titleSize) + "..." :
 						body
 				);
 			}
-			else {
-				String title = (String) item.getField("title");
-				if (title != null) {
-					titleTextView.setText(title);
-				}
-			}
-			
+
 			return convertView;
 		}
 	}
