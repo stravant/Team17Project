@@ -70,9 +70,6 @@ public abstract class AuthoredItem extends QAModel {
 	}
 
 	public static abstract class GsonTypeAdapter<T extends AuthoredItem> extends QAModel.GsonTypeAdapter<T> {
-		@SuppressLint("SimpleDateFormat")
-		private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
 		@Override
 		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
 			if (super.parseField(item, name, reader)) {
@@ -89,11 +86,7 @@ public abstract class AuthoredItem extends QAModel {
 				item.mAuthor = reader.nextString();
 				return true;
 			} else if (name.equals(AuthoredItem.FIELD_DATE)) {
-				try {
-					item.mDate = dateFormat.parse(reader.nextString());
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
+				item.mDate = DateStringFormat.parseDate(reader.nextString());
 				return true;
 			}
 
@@ -115,7 +108,7 @@ public abstract class AuthoredItem extends QAModel {
 			writer.name(FIELD_AUTHOR);
 			writer.value(item.getAuthor());
 			writer.name(FIELD_DATE);
-			writer.value(dateFormat.format(item.getDate()));
+			writer.value(DateStringFormat.formatDate(item.getDate()));
 		}
 	}
 }
