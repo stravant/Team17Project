@@ -78,12 +78,20 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.question_list_actions, menu);
+		getMenuInflater().inflate(R.menu.moqa_menu, menu);
+		
+		menu.setGroupVisible(R.id.questionlist_group, true);
+		menu.setGroupVisible(R.id.questionview_group, false);
+		
+		// Get the search menu item
+		MenuItem mi = menu.findItem(R.id.action_search);
+		SearchItem si = new SearchItem(this.getBaseContext());
+		mi.setActionView(si);
 		return true;
 	}
 
 	/**
-	 * This handles the menu at the top of this view. This is temporary.
+	 * This handles the menu at the top of this view.
 	 * 
 	 * @author Jared
 	 */
@@ -139,6 +147,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}
 
 	}
+	
 	@Override
 	public void onItemSelected(int position) {
 		selectItem(position);

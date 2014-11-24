@@ -28,7 +28,8 @@
         </activity>
         <activity
             android:name=".view.QuestionListActivity"
-            android:label="@string/title_activity_question_list" >
+            android:label="@string/title_activity_question_list" 
+            android:uiOptions="splitActionBarWhenNarrow">
         </activity>
         <activity
             android:name=".view.QuestionViewActivity"
