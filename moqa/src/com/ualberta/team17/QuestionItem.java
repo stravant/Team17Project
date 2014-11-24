@@ -10,9 +10,12 @@ import com.google.gson.stream.JsonWriter;
 
 public class QuestionItem extends AuthoredTextItem {	
 	public static final String FIELD_TITLE = "title";
+	public static final String FIELD_REPLIES = "replies";
 
 	private String mTitle;
 	private transient int mReplyCount;
+	private transient boolean mIsFavorited = false;
+	private transient boolean mIsAttached = false;
 	
 	/* Ctor */
 	public QuestionItem(UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount, String title) {
@@ -35,6 +38,30 @@ public class QuestionItem extends AuthoredTextItem {
 		notifyViews();
 	}
 	
+	/* Is favorited? */
+	public void setFavorited() {
+		if (!mIsFavorited) {
+			mIsFavorited = true;
+			notifyViews();
+		}
+	}
+	
+	public boolean isFavorited() {
+		return mIsFavorited;
+	}
+	
+	/* Is attached to? */
+	public void setHasAttachments() {
+		if (!mIsAttached) {
+			mIsAttached = true;
+			notifyViews();
+		}
+	}
+	
+	public boolean hasAttachments() {
+		return mIsAttached;
+	}
+	
 	/* Getters */
 	public String getTitle() {
 		return mTitle;
@@ -44,6 +71,8 @@ public class QuestionItem extends AuthoredTextItem {
 	public Object getField(String fieldName) {
 		if (fieldName.equals(FIELD_TITLE)) {
 			return getTitle();
+		} else if (fieldName.equals(FIELD_REPLIES)) {
+			return getReplyCount();
 		} else {
 			return super.getField(fieldName);
 		}

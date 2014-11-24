@@ -1,55 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    style="@style/darkRelativeLayout">    "
 
     <TextView
-        android:id="@+id/bodyText"
+        android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:ems="10" >
-
-        <requestFocus />
-    </TextView>
-
-    <Button
-        android:id="@+id/upvoteButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+        android:ems="10"
+        style="@style/titleText1"        
+        android:text="title"        
+        >
+	</TextView>
+	
+	<TextView
+        android:id="@+id/bodyText"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/titleText"
+        android:ems="10"
+        android:text="body"
+        style="@style/bodyText1"
+        >
+     </TextView>
+
+    <RelativeLayout 
+        android:id="@+id/userBar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/bodyText"
-        android:text="@string/upvote" />
-
-    <TextView
-        android:id="@+id/authorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/upvoteButton"
-        android:ems="10" />
+        style="@style/lightRelativeLayout" >
+        
+	    <ImageButton
+	        android:id="@+id/createCommentButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@+id/upvoteButton"
+	        android:src="@drawable/ic_action_chat"
+	        android:background="@color/transparent" />
+	
+	    <ImageButton
+	        android:id="@+id/favoriteButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@+id/createCommentButton"
+	        android:background="@drawable/ic_action_favorite" />
+	
+	    <ImageButton
+	        android:id="@+id/viewAttachmentButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"
+	        android:layout_toRightOf="@+id/favoriteButton"
+	        android:background="@drawable/ic_action_attachment" />
+	
+	    <ImageButton
+	        android:id="@+id/upvoteButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true"	        
+	        android:background="@drawable/ic_action_collapse" />
+	
+	    <TextView
+	        android:id="@+id/authorText"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_toRightOf="@+id/viewAttachmentButton"	        
+	        android:ems="10"
+	        android:gravity="right|bottom"
+	        android:text="author"
+	        style="@style/authorText1"
+	        />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/commentView"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/authorText"
+        android:layout_below="@+id/userBar"
         android:orientation="vertical" >
     </LinearLayout>
-
-    <Button
-        android:id="@+id/createCommentButton"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
+    
+    <TextView 
+        android:id="@+id/answerCountView"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/upvoteButton"
-        android:layout_alignRight="@+id/authorText"
-        android:layout_toRightOf="@+id/upvoteButton"
-        android:text="@string/createComment"
-        android:onClick="createComment" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/commentView"
+       	style="@style/bodyText1Alt"
+        android:text="5 Answers"
+        android:gravity="center"/>
 
 </RelativeLayout>

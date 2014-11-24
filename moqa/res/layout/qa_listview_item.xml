@@ -1,101 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:clickable="false" >
 
-
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/relativeLayout3"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:orientation="vertical" >
+        android:layout_height="fill_parent"
+        tools:ignore="UselessParent" >
 
-        <TextView
-            android:id="@+id/titleText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:text="@string/default_str" />
+       <LinearLayout
+           android:id="@+id/linearLayout2"
+           android:layout_width="wrap_content"
+           android:layout_height="fill_parent"
+           android:layout_alignParentTop="true"
+           android:layout_toLeftOf="@+id/iconLinearLayout"
+           android:layout_toRightOf="@+id/linearLayout3"
+           android:gravity="bottom|fill"
+           android:orientation="vertical" >
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/darker_gray" />
-        
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/small_indent"
+                android:layout_marginRight="@dimen/small_indent"
+                android:layout_marginTop="@dimen/small_indent"
+                android:ems="10"
+                android:text="@string/default_str"
+                android:textColor="@color/compl_blue_split2"
+                android:textSize="@dimen/title_text" />
 
             <LinearLayout
                 android:id="@+id/linearLayout1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:gravity="bottom"
+                android:orientation="vertical" >
+
+                <View
+                    android:id="@+id/splitter"
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="@dimen/tiny_indent"
+                    android:layout_marginRight="@dimen/tiny_indent"
+                    android:layout_marginTop="@dimen/medium_indent"
+                    android:background="@android:color/darker_gray" />
+
+                <RelativeLayout
+                    android:id="@+id/infoGroup1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLayout1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/relativeLayout4" >
+
+                        <TextView
+                            android:id="@+id/userText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/small_indent"
+                            android:text="@string/default_user"
+                            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/relativeLayout4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="false"
+                        android:layout_centerVertical="true" >
+
+                        <ImageView
+                            android:id="@+id/favoriteImage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerInParent="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/small_indent"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/favorite"
+                            android:maxHeight="24dp"
+                            android:maxWidth="24dp"
+                            android:src="@drawable/ic_action_favorite" />
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/iconLinearLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/mini_indent"
+            android:minWidth="@dimen/icon_side_bar_width"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="@dimen/small_indent" >
+
+                <ImageView
+                    android:id="@+id/upvoteImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:contentDescription="@string/upvotes"
+                    android:paddingLeft="1dp"
+                    android:src="@drawable/ic_action_collapse" />
 
                 <TextView
                     android:id="@+id/upvoteText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:text="@string/default_num" />
+                    android:layout_below="@id/upvoteImage"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="-10dp"
+                    android:text="@string/default_num"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <TextView
-                    android:id="@+id/editText3"
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent" >
+
+                <ImageView
+                    android:id="@+id/commentImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/upvote" />
-
-            </LinearLayout>
-            
-            <View
-				android:layout_width="0dp"
-				android:layout_height="0dp"
-				android:layout_weight="1"/>
-            
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                    android:layout_centerHorizontal="false"
+                    android:contentDescription="@string/comment"
+                    android:src="@drawable/ic_action_chat" />
 
                 <TextView
-                    android:id="@+id/commentsText"
+                    android:id="@+id/commentText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:text="@string/default_num" />
-
-                <TextView
-                    android:id="@+id/EditText02"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:text="@string/comment" />
-
-            </LinearLayout>
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/commentImage"
+                    android:text="@string/default_num"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
         </LinearLayout>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/black" />
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical" >
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/relativeLayout3"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="1dp"
+        android:layout_marginTop="@dimen/tiny_indent"
+        android:background="@android:color/black" />
+
 </RelativeLayout>

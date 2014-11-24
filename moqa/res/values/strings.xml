@@ -17,6 +17,7 @@
     <string name="comment">Comments</string>
     <string name="default_str">default string</string>
     <string name="default_num">0</string>
+    <string name="default_user">username</string>
     <string name="createAnswer">Add Answer!</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="createComment">Add Comment</string>
@@ -27,6 +28,10 @@
         <item>Most Upvoted Questions</item>
         <item>Most Upvoted Answers</item>
         <item>Recently Viewed</item>
+    </string-array>
+    <string-array name="sortOptions">
+        <item>Sort By Date</item>
+        <item>More Stuff Here</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

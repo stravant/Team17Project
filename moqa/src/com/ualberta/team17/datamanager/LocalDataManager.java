@@ -36,6 +36,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
@@ -51,6 +52,11 @@ public class LocalDataManager implements IDataSourceManager {
 	 * The File Context to use
 	 */
 	private Context mContext;
+	
+	/**
+	 * The current user context
+	 */
+	private UserContext mUserContext;
 	
 	/**
 	 * Our set of in-memory data
@@ -159,6 +165,40 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Saving
 		mLastSaveTimeMillis = Calendar.getInstance().getTimeInMillis();
+	}
+	
+	/**
+	 * Set the current UserContext
+	 */
+	public void setUserContext(UserContext ctx) {
+		mUserContext = ctx;
+		mDataLock.lock();
+		if (mData == null) {
+			mDataLock.unlock();
+			return;
+		}
+		// Update all of our current data items to be favorited if they are favorited in the user context
+		for (UniqueId id: ctx.getFavorites()) {
+			QAModel item = mItemRefById.get(id);
+			if (item != null && item instanceof QuestionItem) {
+				((QuestionItem)item).setFavorited();
+			}
+		}
+		// For each of our upvote items, mark hasUpvoted on it's parent
+		if (null != mData) {
+			for (QAModel item: mData) {
+				if (item instanceof UpvoteItem) {
+					UpvoteItem upvote = ((UpvoteItem)item);
+					if (upvote.getAuthor().equals(mUserContext.getUserName())) {
+						AuthoredTextItem parent = (AuthoredTextItem)mItemRefById.get(upvote.getParentItem());
+						if (parent != null) {
+							parent.setHaveUpvoted();
+						}
+					}
+				}
+			}
+		}
+		mDataLock.unlock();
 	}
 	
 	/**
@@ -286,6 +326,11 @@ public class LocalDataManager implements IDataSourceManager {
 		// That is, we call handleDerivedInfo on each of our items... elegant!
 		for (QAModel item: mData) {
 			updateParentDerivedInfo(item);
+			
+			// Also check if the item is favorited
+			if (mUserContext != null && (item instanceof QuestionItem) && mUserContext.isFavorited(item.getUniqueId())) {
+				((QuestionItem)item).setFavorited();
+			}
 		}
 	}
 	
@@ -299,13 +344,28 @@ public class LocalDataManager implements IDataSourceManager {
 		if (item instanceof AuthoredItem) {
 			QAModel parentItem = getItemById(((AuthoredItem)item).getParentItem());
 			if (parentItem != null) {
-				if (parentItem instanceof AuthoredTextItem && item instanceof UpvoteItem) {
-					// Tally upvotes
-					((AuthoredTextItem)parentItem).upvote();
+				if (parentItem instanceof AuthoredTextItem) {
+					if (item instanceof UpvoteItem) {
+						// Mark I have upvoted if this is an upvote of mine on an item
+						if (mUserContext != null && ((AuthoredItem)item).getAuthor().equals(mUserContext.getUserName())) {
+							((AuthoredTextItem)parentItem).setHaveUpvoted();
+						}
+						
+						// Tally upvotes
+						((AuthoredTextItem)parentItem).upvote();
+					} else if (item instanceof CommentItem) {
+						// Tally comments
+						((AuthoredTextItem)parentItem).incrementCommentCount();
+					}
 				}
-				if (parentItem instanceof QuestionItem && item instanceof AnswerItem) {
-					// Tally replies
-					((QuestionItem)parentItem).incrementReplyCount();
+				if (parentItem instanceof QuestionItem) {
+					if (item instanceof AnswerItem) {
+						// Tally replies
+						((QuestionItem)parentItem).incrementReplyCount();
+					} else if (item instanceof AttachmentItem) {
+						// Count attachments
+						((QuestionItem)parentItem).setHasAttachments();
+					}
 				}
 			}
 		} 	
@@ -320,6 +380,8 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	private void handleDerivedInfo(QAModel item) {
 		updateParentDerivedInfo(item);
+		
+		// If this is the parent of any current items, update this with those children's data
 		for (QAModel child: mData) {
 			if (child instanceof AuthoredItem) {
 				QAModel parent = getItemById(((AuthoredItem)child).getParentItem());
@@ -327,6 +389,15 @@ public class LocalDataManager implements IDataSourceManager {
 					updateParentDerivedInfo(child);
 				}
 			}
+		}
+		
+		// Check favorited
+		if (mUserContext != null) {
+			Log.i("save", "Checking derived info <" + item.getUniqueId() + ">: " + 
+					mUserContext + ", " + item.getClass().getName() + ", " + mUserContext.isFavorited(item.getUniqueId()));
+		}
+		if (mUserContext != null && (item instanceof QuestionItem) && mUserContext.isFavorited(item.getUniqueId())) {
+			((QuestionItem)item).setFavorited();
 		}
 	}
 	
@@ -422,6 +493,9 @@ public class LocalDataManager implements IDataSourceManager {
 			}
 			
 			// Actual line that sets our data array and hashmap
+			if (mData != null) {
+				throw new AssertionError("LocalDataManager attempted to set mData twice, not possible.");
+			}
 			mData = result;
 			for (QAModel item: mData) {
 				mItemRefById.put(item.getUniqueId(), item);
@@ -636,6 +710,8 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Tracking for items, regardless of whether they are saved or not
 		if (mItemRefById.get(item.getUniqueId()) == null) {
+			Log.i("save", "LocalDataManager :: Tracked Item <" + item.getUniqueId() + ">");
+			
 			// Add the item to our item tracking if it isn't already there
 			mItemRefById.put(item.getUniqueId(), item);
 			
@@ -645,13 +721,13 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Saving of items that should be saved, which we haven't saved already
 		if (!mDataSetById.contains(item.getUniqueId()) && shouldSaveLocally(item, ctx)) {
+			Log.i("save", "LocalDataManager :: Saved Item <" + item.getUniqueId() + ">");
+			
 			// Save the item and it's children
 			propogateSave(item);
 			
 			// Mark us as needing a save
 			mDataDirty = true;
-			
-			Log.i("app", "LocalDataManager :: Item <" + item.getUniqueId() + "> added.");
 		}
 		
 		// Do we need to save?

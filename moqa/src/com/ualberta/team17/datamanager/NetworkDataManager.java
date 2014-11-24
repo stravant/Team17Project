@@ -79,8 +79,6 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 				return null;
 			}
 
-			System.out.println(String.format("NetworkDataManager received %d results", results.size()));
-			
 			return new ArrayList<List<QAModel>>() {{
 				add(results);
 				addAll(metaResults);
@@ -169,7 +167,6 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 
 			Gson gson = DataManager.getGsonObject();
 			List<QAModel> objects = new ArrayList<QAModel>();
-			System.out.println(searchResult.getJsonString());
 			for (JsonElement element: searchResult.getJsonObject().getAsJsonObject("hits").getAsJsonArray("hits")) {
 				JsonObject obj = element.getAsJsonObject();
 				try {
@@ -388,7 +385,6 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 			initJestClient();
 		}
 
-		System.out.println("Item source: " + DataManager.getGsonObject().toJson(item));
 		Index index = new Index.Builder(DataManager.getGsonObject().toJson(item))
 			.index(mEsServerIndex)
 			.type(item.getItemType().toString().toLowerCase())

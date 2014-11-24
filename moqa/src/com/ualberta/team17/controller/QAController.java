@@ -1,6 +1,11 @@
 package com.ualberta.team17.controller;
 
+import java.net.URI;
 import java.util.Calendar;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
@@ -11,6 +16,7 @@ import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.StoragePolicy;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.UpvoteItem;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataManager;
 import com.ualberta.team17.datamanager.IItemComparator;
@@ -119,6 +125,25 @@ public class QAController {
 	}
 	
 	/**
+	 * Upvote a given question or answer
+	 * @param target The item to upvote
+	 */
+	public void upvote(QAModel target) {
+		UserContext creator = mDataManager.getUserContext();
+		
+		// The UniqueId for the upvote is a mixture of the user upvoting and the item being upvoted.
+		// In that way a user will not be able to upvote the same item more than once, since both
+		// upvotes will have the same uniqueId, and the DataManager layer will ignore the later
+		// one.
+		UniqueId id = new UniqueId(creator.getUserName() + "_Upvote_" + target.getUniqueId().toString());
+		
+		// Create and save the upvote item
+		UpvoteItem up = new UpvoteItem(id, target.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime());
+		up.setStoragePolicy(StoragePolicy.Cached);
+		mDataManager.saveItem(up);
+	}
+	
+	/**
 	 * Create a question object, from a creator context, title, and body
 	 * @param title
 	 * @param body
@@ -165,15 +190,6 @@ public class QAController {
 	}
 	
 	/**
-	 * Create an attachment
-	 * @param parent
-	 * @return
-	 */
-	public AttachmentItem createAttachment(QuestionItem parent) {
-		throw new UnsupportedOperationException();
-	}
-	
-	/**
 	 * Create a comment with the given parent. A parent must be supplied.
 	 * @param parent The object to use as the parent
 	 * @param body The body text to apply to the comment
@@ -203,5 +219,56 @@ public class QAController {
 		item.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(item);
 		return item;
+	}
+	
+	/**
+	 * Create an AttachmentItem from compressed image data
+	 * @param parent The Id of the QuestionItem to have the attachment
+	 * @param name The name of the attachment
+	 * @param data The data contained in the attachment, compressed image 
+	 *              data in some supported image format should be passed.
+	 * @return The created and saved attachment item
+	 */
+	public AttachmentItem createAttachment(UniqueId parent, String name, byte[] data) {
+		UserContext creator = mDataManager.getUserContext();
+		AttachmentItem item = new AttachmentItem(new UniqueId(creator), 
+				parent, 
+				creator.getUserName(), 
+				Calendar.getInstance().getTime(), 
+				name, 
+				data);
+		mDataManager.saveItem(item);
+		return item;
+	}
+	
+	/**
+	 * Create an AttachmentItew from a bitmap image.
+	 * @param parent The Id of the QuestionItem to have the attachment
+	 * @param name The name of the attachment
+	 * @param image The image to attach
+	 * @return The created and saved attachment item
+	 */
+	public AttachmentItem createAttachment(UniqueId parent, String name, Bitmap image) {
+		UserContext creator = mDataManager.getUserContext();
+		AttachmentItem item = new AttachmentItem(new UniqueId(creator), 
+				parent, 
+				creator.getUserName(), 
+				Calendar.getInstance().getTime(), 
+				name, 
+				image);
+		mDataManager.saveItem(item);
+		return item;
+	}
+	
+	/**
+	 * Create an AttachmentItem from a URI of an image on the device. The image
+	 * will be synchronously loaded in.
+	 * @param parent The Id of the QuestionItem to have the attachment
+	 * @param name The name of the attachment
+	 * @param uri The URI of the image to attach
+	 * @return The created and saved attachment item
+	 */
+	public AttachmentItem createAttachment(UniqueId parent, String name, Uri imageUri) {
+		return createAttachment(parent, name, mDataManager.readImageFromUri(imageUri));
 	}
 }
