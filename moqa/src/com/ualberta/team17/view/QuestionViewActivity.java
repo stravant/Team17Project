@@ -399,7 +399,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		public void itemsArrived(List<QAModel> item, int index) {				
 			ListView qaList = (ListView) findViewById(R.id.qaItemView);
 			for(QAModel qaitem : item ) {
-				if (qaitem.mType == ItemType.Answer) {
+				if (qaitem.mType == ItemType.Answer && ((AuthoredTextItem)qaitem).getCommentCount() > 0) {
 					AnswerItem answer = (AnswerItem) qaitem;
 					addAnswers(answer);
 					IncrementalResult answerChildrenResult = mController.getChildren(answer, new DateComparator());
