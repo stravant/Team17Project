@@ -118,10 +118,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_questionview);
-		
+
 		View displayQuestionView = findViewById(R.id.displayQuestionView);
 		View createQuestionView = findViewById(R.id.createQuestionView);
-		
+
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
 		
