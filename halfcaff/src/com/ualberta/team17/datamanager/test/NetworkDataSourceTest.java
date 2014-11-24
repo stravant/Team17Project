@@ -71,6 +71,12 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 		final Lock lock = new ReentrantLock();
 		final Condition condition = lock.newCondition();
 
+		lock.lock();
+
+		if (result.getCurrentResults().size() >= numResults) {
+			return true;
+		}
+
 		// If the data source becomes unavailable, signal the condition so we don't wait unnecessarily
 		dataManager.addDataSourceAvailableListener(new IDataSourceAvailableListener() {
 			@Override
@@ -93,8 +99,6 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 				}
 			}
 		});
-
-		lock.lock();
 
 		boolean success = false;
 		try {
@@ -130,10 +134,9 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 			}
 		}
 
+		lock.lock();
 		DataItemSavedListener savedListener = new DataItemSavedListener();
 		dataManager.saveItem(item, userContext, savedListener);
-
-		lock.lock();
 		boolean success = false;
 		try {
 			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS);
@@ -262,7 +265,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 
 		dataManager.query(dataFilter, comparator, result);
 
-		assertTrue("Results arrived", waitForResults(result, 5));
+		assertTrue("Results arrived", waitForResults(result, 4));
 
 		// Verify this against the expected test dataset
 		List<QAModel> results = result.getCurrentResults();
@@ -275,7 +278,7 @@ public class NetworkDataSourceTest extends ActivityTestCase {
 			assertTrue(((AuthoredTextItem)item).getBody().contains(searchStr));
 		}
 
-		assertEquals("Question count", 5, results.size());
+		assertEquals("Question count", 4, results.size());
 	}
 
 	/**

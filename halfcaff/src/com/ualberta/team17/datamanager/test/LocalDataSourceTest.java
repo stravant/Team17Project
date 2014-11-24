@@ -56,7 +56,15 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 	private boolean waitForResults(final IncrementalResult targetResult, final int numResults) {
 		final Lock lock = new ReentrantLock();
 		final Condition condition = lock.newCondition();
+		boolean success = false;
+		long maxWaitSeconds = 8;
 
+		lock.lock();
+
+		if (targetResult.getCurrentResults().size() >= numResults) {
+			return true;
+		}
+		
 		targetResult.addObserver(new IIncrementalObserver() {
 			@Override
 			public void itemsArrived(List<QAModel> item, int index) {
@@ -68,10 +76,7 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 			}
 		});
 
-		boolean success = false;
 		try {
-			long maxWaitSeconds = 8;
-			lock.lock();
 			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS) && dataManager.isAvailable();
 		} catch (InterruptedException e) {
 		}
