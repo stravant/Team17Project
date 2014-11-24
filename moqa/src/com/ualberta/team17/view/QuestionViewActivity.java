@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -283,15 +284,17 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		public View getView( int position, View convertView, ViewGroup parent ) {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+			View userBar = qaItemView.findViewById(R.id.userBar);
 			
 			TextView titleTextView = (TextView) qaItemView.findViewById(R.id.titleText);
 			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
-			TextView authorTextView = (TextView) qaItemView.findViewById(R.id.authorText);
+			TextView answerCountView = (TextView) qaItemView.findViewById(R.id.answerCountView);
+			TextView authorTextView = (TextView) userBar.findViewById(R.id.authorText);
 			
-			Button favoriteButton = (Button) qaItemView.findViewById(R.id.favoriteButton);
-			Button attachmentButton = (Button) qaItemView.findViewById(R.id.viewAttachmentButton);
-			Button commentButton = (Button) qaItemView.findViewById(R.id.createCommentButton);
-			Button upvoteButton = (Button) qaItemView.findViewById(R.id.upvoteButton);
+			ImageButton favoriteButton = (ImageButton) userBar.findViewById(R.id.favoriteButton);
+			ImageButton attachmentButton = (ImageButton) userBar.findViewById(R.id.viewAttachmentButton);
+			ImageButton commentButton = (ImageButton) userBar.findViewById(R.id.createCommentButton);
+			ImageButton upvoteButton = (ImageButton) userBar.findViewById(R.id.upvoteButton);
 			
 			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);
 			
@@ -302,12 +305,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				titleTextView.setVisibility(View.VISIBLE);
 				favoriteButton.setVisibility(View.VISIBLE);
 				attachmentButton.setVisibility(View.VISIBLE);
-				
-				if(question.isFavorited()) {
-					favoriteButton.setText("F!"); // Filled in star
-				} else {
-					favoriteButton.setText("NF");
-				}
+				answerCountView.setVisibility(View.VISIBLE);
 				
 				titleTextView.setText(question.getTitle());
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
@@ -316,6 +314,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);
 				attachmentButton.setVisibility(View.GONE);
+				answerCountView.setVisibility(View.GONE);
 				
 			} else {
 				// This should never happen. If it does, a bad object was added to the list.
@@ -325,11 +324,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			commentButton.setTag(qaItem.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
-			if(qaItem.parent.haveUpvoted()) {
-				upvoteButton.setText("U!"); // Filled in Up Arrow
-			} else {
-				upvoteButton.setText("NU!");
-			}
 			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
 			
 			bodyTextView.setText(qaItem.parent.getBody());
