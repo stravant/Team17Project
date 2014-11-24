@@ -2,40 +2,23 @@ package com.ualberta.team17.datamanager.test;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
-import android.test.ActivityInstrumentationTestCase2;
 import android.util.Log;
 
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
-import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
 import com.ualberta.team17.datamanager.DataFilter;
-import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.LocalDataManager;
 import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
-import com.ualberta.team17.view.QuestionListActivity;
 
-public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<QuestionListActivity> {
-	DataFilter dataFilter;
-	IncrementalResult result;
-	UserContext userContext;
-	LocalDataManager dataManager;
-	
-	public LocalDataSourceTest() {
-		super(QuestionListActivity.class);
-	}
+public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 	
 	public void setUp() {
 		// Set up our variables
@@ -50,39 +33,6 @@ public class LocalDataSourceTest extends ActivityInstrumentationTestCase2<Questi
 	}
 	
 	public static final String TEST_DATA = "[[\"Question\",{\"id\":\"c4ca4238a0b923820dcc509a6f75849b\",\"type\":\"question\",\"parent\":\"0\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testBody\",\"title\":\"testTitle\"}],[\"Answer\",{\"id\":\"c81e728d9d4c2f636f067f89cc14862c\",\"type\":\"answer\",\"parent\":\"c4ca4238a0b923820dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply\"}],[\"Answer\",{\"id\":\"eccbc87e4b5ce2fe28308fd9f2a7baf3\",\"type\":\"answer\",\"parent\":\"c4ca4238a0b923820dcc509a6f75849b\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"testReply2\"}],[\"Comment\",{\"id\":\"a87ff679a2f3e71d9181a67b7542122c\",\"type\":\"comment\",\"parent\":\"c81e728d9d4c2f636f067f89cc14862c\",\"author\":\"test_user\",\"date\":\"1970-01-01T00:00:00Z\",\"body\":\"comment!\"}]]";
-	
-	// Wait for N results to arrive in a given incremental result, with a timeout
-	// WARNING: DO NOT CALL MULTIPLE TIMES FROM THE SAME THREAD sometimes hangs for some reason
-	private boolean waitForResults(final IncrementalResult targetResult, final int numResults) {
-		final Lock lock = new ReentrantLock();
-		final Condition condition = lock.newCondition();
-		boolean success = false;
-		long maxWaitSeconds = 8;
-
-		lock.lock();
-
-		if (targetResult.getCurrentResults().size() >= numResults) {
-			return true;
-		}
-		
-		targetResult.addObserver(new IIncrementalObserver() {
-			@Override
-			public void itemsArrived(List<QAModel> item, int index) {
-				if (targetResult.getCurrentResults().size() >= numResults) {
-					lock.lock();
-					condition.signalAll();
-					lock.unlock();
-				}
-			}
-		});
-
-		try {
-			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS) && dataManager.isAvailable();
-		} catch (InterruptedException e) {
-		}
-
-		return success;
-	}
 	
 	/**
 	 * Create a question new question object and return it

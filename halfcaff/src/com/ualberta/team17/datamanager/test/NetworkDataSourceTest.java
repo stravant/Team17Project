@@ -14,7 +14,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
-import android.test.ActivityTestCase;
 
 import com.searchly.jestdroid.DroidClientConfig;
 import com.searchly.jestdroid.JestClientFactory;
@@ -34,7 +33,6 @@ import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IDataLoadedListener;
 import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
 import com.ualberta.team17.datamanager.IDataSourceManager;
-import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.NetworkDataManager;
@@ -42,74 +40,12 @@ import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 
 @SuppressLint("DefaultLocale")
-public class NetworkDataSourceTest extends ActivityTestCase {
-	// Max amount of time to wait for elastic search to return a query
-	final Integer maxWaitSeconds = 2;
-
-	// Time to wait after an operation that modifies the index before running another query
-	final Integer maxModOperationWaitMs = 1000;
+public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager> {
 	JestClientFactory mJestClientFactory;
 	JestClient mJestClient;
 
 	String mEsServerUrl;
 	String mEsServerIndex;
-
-	DataFilter dataFilter;
-	IncrementalResult result;
-	NetworkDataManager dataManager;
-	UserContext userContext;
-
-	/**
-	 * Waits for at least numResults results to arrive in the IncrementalResult before returning, or before 
-	 * the maximum amount of time (maxWaitSeconds) has surpassed.
-	 *
-	 * @param result The IncrementalResult to wait on.
-	 * @param numResults The minimum number of results to wait for.
-	 * @return True if the results were returned before the max wait time.
-	 */
-	private boolean waitForResults(final IncrementalResult result, final int numResults) {
-		final Lock lock = new ReentrantLock();
-		final Condition condition = lock.newCondition();
-
-		lock.lock();
-
-		if (result.getCurrentResults().size() >= numResults) {
-			return true;
-		}
-
-		// If the data source becomes unavailable, signal the condition so we don't wait unnecessarily
-		dataManager.addDataSourceAvailableListener(new IDataSourceAvailableListener() {
-			@Override
-			public void DataSourceAvailable(IDataSourceManager manager) {
-				if (!manager.isAvailable()) {
-					lock.lock();
-					condition.signal();
-					lock.unlock();
-				}
-			}
-		});
-
-		result.addObserver(new IIncrementalObserver() {
-			@Override
-			public void itemsArrived(List<QAModel> item, int index) {
-				if (result.getCurrentResults().size() >= numResults) {
-					lock.lock();
-					condition.signal();
-					lock.unlock();
-				}
-			}
-		});
-
-		boolean success = false;
-		try {
-			success = condition.await(maxWaitSeconds, TimeUnit.SECONDS) && dataManager.isAvailable();
-		} catch (InterruptedException e) {
-
-		}
-
-		lock.unlock();
-		return success;
-	}
 
 	/**
 	 * Waits for an item save to complete.
