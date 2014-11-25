@@ -244,6 +244,11 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		// Read the objects into our in-memory format
 		Gson gson = DataManager.getGsonObject();
+
+		if (!elem.isJsonArray()) {
+			return;
+		}
+
 		for (JsonElement item: elem.getAsJsonArray()) {
 			// Break down the item
 			JsonArray arr = item.getAsJsonArray();
