@@ -9,7 +9,7 @@
          android:layout_width="match_parent"
          android:layout_height="wrap_content"         
          android:ems="10"
-         android:text="Add an Answer"
+         android:text="@string/answer_popup_title"
          style="@style/titleText1"
          android:textSize="@dimen/extra_large_text" >
     </TextView>
@@ -32,17 +32,16 @@
 	
 		<Button
 	        android:id="@+id/cancelAnswer"        
-	        style="@style/popupButton"
-	        android:layout_toLeftOf="@+id/submitAnswer"	        
+	        style="@style/popupButton"	        	        
 	        android:layout_height="wrap_content"		        
-	        android:text="Cancel"
+	        android:text="@string/cancel"
 	        />
 		
 		<Button
 	        android:id="@+id/submitAnswer"	        
 	        style="@style/popupButton"     	       
 	        android:layout_height="wrap_content"	        
-	        android:text="Submit"
+	        android:text="@string/submit"
 	        />
 		
 	</LinearLayout>

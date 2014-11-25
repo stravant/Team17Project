@@ -125,8 +125,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
 			queryQuestion(id);			
 		} else {
-			AddQuestionPopup popup = new AddQuestionPopup(QuestionViewActivity.this);
-			popup.show();
 			
 			if (getQuestion() != null) {				
 				ListView qaList = (ListView) findViewById(R.id.qaItemView);
@@ -486,10 +484,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private class AddAnswerPopup extends DialogFragment {
 		private EditText answerBody;			
 		
-		public AddAnswerPopup() {
-			super();			
-		}
-		
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());			
 			LayoutInflater inflater = (LayoutInflater) getActivity().getLayoutInflater();
@@ -562,37 +556,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			public void onClick(View v) {
 				AddCommentPopup.this.dismiss();
 			}
-		}
-		
+		}		
 			
-	}
+	}	
 	
-	private class AddQuestionPopup extends AlertDialog.Builder {
-		private LinearLayout layout;
-		private EditText titleText;
-		private EditText bodyText;		
-		
-		AddQuestionPopup(Context context) {
-			super(context);
-			layout = new LinearLayout(context);
-			titleText = new EditText(context);
-			bodyText = new EditText(context);
-			layout.addView(titleText);
-			layout.addView(bodyText);
-			this.setTitle("New Question");
-			this.setView(layout);
-			this.setPositiveButton("add", new QuestionPopupSubmitListener());
-			//this.setNegativeButton("cancel", new PopupCancelListener());
-		}
-		
-		private class QuestionPopupSubmitListener implements DialogInterface.OnClickListener {					
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				String title = titleText.getText().toString();
-				String body = bodyText.getText().toString();
-				QuestionItem newQuestion = mController.createQuestion(title, body);
-				loadContent(newQuestion);
-			}
-		}	
-	}
 }
