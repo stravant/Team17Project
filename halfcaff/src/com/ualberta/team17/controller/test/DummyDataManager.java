@@ -25,12 +25,11 @@ import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
  *
  */
 public class DummyDataManager extends DataManager {
-	private UserContext mUserContext;
 	List<QAModel> mItems;
 	
 	public DummyDataManager(UserContext userContext, Context context) {
 		super(context);
-		mUserContext = userContext;
+		this.setUserContext(userContext);
 	}
 
 	public void setItems(List<QAModel> items) {
@@ -50,14 +49,6 @@ public class DummyDataManager extends DataManager {
 		incrementalResult.addObjects(returnItems);
 
 		return incrementalResult;
-	}
-	
-	public void setUserContext(UserContext ctx) {
-		mUserContext = ctx;
-	}
-	
-	public UserContext getUserContext() {
-		return mUserContext;
 	}
 	
 	/**
