@@ -414,8 +414,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
-			AddAnswerPopup popup = new AddAnswerPopup(QuestionViewActivity.this);
-			popup.show();
+			DialogFragment popup = new AddAnswerPopup();	
+			popup.show(getFragmentManager(), "answer");
 			
 		}		
 	}
@@ -431,7 +431,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		@Override
 		public void onClick(View v) {
 			DialogFragment popup = new AddCommentPopup((UniqueId) view.getTag());	
-			popup.show(getFragmentManager(), "dialog");
+			popup.show(getFragmentManager(), "comment");
 		}		
 	}
 	
@@ -483,36 +483,45 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 	}
 	
-	private class PopupCancelListener implements View.OnClickListener {
-		@Override
-		public void onClick(View v) {
-			//do nothing
-		}
-	}	
-	
-	private class AddAnswerPopup extends AlertDialog.Builder {
-		private EditText answerBody;
+	private class AddAnswerPopup extends DialogFragment {
+		private EditText answerBody;			
 		
-		AddAnswerPopup (Context context) {
-			super(context);
-			
-			
-			answerBody = new EditText(context);	
-			this.setTitle("Add an Answer");
-			this.setView(answerBody);
-			this.setPositiveButton("Submit", new AnswerPopupSubmitListener());
-			//this.setNegativeButton("Cancel", new PopupCancelListener());		
+		public AddAnswerPopup() {
+			super();			
 		}
 		
-		private class AnswerPopupSubmitListener implements DialogInterface.OnClickListener {					
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());			
+			LayoutInflater inflater = (LayoutInflater) getActivity().getLayoutInflater();
+			View answerView = inflater.inflate(R.layout.create_answer, null);
+			answerBody = (EditText) answerView.findViewById(R.id.answerText);	
+			Button submitButton = (Button) answerView.findViewById(R.id.submitAnswer);
+			Button cancelButton = (Button) answerView.findViewById(R.id.cancelAnswer);
+			submitButton.setOnClickListener(new AnswerPopupSubmitListener());
+			cancelButton.setOnClickListener(new PopupCancelListener());					
+			builder.setView(answerView);
+			return builder.create();
+		}		
+			
+		private class AnswerPopupSubmitListener implements View.OnClickListener {					
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
+			public void onClick(View v) {							
 				String body = answerBody.getText().toString();
+				AddAnswerPopup.this.dismiss();
 				AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
 				addAnswers(newAnswer);
-				loadContent(getQuestion());
+				loadContent(getQuestion());		
 			}
 		}		
+		
+		private class PopupCancelListener implements View.OnClickListener {
+			@Override
+			public void onClick(View v) {
+				AddAnswerPopup.this.dismiss();
+			}
+		}
+		
+			
 	}
 	
 	private class AddCommentPopup extends DialogFragment {
@@ -527,7 +536,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());			
 			LayoutInflater inflater = (LayoutInflater) getActivity().getLayoutInflater();
-			View commentView = inflater.inflate(R.layout.createcomment, null);
+			View commentView = inflater.inflate(R.layout.create_comment, null);
 			commentBody = (EditText) commentView.findViewById(R.id.commentText);	
 			Button submitButton = (Button) commentView.findViewById(R.id.submitComment);
 			Button cancelButton = (Button) commentView.findViewById(R.id.cancelComment);
