@@ -39,5 +39,7 @@
     <string name="cancel">Cancel</string>
     <string name="submit">Submit</string>
     <string name="comment_popup_title">Add a comment</string>
+    <string name="answer_count">%d Answers</string>
+    <string name="answer_count_one">1 Answer</string>
 
 </resources>
