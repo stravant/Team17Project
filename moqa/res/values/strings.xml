@@ -35,6 +35,10 @@
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="answer_popup_title">Add an Answer</string>
+    <string name="cancel">Cancel</string>
+    <string name="submit">Submit</string>
+    <string name="comment_popup_title">Add a comment</string>
     <string name="answer_count">%d Answers</string>
     <string name="answer_count_one">1 Answer</string>
 
