@@ -4,14 +4,15 @@
     android:layout_height="match_parent"
     style="@style/darkLayout">    
 	<LinearLayout
-	     android:id="@+id/content"
+	    android:id="@+id/content"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    style="@style/darkLayout"
 	    android:weightSum="1"
 	    android:orientation="horizontal"
-	    android:divider="?android:dividerHorizontal"
-	     android:showDividers="middle"
+	    android:divider="@drawable/v_divider"
+	    android:showDividers="middle"
+	    android:dividerPadding="5dp"
 	    >
 		<RelativeLayout 
 	        android:id="@+id/textSide"	        
@@ -103,11 +104,18 @@
 		
 	</LinearLayout>
 	
+	<View
+	    android:id="@+id/splitter"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"	    
+	    android:background="@android:color/darker_gray"
+	    android:layout_below="@+id/content" />
+	
 	<RelativeLayout 
 	    android:id="@+id/tabSection"
 	    android:layout_width="fill_parent"	   
 	    android:layout_height="wrap_content"
-	    android:layout_below="@+id/content"      
+	    android:layout_below="@+id/splitter"      
 	    style="@style/mediumLayout" >		
 	    
 	    <LinearLayout
@@ -116,7 +124,9 @@
 		    android:layout_height="wrap_content"
 		    style="@style/mediumLayout"
 		    android:weightSum="1"
-		    android:orientation="horizontal">
+		    android:orientation="horizontal"
+		    android:divider="?android:dividerHorizontal"
+	    	android:showDividers="middle">
 		    
 		    <RelativeLayout
 		        android:id="@+id/commentTabHolder"
