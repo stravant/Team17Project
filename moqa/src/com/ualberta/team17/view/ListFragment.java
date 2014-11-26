@@ -95,7 +95,6 @@ public class ListFragment extends Fragment {
 			mItems.addAll(mIR.getCurrentResults());
 			mAdapter = new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mItems);
 			qList.setAdapter(mAdapter);
-//			qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
 		}
 
 		qList.setOnScrollListener(new InfiniteScoller());
@@ -199,15 +198,10 @@ public class ListFragment extends Fragment {
 					if (activity == null) {
 						return;
 					}
-					ListView qList = (ListView) activity.findViewById(R.id.questionListView);
+
 					mItems.clear();
 					mItems.addAll(mIR.getCurrentResults());
-					mAdapter.notifyDataSetChanged();
-					if (qList != null) {
-//						qList.invalidate();
-						
-//						qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
-					}					
+					mAdapter.notifyDataSetChanged();				
 				}
 			});
 		}
