@@ -11,6 +11,7 @@ import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.R.id;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
@@ -308,24 +309,32 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		public View getView( int position, View convertView, ViewGroup parent ) {
 			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
-			View userBar = qaItemView.findViewById(R.id.userBar);
 			
-			TextView titleTextView = (TextView) qaItemView.findViewById(R.id.titleText);
-			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
+			View textSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.textSide);
+			View iconSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.iconSide);
+			View tabSelectView = qaItemView.findViewById(R.id.tabSection).findViewById(R.id.tabSelect);
+			View tabContentView = qaItemView.findViewById(R.id.tabSection).findViewById(R.id.tabContent);
+			
+			TextView titleTextView = (TextView) textSideView.findViewById(R.id.titleText);
+			TextView bodyTextView = (TextView) textSideView.findViewById(R.id.bodyText);
 			TextView answerCountView = (TextView) qaItemView.findViewById(R.id.answerCountView);
-			TextView authorTextView = (TextView) userBar.findViewById(R.id.authorText);
+			TextView authorTextView = (TextView) textSideView.findViewById(R.id.authorBar).findViewById(R.id.authorText);
 			
-			ImageButton favoriteButton = (ImageButton) userBar.findViewById(R.id.favoriteButton);
-			ImageButton attachmentButton = (ImageButton) userBar.findViewById(R.id.viewAttachmentButton);
-			ImageButton commentButton = (ImageButton) userBar.findViewById(R.id.createCommentButton);
-			ImageButton upvoteButton = (ImageButton) userBar.findViewById(R.id.upvoteButton);
+			ImageButton favoriteButton = (ImageButton) iconSideView.findViewById(R.id.favoriteButton);
+			ImageButton attachmentButton = (ImageButton) tabSelectView.findViewById(R.id.viewAttachmentHolder).findViewById(R.id.viewAttachmentButton);			
+			//replace with button or imagebutton
+			TextView commentButton = (TextView) tabContentView.findViewById(R.id.createCommentButton);
+			ImageButton upvoteButton = (ImageButton) iconSideView.findViewById(R.id.upvoteButton);
 			
-			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);
+			ImageButton commentTabButton = (ImageButton) tabSelectView.findViewById(R.id.commentTabHolder).findViewById(R.id.commentTabButton);
+			
+			LinearLayout commentsView = (LinearLayout) tabContentView.findViewById(R.id.commentView);
 			
 			QABody qaItem = mObjects.get(position);
 			if(qaItem.parent.mType == ItemType.Question) {
 				QuestionItem question = (QuestionItem) qaItem.parent;
 				
+				tabSelectView.setVisibility(View.VISIBLE);
 				titleTextView.setVisibility(View.VISIBLE);
 				favoriteButton.setVisibility(View.VISIBLE);
 				attachmentButton.setVisibility(View.VISIBLE);
@@ -340,6 +349,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 				
 			} else if (qaItem.parent.mType == ItemType.Answer) {
+				tabSelectView.setVisibility(View.GONE);
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);
 				attachmentButton.setVisibility(View.GONE);

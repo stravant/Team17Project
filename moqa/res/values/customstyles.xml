@@ -16,7 +16,7 @@
 	</style>
 	
 	<style name="bodyText1">
-	    <item name="android:background">@color/milk2</item>	    
+	    <item name="android:background">@color/milk</item>	    
 	    <item name="android:textColor">@color/black</item>
 	    <item name="android:textSize">@dimen/medium_text</item>	    
 	</style>
@@ -51,15 +51,19 @@
 	    <item name="android:textSize">@dimen/small_text</item>	     
 	</style>	
 	
-	<style name="lightRelativeLayout">
+	<style name="lightLayout">
 	    <item name="android:background">@color/milk</item>	    	        
 	</style>	
 	
-	<style name="mediumRelativeLayout">
+	<style name="lightmediumLayout">
+	    <item name="android:background">@color/milk2</item>	    	         
+	</style>
+	
+	<style name="mediumLayout">
 	    <item name="android:background">@color/milk3</item>	    	         
 	</style>
 	
-	<style name="darkRelativeLayout">
+	<style name="darkLayout">
 	    <item name="android:background">@color/coffee</item>	 	    	     
 	</style>	
 	

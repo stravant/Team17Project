@@ -2,101 +2,210 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/darkRelativeLayout">    "
+    style="@style/darkLayout">    
+	<LinearLayout
+	     android:id="@+id/content"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/darkLayout"
+	    android:weightSum="1"
+	    android:orientation="horizontal"
+	    >
+		<RelativeLayout 
+	        android:id="@+id/textSide"
+	        android:minHeight="30dp"
+	        android:layout_width="0dp"
+	        android:layout_weight=".75"
+	        android:layout_height="wrap_content"        
+	        style="@style/lightLayout" >
+	        
+		    <TextView
+		        android:id="@+id/titleText"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignParentTop="true"
+		        android:ems="10"
+		        style="@style/titleText1"        
+		        android:text="title"        
+		        >
+			</TextView>
+			
+			<TextView
+		        android:id="@+id/bodyText"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/titleText"
+		        android:ems="10"
+		        android:text="body"
+		        style="@style/bodyText1"
+		        >
+		     </TextView>
+		
+		    <RelativeLayout 
+		        android:id="@+id/authorBar"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/bodyText"
+		        style="@style/lightLayout" >  			    		
+			    			
+			    <TextView
+			        android:id="@+id/authorText"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_alignParentRight="true"
+			        android:layout_alignParentTop="true"			                
+			        android:ems="10"
+			        android:gravity="right|bottom"
+			        android:text="author"
+			        style="@style/authorText1"
+			        />
+			    
+			</RelativeLayout>
+	    </RelativeLayout>
+	    
+		<RelativeLayout 
+	        android:id="@+id/iconSide"
+	        android:layout_width="0dp"
+	        android:layout_weight=".25"
+	        android:layout_height="fill_parent"  	        
+	        android:layout_toRightOf="@+id/textSide"      
+	        style="@style/mediumLayout" >
+		    
+		    <ImageButton
+			    android:id="@+id/upvoteButton"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_centerHorizontal="true"	        
+			    android:background="@drawable/ic_action_collapse" />
+		    
+		    <TextView
+	                android:id="@+id/upvoteCount"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_centerHorizontal="true"	
+	                android:layout_below="@+id/upvoteButton"	                              
+	                android:text="0"
+	                android:gravity="center"	                
+       			/>
+		    
+		    <ImageButton
+			    android:id="@+id/favoriteButton"
+			    android:layout_width="wrap_content"
+			    android:layout_centerHorizontal="true"	  
+			    android:layout_height="wrap_content"			        
+			    android:layout_below="@+id/upvoteCount"
+			    android:background="@drawable/ic_action_favorite" />
+		    
+		</RelativeLayout>
+	</LinearLayout>
+	<RelativeLayout 
+	    android:id="@+id/tabSection"
+	    android:layout_width="fill_parent"	   
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/content"      
+	    style="@style/mediumLayout" >		
+	    
+	    <LinearLayout
+		    android:id="@+id/tabSelect"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    style="@style/mediumLayout"
+		    android:weightSum="1"
+		    android:orientation="horizontal">
+		    
+		    <RelativeLayout
+		        android:id="@+id/commentTabHolder"
+			    android:layout_width="0dp"
+                android:layout_weight="0.33"	   
+			    android:layout_height="wrap_content"			          
+			    style="@style/darkLayout" >		    
+		        
+		        <ImageButton
+	                android:id="@+id/commentTabButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"                
+	                android:background="@color/transparent"
+	                android:layout_centerHorizontal="true"
+	                android:src="@drawable/ic_action_chat" />
+		        
+			</RelativeLayout>
+		    
+			<RelativeLayout
+		        android:id="@+id/viewAttachmentHolder"
+			    android:layout_width="0dp"
+                android:layout_weight="0.33"	   
+			    android:layout_height="wrap_content"			          
+			    style="@style/lightmediumLayout" >
+		        
+			    <ImageButton
+	                android:id="@+id/viewAttachmentButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"   
+	                android:layout_centerHorizontal="true"             
+	                android:background="@drawable/ic_action_attachment" />
+			    
+		    </RelativeLayout>
+            
+            <RelativeLayout
+		        android:id="@+id/relatedViewHolder"
+			    android:layout_width="0dp"
+                android:layout_weight="0.33"	   
+			    android:layout_height="fill_parent"			          
+			    style="@style/lightmediumLayout" >
+			    
+                <TextView
+	                android:id="@+id/relatedViewButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_centerHorizontal="true"	
+	                android:layout_centerVertical="true"                
+	                android:text="RQ"
+	                android:gravity="center"
+	                android:layout_gravity="center"
+       			/>        			
+		    </RelativeLayout>
+                          
+            
+		</LinearLayout>   
+		
+	    <RelativeLayout 
+		    android:id="@+id/tabContent"
+		    android:layout_width="fill_parent"	   
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/tabSelect"      
+		    style="@style/mediumLayout" >
+            
+            <LinearLayout
+                android:id="@+id/commentView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:orientation="vertical" >
+            </LinearLayout>
+            
+            <TextView
+	                android:id="@+id/createCommentButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_centerHorizontal="true"
+	                android:layout_below="@+id/commentView"	                
+	                android:text="Add new Comment"
+	                android:gravity="center"
+	                android:layout_gravity="center"
+       			/>  
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:ems="10"
-        style="@style/titleText1"        
-        android:text="title"        
-        >
-	</TextView>
-	
-	<TextView
-        android:id="@+id/bodyText"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/titleText"
-        android:ems="10"
-        android:text="body"
-        style="@style/bodyText1"
-        >
-     </TextView>
-
-    <RelativeLayout 
-        android:id="@+id/userBar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bodyText"
-        style="@style/lightRelativeLayout" >
+		</RelativeLayout>		
+	</RelativeLayout>
         
-	    <ImageButton
-	        android:id="@+id/createCommentButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_toRightOf="@+id/upvoteButton"
-	        android:src="@drawable/ic_action_chat"
-	        android:background="@color/transparent" />
-	
-	    <ImageButton
-	        android:id="@+id/favoriteButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_toRightOf="@+id/createCommentButton"
-	        android:background="@drawable/ic_action_favorite" />
-	
-	    <ImageButton
-	        android:id="@+id/viewAttachmentButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_toRightOf="@+id/favoriteButton"
-	        android:background="@drawable/ic_action_attachment" />
-	
-	    <ImageButton
-	        android:id="@+id/upvoteButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"	        
-	        android:background="@drawable/ic_action_collapse" />
-	
-	    <TextView
-	        android:id="@+id/authorText"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_alignParentTop="true"
-	        android:layout_toRightOf="@+id/viewAttachmentButton"	        
-	        android:ems="10"
-	        android:gravity="right|bottom"
-	        android:text="author"
-	        style="@style/authorText1"
-	        />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/commentView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/userBar"
-        android:orientation="vertical" >
-    </LinearLayout>
-    
     <TextView 
         android:id="@+id/answerCountView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/commentView"
+        android:layout_below="@+id/tabSection"
        	style="@style/bodyText1Alt"
         android:text="5 Answers"
         android:gravity="center"/>
