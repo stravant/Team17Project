@@ -10,13 +10,14 @@
 	    style="@style/darkLayout"
 	    android:weightSum="1"
 	    android:orientation="horizontal"
+	    android:divider="?android:dividerHorizontal"
+	     android:showDividers="middle"
 	    >
 		<RelativeLayout 
-	        android:id="@+id/textSide"
-	        android:minHeight="30dp"
+	        android:id="@+id/textSide"	        
 	        android:layout_width="0dp"
 	        android:layout_weight=".75"
-	        android:layout_height="wrap_content"        
+	        android:layout_height="fill_parent"        
 	        style="@style/lightLayout" >
 	        
 		    <TextView
@@ -64,43 +65,44 @@
 			        />
 			    
 			</RelativeLayout>
-	    </RelativeLayout>
-	    
-		<RelativeLayout 
-	        android:id="@+id/iconSide"
-	        android:layout_width="0dp"
-	        android:layout_weight=".25"
-	        android:layout_height="fill_parent"  	        
-	        android:layout_toRightOf="@+id/textSide"      
-	        style="@style/mediumLayout" >
-		    
+			
+	    </RelativeLayout>		
+
+		<RelativeLayout
+		    android:id="@+id/iconSide"
+		    style="@style/lightLayout"
+		    android:layout_width="0dp"
+		    android:layout_height="fill_parent"
+		    android:layout_toRightOf="@+id/textSide"
+		    android:layout_weight=".25" >
+
 		    <ImageButton
-			    android:id="@+id/upvoteButton"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_centerHorizontal="true"	        
-			    android:background="@drawable/ic_action_collapse" />
-		    
+		        android:id="@+id/upvoteButton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:background="@drawable/ic_action_collapse" />
+
 		    <TextView
-	                android:id="@+id/upvoteCount"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_centerHorizontal="true"	
-	                android:layout_below="@+id/upvoteButton"	                              
-	                android:text="0"
-	                android:gravity="center"	                
-       			/>
-		    
+		        android:id="@+id/upvoteCount"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/upvoteButton"
+		        android:layout_centerHorizontal="true"
+		        android:gravity="center"
+		        android:text="0" />
+
 		    <ImageButton
-			    android:id="@+id/favoriteButton"
-			    android:layout_width="wrap_content"
-			    android:layout_centerHorizontal="true"	  
-			    android:layout_height="wrap_content"			        
-			    android:layout_below="@+id/upvoteCount"
-			    android:background="@drawable/ic_action_favorite" />
-		    
+		        android:id="@+id/favoriteButton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/upvoteCount"
+		        android:layout_centerHorizontal="true"
+		        android:background="@drawable/ic_action_favorite" />
 		</RelativeLayout>
+		
 	</LinearLayout>
+	
 	<RelativeLayout 
 	    android:id="@+id/tabSection"
 	    android:layout_width="fill_parent"	   
