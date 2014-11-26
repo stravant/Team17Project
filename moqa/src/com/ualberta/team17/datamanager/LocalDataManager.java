@@ -332,9 +332,16 @@ public class LocalDataManager implements IDataSourceManager {
 		for (QAModel item: mData) {
 			updateParentDerivedInfo(item);
 			
-			// Also check if the item is favorited
-			if (mUserContext != null && (item instanceof QuestionItem) && mUserContext.isFavorited(item.getUniqueId())) {
-				((QuestionItem)item).setFavorited();
+			if (mUserContext != null && (item instanceof QuestionItem)) {
+				// Also check if the item is favorited
+				if (mUserContext.isFavorited(item.getUniqueId())) {
+					((QuestionItem)item).setFavorited();
+				}
+			
+				// And check if the item is to be viewed later
+				if (mUserContext.shouldViewLater(item.getUniqueId())) {
+					((QuestionItem)item).setViewLater();
+				}
 			}
 		}
 	}
@@ -690,6 +697,8 @@ public class LocalDataManager implements IDataSourceManager {
 	
 	/**
 	 * Save an item from a UniqueId if we have the item for that UniqueId cached
+	 * To be called on an item when an operation may promote an item from not locally 
+	 * saved to locally saved.
 	 * @param itemId The Id of the item to save, as opposed to the item itself.
 	 */
 	public void saveItemIfCached(UniqueId itemId, UserContext ctx) {
