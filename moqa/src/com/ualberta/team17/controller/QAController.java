@@ -1,11 +1,9 @@
 package com.ualberta.team17.controller;
 
-import java.net.URI;
 import java.util.Calendar;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AttachmentItem;
@@ -50,6 +48,10 @@ public class QAController {
 	public void login(UserContext ctx) {
 		mDataManager.setUserContext(ctx);
 	}
+
+	public UserContext getUserContext() {
+		return mDataManager.getUserContext();
+	}
 	
 	/**
 	 * Access existing objects via an arbitrary Filter & Sort
@@ -61,6 +63,17 @@ public class QAController {
 		return mDataManager.doQuery(filter, sort);
 	}
 	
+	/**
+	 * Access existing objects via an arbitrary Filter & Sort, and load them into an existing result
+	 * @param filter
+	 * @param sort
+	 * @param result The result to place new results into
+	 * @return An IncrementalResult
+	 */
+	public void getObjectsWithResult(DataFilter filter, IncrementalResult result) {
+		mDataManager.doQuery(filter, result);
+	}
+
 	/**
 	 * Get all of the children of a given item
 	 * @param question
