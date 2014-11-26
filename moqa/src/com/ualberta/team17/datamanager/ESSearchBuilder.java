@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.ualberta.team17.ItemType;
+import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 
 public class ESSearchBuilder {
 	public static final Integer MAX_ES_RESULTS = 100;
@@ -136,10 +137,6 @@ public class ESSearchBuilder {
 			}
 		}
 
-//		if (null != mFilter.getTypeFilter()) {
-//			addTypeFilter(boolFilterObj, "must", mFilter.getTypeFilter());
-//		}
-
 		if (!filteredQueryObj.has("query")) {
 			filteredQueryObj.add("query", getJsonObjectWithProperty("match_all", new JsonObject()));
 		}
@@ -152,7 +149,7 @@ public class ESSearchBuilder {
 			mQueryObject = getJsonObjectWithProperty("query", getJsonObjectWithProperty("filtered", filteredQueryObj));
 		}
 
-		if (null != mComparator) {
+		if (null != mComparator && !(mComparator instanceof IdentityComparator)) {
 			JsonArray sortArray = new JsonArray();
 
 			sortArray.add(

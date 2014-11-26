@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
@@ -68,8 +69,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		ListView listview = (ListView) findViewById(R.id.qaItemView);
 		listview.setAdapter(createNewAdapter());
 		IncrementalResult questionChildrenResult = mController.getChildren(question, new DateComparator());
-		questionChildrenResult.addObserver(new AnswerResultListener(), ItemType.Answer);
-		questionChildrenResult.addObserver(new CommentResultListener(), ItemType.Comment);		
+		questionChildrenResult.addObserver(new QuestionChildrenResultListener());
 	}	
 	
 	/**
@@ -118,10 +118,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_questionview);
-		
+
 		View displayQuestionView = findViewById(R.id.displayQuestionView);
 		View createQuestionView = findViewById(R.id.createQuestionView);
-		
+
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
+
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
 		
@@ -277,10 +280,12 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private class QABody {
 		public AuthoredTextItem parent;
 		public List<CommentItem> comments;
+		public List<AttachmentItem> attachments;
 		
 		public QABody(AuthoredTextItem initParent) {
 			parent = initParent;
 			comments = new ArrayList<CommentItem>();
+			attachments = new ArrayList<AttachmentItem>();
 		}
 	}	
 	
@@ -306,8 +311,18 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		 * Returns the view after adding the list content.
 		 */
 		public View getView( int position, View convertView, ViewGroup parent ) {
-			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+			QABody qaItem = mObjects.get(position);
+
+			LayoutInflater inflater = null;
+			if (null == convertView || qaItem.comments.size() > 0) {
+				inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			}
+
+			View qaItemView = convertView;
+			if (null == qaItemView) {
+				qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+				}
+
 			View userBar = qaItemView.findViewById(R.id.userBar);
 			
 			TextView titleTextView = (TextView) qaItemView.findViewById(R.id.titleText);
@@ -315,14 +330,14 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			TextView answerCountView = (TextView) qaItemView.findViewById(R.id.answerCountView);
 			TextView authorTextView = (TextView) userBar.findViewById(R.id.authorText);
 			
+			AttachmentView attachmentsView = (AttachmentView) qaItemView.findViewById(R.id.attachmentView);
+
 			ImageButton favoriteButton = (ImageButton) userBar.findViewById(R.id.favoriteButton);
 			ImageButton attachmentButton = (ImageButton) userBar.findViewById(R.id.viewAttachmentButton);
 			ImageButton commentButton = (ImageButton) userBar.findViewById(R.id.createCommentButton);
 			ImageButton upvoteButton = (ImageButton) userBar.findViewById(R.id.upvoteButton);
-			
+
 			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);
-			
-			QABody qaItem = mObjects.get(position);
 			if(qaItem.parent.mType == ItemType.Question) {
 				QuestionItem question = (QuestionItem) qaItem.parent;
 				
@@ -338,12 +353,15 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					answerCountView.setText(String.format(getString(R.string.answer_count), question.getReplyCount()));
 				}
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
-				
+
+				attachmentsView.setVisibility(qaItem.attachments.size() > 0 ? View.VISIBLE : View.GONE);
+
 			} else if (qaItem.parent.mType == ItemType.Answer) {
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);
 				attachmentButton.setVisibility(View.GONE);
 				answerCountView.setVisibility(View.GONE);
+				attachmentsView.setVisibility(View.GONE);
 				
 			} else {
 				// This should never happen. If it does, a bad object was added to the list.
@@ -358,6 +376,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			bodyTextView.setText(qaItem.parent.getBody());
 			authorTextView.setText(qaItem.parent.getAuthor());
 			
+			for (AttachmentItem attachment: qaItem.attachments) {
+				attachmentsView.addAttachment(attachment);
+			}
+
 			for (int i = 0; i < qaItem.comments.size(); i++){
 				CommentItem comment = qaItem.comments.get(i);
 				
@@ -389,23 +411,31 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	}
 	
 	/**
-	 * Listener for an incremental result's answers.
+	 * Listener for the main question's answers, comments, and attachments.
 	 * @author Corey
 	 *
 	 */
-	private class AnswerResultListener implements IIncrementalObserver {
+	private class QuestionChildrenResultListener implements IIncrementalObserver {
 
 		@Override
 		public void itemsArrived(List<QAModel> item, int index) {				
 			ListView qaList = (ListView) findViewById(R.id.qaItemView);
+			QABody parentBody = findById(mQuestion.getUniqueId());
+
 			for(QAModel qaitem : item ) {
 				if (qaitem.mType == ItemType.Answer) {
 					AnswerItem answer = (AnswerItem) qaitem;
 					addAnswers(answer);
 					IncrementalResult answerChildrenResult = mController.getChildren(answer, new DateComparator());
 					answerChildrenResult.addObserver(new CommentResultListener(), ItemType.Comment);
+				} else if (qaitem.mType == ItemType.Comment) {
+					addComments((CommentItem)qaitem);
+				} else if (qaitem.mType == ItemType.Attachment) {
+					qaitem.addView(QuestionViewActivity.this);
+					parentBody.attachments.add((AttachmentItem)qaitem);
 				}
-			}			
+			}
+
 			qaList.invalidate();
 			qaList.setAdapter(createNewAdapter());			
 		}
