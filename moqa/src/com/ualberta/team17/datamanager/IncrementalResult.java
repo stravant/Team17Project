@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-import android.util.Log;
-
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.ItemType;
 
@@ -39,6 +37,11 @@ public class IncrementalResult {
 	 */
 	private IItemComparator mSort;
 	
+	/**
+	 * The comparator that this incremental result is based off of.
+	 */
+	private IItemComparator mBaseSort;
+
 	/**
 	 * The observers of this IncrementalResult, to be notified when items
 	 * are added. A ObserverEntries instead of raw IIncrementalObservers are 
@@ -146,9 +149,18 @@ public class IncrementalResult {
 	}
 	
 	/**
+	 * Gets the IItemComparator this IncrementalResult uses to sort its items.
+	 * @return
+	 */
+	public IItemComparator getComparator() {
+		return mBaseSort;
+	}
+	
+	/**
 	 * Constructor, from a comparator.
 	 */
 	public IncrementalResult(IItemComparator sort) {
+		mBaseSort = sort;
 		mSort = new DisambiguatingComparator(sort);
 	}
 	

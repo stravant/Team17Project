@@ -5,18 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.auth.AuthenticationException;
-
-import android.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.JsonWriter;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -24,14 +18,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.ualberta.team17.AnswerItem;
-import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
-import com.ualberta.team17.StoragePolicy;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
-import com.ualberta.team17.datamanager.comparators.IdComparator;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 
 public class DataManager {
@@ -102,7 +93,20 @@ public class DataManager {
 	 * @return An IncrementalResult to which the items will be added as they arrive
 	 */
 	public IncrementalResult doQuery(DataFilter filter, IItemComparator sortComparator) {
-		IncrementalResult result = new IncrementalResult(sortComparator);
+		return doQuery(filter, new IncrementalResult(sortComparator));
+	}
+
+	/**
+	 * Query the DataManager for items, using a given filter and previous Incremental Result.
+	 * 
+	 * Note that the IItemComparator that the IncrementalResult was defined with will be used
+	 * to query the data source.
+	 * @param filter
+	 * @param result
+	 * @return The incremental result that was passed in.
+	 */
+	public IncrementalResult doQuery(DataFilter filter, IncrementalResult result) {
+		IItemComparator sortComparator = result.getComparator();
 		mLocalDataStore.query(filter, sortComparator, result);
 		mNetworkDataStore.query(filter, sortComparator, result);
 		return result;
