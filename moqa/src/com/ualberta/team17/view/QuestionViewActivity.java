@@ -403,7 +403,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	}
 	
 	/**
-	 * Listener for an incremental result's answers.
+	 * Listener for the main question's answers, comments, and attachments.
 	 * @author Corey
 	 *
 	 */
