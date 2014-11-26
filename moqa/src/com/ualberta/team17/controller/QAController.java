@@ -102,11 +102,16 @@ public class QAController {
 	
 	/**
 	 * Gets the current users favorites
+	 * @param comparator A comparator specifying the order to sort the items in. If the comparator is
+	 *                    null, then the items will be returned with the most recently posted items first.
 	 * @return An incremental result that will be populated with the users favorites.
 	 */
-	public IncrementalResult getFavorites() {
+	public IncrementalResult getFavorites(IItemComparator comparator) {
+		if (comparator == null) {
+			comparator = new DateComparator();
+		}
 		return mDataManager.doQuery(
-				mDataManager.getUserContext().getFavorites(), new DateComparator());
+				mDataManager.getUserContext().getFavorites(), comparator);
 	}
 	
 	/**
@@ -120,12 +125,18 @@ public class QAController {
 	/**
 	 * Get the recently items that have been marked as recently viewed
 	 * most recently with QAController::markRecentlyViewed
+	 * @param comparator A comparator specifying the order to sort the items in. If the comparator is
+	 *                    null, then the items will be left in the order
+	 *                    "most recently viewed first".
 	 * @return An IncrementalResult that will be populated with the recently viewed items
 	 */
-	public IncrementalResult getRecentItems() {
+	public IncrementalResult getRecentItems(IItemComparator comparator) {
+		if (comparator == null) {
+			comparator = new IdentityComparator();
+		}
 		return mDataManager.doQuery(
 				mDataManager.getUserContext().getRecentItems(), 
-				new IdentityComparator()); // that is, no comparator
+				comparator); // that is, no comparator
 	}
 	
 	/**

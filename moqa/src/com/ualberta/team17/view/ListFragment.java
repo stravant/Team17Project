@@ -71,7 +71,7 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 2:
-			mIR = QAController.getInstance().getFavorites();
+			mIR = QAController.getInstance().getFavorites(null);
 			break;
 		case 3:
 			comp = new UpvoteComparator();
@@ -84,7 +84,7 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 5:
-			mIR = QAController.getInstance().getRecentItems();
+			mIR = QAController.getInstance().getRecentItems(null);
 		}
 		
 		addObserver(mIR);		

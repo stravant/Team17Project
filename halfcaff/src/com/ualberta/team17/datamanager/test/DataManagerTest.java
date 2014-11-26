@@ -102,7 +102,7 @@ public class DataManagerTest extends DataManagerTester<LocalDataManager> {
 		controller.addFavorite(q);
 		
 		// Query back and see if we get the favorited item
-		IncrementalResult r = controller.getFavorites();
+		IncrementalResult r = controller.getFavorites(null);
 		assertTrue(waitForResults(r, 1));
 		assertEquals(1, r.getCurrentResults().size());
 		assertEquals(q.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
@@ -124,7 +124,7 @@ public class DataManagerTest extends DataManagerTester<LocalDataManager> {
 		controller.markRecentlyViewed(q2);
 		
 		// Query back recently viewed
-		IncrementalResult r = controller.getRecentItems();
+		IncrementalResult r = controller.getRecentItems(null);
 		assertTrue(waitForResults(r, 2));
 		assertEquals(q2.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
 		assertEquals(q1.getUniqueId(), r.getCurrentResults().get(1).getUniqueId());
