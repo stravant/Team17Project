@@ -1,8 +1,88 @@
 {
 	"mappings": {
-		"question": {},
-		"comment": {},
-		"answer": {},
-		"attachment": {}
+		"question": {
+			"properties": {
+				"id": {
+					"type": "string",
+					"index": "not_analyzed"
+				},
+				"date": {
+					"type": "date"
+				}
+			}
+		},
+		"comment": {
+			"properties": {
+				"id": {
+					"type": "string",
+					"index": "not_analyzed"
+				},
+				"date": {
+					"type": "date"
+				}
+			}
+		},
+		"answer": {
+			"_parent": {
+				"type": "question"
+			},
+			"properties": {
+				"id": {
+					"type": "string",
+					"index": "not_analyzed"
+				},
+				"date": {
+					"type": "date"
+				}
+			}
+		},
+		"upvote_question": {
+			"_parent": {
+				"type": "question"
+			},
+			"properties": {
+				"id": {
+					"type": "string",
+					"index": "not_analyzed"
+				}
+			}
+		},
+		"upvote_answer": {
+			"_parent": {
+				"type": "answer"
+			},
+			"properties": {
+				"id": {
+					"type": "string",
+					"index": "not_analyzed"
+				}
+			}
+		},
+		"upvote": {
+			"properties": {
+				"id": {
+					"type": "string",
+					"index": "not_analyzed"
+				}
+			}
+		},
+		"attachment": {
+			"_parent": {
+				"type": "question"
+			},
+			"properties": {
+				"id": {
+					"type": "string",
+					"index": "not_analyzed"
+				},
+				"data": {
+					"type": "binary",
+					"index": "no"
+				},
+				"date": {
+					"type": "date"
+				}
+			}
+		}
 	}
 }

@@ -13,6 +13,8 @@ import io.searchbox.client.JestResult;
 import io.searchbox.core.Index;
 import io.searchbox.core.Search;
 import io.searchbox.core.SearchResult;
+import io.searchbox.core.Index.Builder;
+import io.searchbox.params.Parameters;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -25,14 +27,12 @@ import com.google.gson.JsonObject;
 
 import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
-import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
-import com.ualberta.team17.datamanager.comparators.DateComparator;
 
 /**
  * Manages all interaction with the Elastic Search server.
@@ -325,6 +325,9 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 			try {
 				JestResult result = mJestClient.execute(mIndex);
 				mSuccess = null != result && result.isSucceeded();
+				if (!mSuccess && null != result) {
+					System.out.println(result.getErrorMessage());
+				}
 			} catch (Exception e) {
 				// TODO: Set isAvailable on network error
 				System.out.println("SaveTask encountered error:");
@@ -385,13 +388,17 @@ import com.ualberta.team17.datamanager.comparators.DateComparator;
 			initJestClient();
 		}
 
-		Index index = new Index.Builder(DataManager.getGsonObject().toJson(item))
+		Builder builder = 
+		 new Index.Builder(DataManager.getGsonObject().toJson(item))
 			.index(mEsServerIndex)
 			.type(item.getItemType().toString().toLowerCase())
-			.id(item.getUniqueId().toString())
-			.build();
+			.id(item.getUniqueId().toString());
 
-		SaveTask task = new SaveTask(index, listener);
+		if (null != item.getField(AuthoredItem.FIELD_PARENT) && !(item instanceof CommentItem)) {
+			builder.setParameter(Parameters.PARENT, item.getField(AuthoredItem.FIELD_PARENT).toString());
+		}
+
+		SaveTask task = new SaveTask(builder.build(), listener);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		else
