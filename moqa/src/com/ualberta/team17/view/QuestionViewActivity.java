@@ -311,8 +311,18 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		 * Returns the view after adding the list content.
 		 */
 		public View getView( int position, View convertView, ViewGroup parent ) {
-			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+			QABody qaItem = mObjects.get(position);
+
+			LayoutInflater inflater = null;
+			if (null == convertView || qaItem.comments.size() > 0) {
+				inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			}
+
+			View qaItemView = convertView;
+			if (null == qaItemView) {
+				qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
+				}
+
 			View userBar = qaItemView.findViewById(R.id.userBar);
 			
 			TextView titleTextView = (TextView) qaItemView.findViewById(R.id.titleText);
@@ -328,8 +338,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			ImageButton upvoteButton = (ImageButton) userBar.findViewById(R.id.upvoteButton);
 
 			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);
-			
-			QABody qaItem = mObjects.get(position);
 			if(qaItem.parent.mType == ItemType.Question) {
 				QuestionItem question = (QuestionItem) qaItem.parent;
 				
