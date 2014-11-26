@@ -1,5 +1,6 @@
 package com.ualberta.team17.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.TargetApi;
@@ -12,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -33,12 +34,16 @@ import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
+
 @TargetApi(14)
 public class ListFragment extends Fragment {
 	public static final String TAXONOMY_NUM = "taxonomy_number";
 	public static final String FILTER_EXTRA = "FILTER";
 	
 	private IncrementalResult mIR;
+	private DataFilter datafilter = new DataFilter();
+	private QuestionListAdapter mAdapter;
+	private List<QAModel> mItems;
 	
 	@Override
     public void onAttach(Activity activity) {
@@ -52,32 +57,31 @@ public class ListFragment extends Fragment {
 	    int mTaxonomy = getArguments().getInt(TAXONOMY_NUM);
 	    
 		IItemComparator comp;
-		DataFilter df = new DataFilter();
 		
 		switch (mTaxonomy) {
 		case 0:
 			comp = new DateComparator();
-			df.setTypeFilter(ItemType.Question);
-			mIR = QAController.getInstance().getObjects(df, comp);
+			datafilter.setTypeFilter(ItemType.Question);
+			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 1:
 			comp = new DateComparator();
 			comp.setCompareDirection(SortDirection.Descending);
-			df.addFieldFilter(AuthoredItem.FIELD_AUTHOR, QAController.getInstance().getUserContext().getUserName(), FilterComparison.EQUALS);
-			mIR = QAController.getInstance().getObjects(df, comp);
+			datafilter.addFieldFilter(AuthoredItem.FIELD_AUTHOR, QAController.getInstance().getUserContext().getUserName(), FilterComparison.EQUALS);
+			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 2:
 			mIR = QAController.getInstance().getFavorites();
 			break;
 		case 3:
 			comp = new UpvoteComparator();
-			df.setTypeFilter(ItemType.Question);
-			mIR = QAController.getInstance().getObjects(df, comp);
+			datafilter.setTypeFilter(ItemType.Question);
+			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;	
 		case 4:
 			comp = new UpvoteComparator();
-			df.setTypeFilter(ItemType.Answer);
-			mIR = QAController.getInstance().getObjects(df, comp);
+			datafilter.setTypeFilter(ItemType.Answer);
+			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 5:
 			mIR = QAController.getInstance().getRecentItems();
@@ -86,10 +90,14 @@ public class ListFragment extends Fragment {
 		addObserver(mIR);		
 		ListView qList = (ListView) rootView.findViewById(R.id.questionListView);
 		qList.setOnItemClickListener(new listItemClickedListener());
-		
+		mItems = new ArrayList<QAModel>();
 		if (mIR != null) {
-			qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
+			mItems.addAll(mIR.getCurrentResults());
+			mAdapter = new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mItems);
+			qList.setAdapter(mAdapter);
 		}
+
+		qList.setOnScrollListener(new InfiniteScoller());
 		
 		return rootView;
     }
@@ -190,13 +198,10 @@ public class ListFragment extends Fragment {
 					if (activity == null) {
 						return;
 					}
-					ListView qList = (ListView) activity.findViewById(R.id.questionListView);
 
-					if (qList != null) {
-						qList.invalidate();
-						
-						qList.setAdapter(new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mIR.getCurrentResults()));
-					}					
+					mItems.clear();
+					mItems.addAll(mIR.getCurrentResults());
+					mAdapter.notifyDataSetChanged();				
 				}
 			});
 		}
@@ -275,5 +280,38 @@ public class ListFragment extends Fragment {
 			return convertView;
 		}
 	}
-	
+
+	public class InfiniteScoller implements AbsListView.OnScrollListener {
+		int pageNo = 0;
+		int loadedItemCount = 0;
+		boolean isLoading;
+
+		/**
+		 * Queries elastic search for the specified pageNumber
+		 * @param pageNumber
+		 */
+		public void getPage(int pageNumber) {
+			datafilter.setPage(pageNumber);
+			QAController.getInstance().getObjectsWithResult(datafilter, mIR);
+		}
+
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+			 if (isLoading && (totalItemCount > loadedItemCount)) {
+				isLoading = false;
+				loadedItemCount = totalItemCount;
+				++pageNo;
+			 }
+
+			 if (!isLoading && (firstVisibleItem + visibleItemCount) >= totalItemCount) {
+				getPage(pageNo + 1);
+				isLoading = true;
+			 }
+		}
+
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+			return; // We don't do anything here right now
+		}
+	}
 }

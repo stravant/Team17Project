@@ -1,23 +1,18 @@
 package com.ualberta.team17.datamanager;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import android.graphics.Bitmap.CompressFormat;
-import android.text.format.DateFormat;
-import android.util.Log;
 
 import com.ualberta.team17.DateStringFormat;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 
 public class DataFilter {
+	public static final int DEFAULT_NUM_RESULTS = 10;
 	private ItemType mTypeFilter;
 	private List<FieldFilter> mFieldFilters;
-	private Integer mMaxResults;
+	private Integer mMaxResults = DEFAULT_NUM_RESULTS;
 	private Integer mResultsPage;
 	
 	public class FieldFilter {
