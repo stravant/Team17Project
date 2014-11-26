@@ -133,7 +133,7 @@
 			    android:layout_width="0dp"
                 android:layout_weight="0.33"	   
 			    android:layout_height="wrap_content"			          
-			    style="@style/darkLayout" >		    
+			    style="@style/mediumLayout" >		    
 		        
 		        <ImageButton
 	                android:id="@+id/commentTabButton"
