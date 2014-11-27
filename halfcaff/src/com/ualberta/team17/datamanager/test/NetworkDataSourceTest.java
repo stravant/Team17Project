@@ -201,7 +201,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 
 		dataManager.query(dataFilter, comparator, result);
 
-		assertTrue("Results arrived", waitForResults(result, 4));
+		assertTrue("Results arrived", waitForResults(result, 5));
 
 		// Verify this against the expected test dataset
 		List<QAModel> results = result.getCurrentResults();
@@ -214,7 +214,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 			assertTrue(((AuthoredTextItem)item).getBody().contains(searchStr));
 		}
 
-		assertEquals("Question count", 4, results.size());
+		assertEquals("Question count", 5, results.size());
 	}
 
 	/**
@@ -482,25 +482,19 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 	 * the tools/add_es_test_documents.bat script on Windows or Linux.
 	 */
 	public void test_DataSourceMultipleItemSave() {
-		List<QAModel> questionList = new ArrayList<QAModel>() {
-			private static final long serialVersionUID = 7524316168409756758L;
-
-		{
-			add(new QuestionItem(new UniqueId(), null, "author1", new Date(), "test_DataSourceMultipleItemSave", 0, "title1" ));
-			add(new CommentItem(new UniqueId(), null, "author2", new Date(), "test_DataSourceMultipleItemSave", 0));
-			add(new AnswerItem(new UniqueId(), null, "author3", new Date(), "test_DataSourceMultipleItemSave", 0));
-			add(new QuestionItem(new UniqueId(), null, "author4", new Date(), "test_DataSourceMultipleItemSave", 0, "title4" ));
-			add(new QuestionItem(new UniqueId(), null, "author5", new Date(), "test_DataSourceMultipleItemSave", 0, "title5" ));
-		}};
+		final UniqueId baseId = new UniqueId();
+		List<QAModel> questionList = new ArrayList<QAModel>();
+		
+		questionList.add(new QuestionItem(baseId, null, "q1author1", new Date(), "test_DataSourceMultipleItemSave", 0, "title1" ));
+		questionList.add(new CommentItem(new UniqueId(), baseId, "c1author2", new Date(), "test_DataSourceMultipleItemSave", 0));
+		questionList.add(new AnswerItem(new UniqueId(), baseId, "a1author3", new Date(), "test_DataSourceMultipleItemSave", 0));
+		questionList.add(new QuestionItem(new UniqueId(), null, "q2author4", new Date(), "test_DataSourceMultipleItemSave", 0, "title4" ));
+		questionList.add(new QuestionItem(new UniqueId(), null, "q3author5", new Date(), "test_DataSourceMultipleItemSave", 0, "title5" ));
 
 		// Save all items, waiting on the last operation to complete
 		for (QAModel item: questionList) {
-			System.out.println(String.format("Saving item %d", questionList.indexOf(item)));
-			if (questionList.indexOf(item) == questionList.size()-1) {
-				assertTrue("Save success", waitForItemSaved(item));
-			} else {
-				dataManager.saveItem(item, userContext);
-			}
+			System.out.println(String.format("Saving item %d (%s)", questionList.indexOf(item), item.getField(AuthoredItem.FIELD_AUTHOR)));
+			assertTrue("Save success", waitForItemSaved(item));
 		}
 
 		IItemComparator comparator = new DateComparator();
