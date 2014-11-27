@@ -3,7 +3,6 @@ package com.ualberta.team17.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -19,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ualberta.team17.AnswerItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.ItemType;
@@ -27,15 +27,15 @@ import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
+import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
-import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
+import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 
-@TargetApi(14)
 public class ListFragment extends Fragment {
 	public static final String TAXONOMY_NUM = "taxonomy_number";
 	public static final String FILTER_EXTRA = "FILTER";
@@ -54,11 +54,30 @@ public class ListFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_question_list, container, false);
-	    int mTaxonomy = getArguments().getInt(TAXONOMY_NUM);
+	    int mTaxonomy = getArguments().getInt(TAXONOMY_NUM, -1);
 	    
 		IItemComparator comp;
 		
 		switch (mTaxonomy) {
+		case -1:
+			// This means it wasn't sent by a taxonomy.
+			// Must be a search.
+			String searchTerm = getArguments().getString(QuestionListActivity.SEARCH_TERM);
+			
+			if (searchTerm == null) {
+				break;
+			}
+			
+			comp = new IdentityComparator();
+			
+			datafilter.setTypeFilter(ItemType.Question);
+			datafilter.addFieldFilter(AuthoredTextItem.FIELD_BODY, searchTerm, 
+					DataFilter.FilterComparison.QUERY_STRING, DataFilter.CombinationMode.SHOULD);
+			datafilter.addFieldFilter(QuestionItem.FIELD_TITLE, searchTerm, 
+					DataFilter.FilterComparison.QUERY_STRING, DataFilter.CombinationMode.SHOULD);
+			mIR = QAController.getInstance().getObjects(datafilter, comp);
+			
+			break;
 		case 0:
 			comp = new DateComparator();
 			datafilter.setTypeFilter(ItemType.Question);
@@ -113,14 +132,17 @@ public class ListFragment extends Fragment {
 	 */
 	private void handleListViewItemClick(AdapterView<?> av, View view, int i, long l) {
 		QAModel qaModel = mIR.getCurrentResults().get(i);
-		QuestionItem question = (QuestionItem) qaModel;
-		if (question != null) {
-			QAController.getInstance().markRecentlyViewed(qaModel);
-			
-			Intent intent = new Intent(this.getActivity(), QuestionViewActivity.class);
-			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, question.getUniqueId().toString());
-			startActivity(intent);
+		QAController.getInstance().markRecentlyViewed(qaModel);
+		
+		Intent intent = new Intent(this.getActivity(), QuestionViewActivity.class);
+		
+		if (qaModel instanceof AnswerItem) {
+			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, ((AnswerItem) qaModel).getParentItem().toString());
 		}
+		else {
+			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, qaModel.getUniqueId().toString());
+		}
+		startActivity(intent);
 	}
 	
 	/**

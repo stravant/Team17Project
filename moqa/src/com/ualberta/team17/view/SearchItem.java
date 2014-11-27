@@ -43,7 +43,7 @@ public class SearchItem extends LinearLayout {
 		ImageButton b = (ImageButton)this.findViewById(R.id.searchButton);
 		if (b != null) {
 			b.setImageResource(android.R.drawable.ic_menu_search);
-			b.setOnClickListener(new searchClickedListener());
+			b.setOnClickListener(new SearchClickedListener());
 		}		
 		
 		EditText et = (EditText)this.findViewById(R.id.searchBar);
@@ -121,7 +121,7 @@ public class SearchItem extends LinearLayout {
 	 * @author Jared
 	 *
 	 */
-	private class searchClickedListener implements OnClickListener {
+	private class SearchClickedListener implements OnClickListener {
 		
 		@Override
 		public void onClick(View view) {
