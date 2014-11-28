@@ -131,6 +131,48 @@ public class DataManagerTest extends DataManagerTester<LocalDataManager> {
 	}
 	
 	/**
+	 * Add a couple of items and mark them as to be viewed later
+	 * The should be in the to be viewed later list, and have the to be viewed later flag
+	 * equal to true.
+	 * Then mark them as viewed and verify that they are no longer to be viewed later.
+	 */
+	public void test_ViewLater() {
+		// Add the questions
+		QuestionItem q1 = controller.createQuestion("Question 1", "body.");
+		QuestionItem q2 = controller.createQuestion("Question 2", "body.");
+		
+		// Check flags
+		assertFalse(q1.getViewLater());
+		assertFalse(q2.getViewLater());
+		
+		// Mark the questions as to be viewed later
+		controller.markViewLater(q1);
+		controller.markViewLater(q2);
+		
+		// Query back
+		IncrementalResult r = controller.getViewLaterItems();
+		assertTrue(waitForResults(r, 2));
+		assertEquals(q2.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
+		assertEquals(q1.getUniqueId(), r.getCurrentResults().get(1).getUniqueId());
+		
+		// Check flags
+		assertTrue(q1.getViewLater());
+		assertTrue(q2.getViewLater());
+		
+		// View one of them
+		controller.markRecentlyViewed(q1);
+		
+		// Check change
+		IncrementalResult r2 = controller.getViewLaterItems();
+		assertTrue(waitForResults(r2, 1));
+		assertEquals(q2.getUniqueId(), r2.getCurrentResults().get(0).getUniqueId());
+		
+		// Check flags
+		assertTrue(q2.getViewLater());
+		assertFalse(q1.getViewLater());
+	}
+	
+	/**
 	 * Check that the haveUpvoted field works (Have I upvoted an item), and that
 	 * calling Controller::upvote multiple times does not result in multiple upvotes
 	 * counted in upvotecount total.

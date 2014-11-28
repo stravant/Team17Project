@@ -165,16 +165,42 @@ public class DataManager {
 	}
 	
 	/**
+	 * Mark an item as to be viewed later.
+	 * @param item The uniqueId of the item to mark as view later
+	 */
+	public void markViewLater(QAModel item) {
+		mUserContext.addViewLater(item.getUniqueId());
+		
+		// Update the view later flag right away while we're at it
+		if (item instanceof QuestionItem) {
+			((QuestionItem)item).setViewLater();
+		}
+		
+		// We may need to update the saved-ness of this item locally
+		((LocalDataManager)mLocalDataStore).saveItemIfCached(item.getUniqueId(), mUserContext);
+		
+		saveUserContextData(mUserContext);
+	}
+	
+	/**
 	 * Mark an item as recently viewed at this time
 	 * @param item The uniqueId of the item to mark as recently viewed
 	 */
-	public void markRecentlyViewed(UniqueId item) {
-		mUserContext.addRecentItem(item);
+	public void markRecentlyViewed(QAModel item) {
+		// Mark as viewed in the user context
+		mUserContext.addRecentItem(item.getUniqueId());
+		
+		// The item should no longer be view later
+		mUserContext.removeViewLater(item.getUniqueId());
+		
+		// Update the view later flag to false
+		if (item instanceof QuestionItem) {
+			((QuestionItem)item).clearViewLater();
+		}
 		
 		// We may need to update the saved-ness of this item locally
-		((LocalDataManager)mLocalDataStore).saveItemIfCached(item, mUserContext);
+		((LocalDataManager)mLocalDataStore).saveItemIfCached(item.getUniqueId(), mUserContext);
 		
-		// TODO: Async call async
 		saveUserContextData(mUserContext);
 	}
 	

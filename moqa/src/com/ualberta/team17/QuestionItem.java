@@ -15,6 +15,7 @@ public class QuestionItem extends AuthoredTextItem {
 	private String mTitle;
 	private transient int mReplyCount;
 	private transient boolean mIsFavorited = false;
+	private transient boolean mShouldViewLater = false;
 	private transient boolean mIsAttached = false;
 	
 	/* Ctor */
@@ -48,6 +49,25 @@ public class QuestionItem extends AuthoredTextItem {
 	
 	public boolean isFavorited() {
 		return mIsFavorited;
+	}
+	
+	/* Should view later? */
+	public void setViewLater() {
+		if (!mShouldViewLater) {
+			mShouldViewLater = true;
+			notifyViews();
+		}
+	}
+	
+	public void clearViewLater() {
+		if (mShouldViewLater) {
+			mShouldViewLater = false;
+			notifyViews();
+		}
+	}
+	
+	public boolean getViewLater() {
+		return mShouldViewLater;
 	}
 	
 	/* Is attached to? */
