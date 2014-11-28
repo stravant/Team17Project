@@ -115,7 +115,7 @@
 	    android:layout_height="1dp"	    
 	    android:background="@android:color/darker_gray"
 	    android:layout_below="@+id/content" />
-	
+
 	<RelativeLayout 
 	    android:id="@+id/tabSection"
 	    android:layout_width="fill_parent"	   

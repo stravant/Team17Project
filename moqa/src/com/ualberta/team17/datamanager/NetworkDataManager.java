@@ -79,6 +79,8 @@ import com.ualberta.team17.UpvoteItem;
 				return null;
 			}
 
+			System.out.println(String.format("NetworkDataManager received %d result, and %d meta results", results.size(), metaResults.size()));
+
 			return new ArrayList<List<QAModel>>() {{
 				add(results);
 				addAll(metaResults);
@@ -360,6 +362,7 @@ import com.ualberta.team17.UpvoteItem;
 		}
 
 		ESSearchBuilder searchBuilder = new ESSearchBuilder(filter, comparator);
+		System.out.println("Search query: " + searchBuilder);
 		Search search = 
 			searchBuilder
 			.getBuilder()
@@ -388,10 +391,15 @@ import com.ualberta.team17.UpvoteItem;
 			initJestClient();
 		}
 
+		String type = item.getItemType().toString().toLowerCase();
+		if (item instanceof UpvoteItem && null != ((UpvoteItem)item).getParentType()) {
+			type += "_" + ((UpvoteItem)item).getParentType().toString().toLowerCase();
+		}
+
 		Builder builder = 
 		 new Index.Builder(DataManager.getGsonObject().toJson(item))
 			.index(mEsServerIndex)
-			.type(item.getItemType().toString().toLowerCase())
+			.type(type)
 			.id(item.getUniqueId().toString());
 
 		if (null != item.getField(AuthoredItem.FIELD_PARENT) && !(item instanceof CommentItem)) {

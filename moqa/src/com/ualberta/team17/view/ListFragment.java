@@ -32,6 +32,7 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.TopUpvotedDataFilter;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
@@ -123,13 +124,13 @@ public class ListFragment extends Fragment {
 			datafilter = null;
 			break;
 		case 3:
-			comp = new UpvoteComparator();
-			datafilter.setTypeFilter(ItemType.Question);
+			comp = new IdentityComparator();
+			datafilter = new TopUpvotedDataFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;	
 		case 4:
-			comp = new UpvoteComparator();
-			datafilter.setTypeFilter(ItemType.Answer);
+			comp = new IdentityComparator();
+			datafilter = new TopUpvotedDataFilter(ItemType.Answer);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 5:
