@@ -6,10 +6,9 @@
 
     <ImageButton
         android:id="@+id/searchButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/small_indent"
-        android:background="@null" />
+        android:layout_width="64dp"
+        android:layout_height="fill_parent"
+        android:background="@drawable/selectable_imagebutton" />
 
     <EditText
         android:id="@+id/searchBar"
@@ -17,11 +16,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/small_indent"
         android:layout_marginRight="@dimen/small_indent"
         android:layout_toRightOf="@+id/searchButton"
         android:background="@color/milk"
         android:ems="10"
+        android:lines="1"
+        android:paddingLeft="@dimen/tiny_indent"
         android:visibility="gone" />
 
 </RelativeLayout>
