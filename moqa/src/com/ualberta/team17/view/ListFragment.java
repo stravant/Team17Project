@@ -91,6 +91,7 @@ public class ListFragment extends Fragment {
 			break;
 		case 2:
 			mIR = QAController.getInstance().getFavorites();
+			datafilter = null;
 			break;
 		case 3:
 			comp = new UpvoteComparator();
@@ -104,6 +105,8 @@ public class ListFragment extends Fragment {
 			break;
 		case 5:
 			mIR = QAController.getInstance().getRecentItems();
+			datafilter = null;
+			break;
 		}
 		
 		addObserver(mIR);		
@@ -313,6 +316,10 @@ public class ListFragment extends Fragment {
 		 * @param pageNumber
 		 */
 		public void getPage(int pageNumber) {
+			if (null == datafilter) {
+				return;
+			}
+
 			datafilter.setPage(pageNumber);
 			QAController.getInstance().getObjectsWithResult(datafilter, mIR);
 		}
