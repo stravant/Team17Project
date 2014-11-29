@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    tools:context="com.ualberta.team17.view.LoginActivity" >
-
+    tools:context=".view.LoginActivity" >
+    
     <EditText
         android:id="@+id/usernameText"
         style="@style/smallEditText"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/loginWarning"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="114dp"
+        android:layout_marginTop="-25dp"
         android:ems="10"
         android:gravity="center"
         android:text="username" >
@@ -35,9 +35,20 @@
         android:id="@+id/loginWarning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/masthead"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:layout_marginTop="16dp"
         android:text="Usernames must be between 4 and 20 characters. Spaces aren&apos;t allowed." />
+
+    <ImageView
+        android:id="@+id/masthead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="51dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/moqa_logo" />
 
 </RelativeLayout>

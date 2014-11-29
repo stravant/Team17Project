@@ -3,18 +3,27 @@ package com.ualberta.team17.view;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
+
 import com.ualberta.team17.R;
 import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
 
@@ -28,6 +37,8 @@ import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
  *
  */
 public class QuestionListActivity extends Activity implements OnItemSelectedListener{
+	public final static String SEARCH_TERM = "search_term";
+	
 	private String[] sortOptions;
 	private DrawerLayout rightDrawerLayout;
 	private ListView rightDrawerList;
@@ -51,6 +62,25 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 			fragmentManager.beginTransaction().add(R.id.content_frame, leftDrawer).commit();
 			fragmentManager.beginTransaction().replace(R.id.content_frame, rightDrawer).commit();
 		}
+		
+		Intent intent = this.getIntent();
+				
+		if (intent == null) {
+			return;
+		}
+		
+		if (intent.getSerializableExtra(SEARCH_TERM) != null) {
+			String searchValue = (String) intent.getSerializableExtra(SEARCH_TERM);	
+			
+			Bundle args = new Bundle();
+			args.putString(SEARCH_TERM, searchValue);
+			fragment = new ListFragment();
+			FragmentManager fragmentManager = getFragmentManager();
+			fragment.setArguments(args);
+			fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+			setTitle(getResources().getText(R.string.action_search));
+		}
+
 	}
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
@@ -69,6 +99,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		fragment.setArguments(args);
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 		setTitle(myTaxonomy[position]);
+		//this.getActionBar().setTitle(myTaxonomy[position]);
 	}
 
 
@@ -87,6 +118,8 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		MenuItem mi = menu.findItem(R.id.action_search);
 		SearchItem si = new SearchItem(this.getBaseContext());
 		mi.setActionView(si);
+		si.setReturnListener(new SearchReturnListener());
+		
 		return true;
 	}
 
@@ -113,6 +146,10 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onItemSelected(int position) {
+		selectItem(position);
+	}
 
 	public class SortMenuFragment extends Fragment {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -148,9 +185,53 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 
 	}
 	
-	@Override
-	public void onItemSelected(int position) {
-		selectItem(position);
-	}
+	/**
+	 * Triggered whenever the enter is hit while the search bar is active.
+	 * 
+	 * @author Jared
+	 *
+	 */
+	private class SearchReturnListener implements OnEditorActionListener {
 
+        @Override
+        public boolean onEditorAction(TextView v, int actionId,
+                KeyEvent event) {
+            if (event != null&& (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                ViewGroup g = (ViewGroup) v.getParent();
+    			if (g != null) {
+    				
+    				EditText et = (EditText) g.findViewById(R.id.searchBar);
+    				if (et != null) {
+    					
+    					if (et.isShown()) {
+    						et.setVisibility(View.GONE);
+    						
+    						String searchTerm = et.getText().toString();
+    						if (searchTerm.equals("") || searchTerm.equals("\n")) {
+    							return false;
+    						}						
+
+    						Bundle args = new Bundle();
+    						args.putString(SEARCH_TERM, searchTerm);
+    						fragment = new ListFragment();
+    						FragmentManager fragmentManager = getFragmentManager();
+    						fragment.setArguments(args);
+    						fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+    						QuestionListActivity.this.getActionBar().setTitle(getResources().getText(R.string.action_search));
+    																	
+    					}
+    					else {
+    						// Show the bar and activate it
+    						et.setVisibility(View.VISIBLE);
+    						et.setSelected(true);
+    					}							
+    				}
+    			}
+                
+               return true;
+
+            }
+            return false;
+        }
+    }
 }

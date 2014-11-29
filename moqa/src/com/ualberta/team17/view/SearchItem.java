@@ -1,7 +1,6 @@
 package com.ualberta.team17.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.ualberta.team17.R;
 
@@ -43,7 +43,7 @@ public class SearchItem extends LinearLayout {
 		ImageButton b = (ImageButton)this.findViewById(R.id.searchButton);
 		if (b != null) {
 			b.setImageResource(android.R.drawable.ic_menu_search);
-			b.setOnClickListener(new searchClickedListener());
+			b.setOnClickListener(new SearchClickedListener());
 		}		
 		
 		EditText et = (EditText)this.findViewById(R.id.searchBar);
@@ -86,12 +86,19 @@ public class SearchItem extends LinearLayout {
 	 * Allows an activity to attach a specific click listener to be done 
 	 * when the search button is clicked.
 	 * 
-	 * @param l the listeber to execute upon the search buttons click.
+	 * @param l the listener to execute upon the search buttons click.
 	 */
 	public void setOnClickListener(OnClickListener l) {
 		ImageButton b = (ImageButton)this.findViewById(R.id.searchButton);
 		if (b != null) {
 			b.setOnClickListener(l);
+		}
+	}
+	
+	public void setReturnListener(OnEditorActionListener l) {
+		EditText et = (EditText)this.findViewById(R.id.searchBar);
+		if (et != null) {
+			et.setOnEditorActionListener(l);
 		}
 	}
 	
@@ -121,7 +128,7 @@ public class SearchItem extends LinearLayout {
 	 * @author Jared
 	 *
 	 */
-	private class searchClickedListener implements OnClickListener {
+	private class SearchClickedListener implements OnClickListener {
 		
 		@Override
 		public void onClick(View view) {

@@ -23,7 +23,7 @@ public abstract class DataManagerTester<T extends IDataSourceManager> extends Ac
 	}
 
 	// Max amount of time to wait for elastic search to return a query
-	final Integer maxWaitSeconds = 2;
+	final Integer maxWaitSeconds = 4;
 
 	// Time to wait after an operation that modifies the index before running another query
 	final Integer maxModOperationWaitMs = 1000;

@@ -61,6 +61,11 @@ public class UserContext implements Serializable {
 	private List<UniqueId> mRecentlyViewed;
 	
 	/**
+	 * To view later items
+	 */
+	private List<UniqueId> mViewLater;
+	
+	/**
 	 * The items that we have stored locally, waiting to be
 	 * pushed to the network when we next connect.
 	 */
@@ -82,6 +87,7 @@ public class UserContext implements Serializable {
 		mUserReplies = new ArrayList<UniqueId>();
 		mLocalOnlyItems = new ArrayList<UniqueId>();
 		mRecentlyViewed = new ArrayList<UniqueId>();
+		mViewLater = new ArrayList<UniqueId>();
 	}
 	
 	/**
@@ -102,18 +108,37 @@ public class UserContext implements Serializable {
 		mLocalOnlyItems.clear();
 		mUserReplies.clear();
 		mRecentlyViewed.clear();
-		//
+		mViewLater.clear();
+		
+		// Read in sets of items
 		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("favorites")) {
-			mUserFavorites.add(UniqueId.fromString(item.getAsString()));
+			final UniqueId id = UniqueId.fromString(item.getAsString());
+			mUserFavorites.add(id);
+			mAllItemSet.add(id);
 		}
 		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("local_only")) {
 			mLocalOnlyItems.add(UniqueId.fromString(item.getAsString()));
 		}
 		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("replies")) {
-			mUserReplies.add(UniqueId.fromString(item.getAsString()));
+			final UniqueId id = UniqueId.fromString(item.getAsString());
+			mUserReplies.add(id);
+			mAllItemSet.add(id);
 		}
 		for (JsonElement item: elem.getAsJsonObject().getAsJsonArray("recent")) {
-			mRecentlyViewed.add(UniqueId.fromString(item.getAsString()));
+			final UniqueId id = UniqueId.fromString(item.getAsString());
+			mRecentlyViewed.add(id);
+			mAllItemSet.add(id);
+		}
+		
+		// View later items was added later, outdated test data sets may not have
+		// a set of view later items.
+		JsonArray laterArray = elem.getAsJsonObject().getAsJsonArray("later");
+		if (laterArray != null) {
+			for (JsonElement item: laterArray) {
+				final UniqueId id = UniqueId.fromString(item.getAsString());
+				mViewLater.add(id);
+				mAllItemSet.add(id);
+			}
 		}
 	}
 	
@@ -122,6 +147,7 @@ public class UserContext implements Serializable {
 	 * @return
 	 */
 	public JsonElement saveToJson() {
+		// Build arrays
 		JsonArray favoriteArray = new JsonArray();
 		for (UniqueId item: mUserFavorites) {
 			favoriteArray.add(new JsonPrimitive(item.toString()));
@@ -138,11 +164,19 @@ public class UserContext implements Serializable {
 		for (UniqueId item: mRecentlyViewed) {
 			recentArray.add(new JsonPrimitive(item.toString()));
 		}
+		JsonArray laterArray = new JsonArray();
+		for (UniqueId item: mViewLater) {
+			laterArray.add(new JsonPrimitive(item.toString()));
+		}
+		
+		// Build main object from the arrays
 		JsonObject obj = new JsonObject();
 		obj.add("favorites", favoriteArray);
 		obj.add("local_only", localOnlyArray);
 		obj.add("replies", repliesArray);
 		obj.add("recent", recentArray);
+		obj.add("later", laterArray);
+		
 		return obj;
 	}
 	
@@ -198,6 +232,50 @@ public class UserContext implements Serializable {
 	}
 	
 	/**
+	 * Get view later items
+	 * @return The view later items
+	 */
+	public List<UniqueId> getViewLater() {
+		return mViewLater;
+	}
+	
+	/**
+	 * Add a view later item. If the item was already marked as
+	 * view later, then it will be re-inserted at the start of the
+	 * view later list.
+	 * @param itemId The item to add
+	 */
+	public void addViewLater(UniqueId itemId) {
+		// Remove the item if it exists
+		mViewLater.remove(itemId);
+		
+		// Insert at start of list since you're probably most interested in
+		// the view later items that you saved most recently.
+		mViewLater.add(0, itemId);
+	}
+	
+	/**
+	 * Getter for view later
+	 * @return Whether the item should be viewed later
+	 */
+	public boolean shouldViewLater(UniqueId item) {
+		return mViewLater.contains(item);
+	}
+	
+	/**
+	 * Remove a view later item (To be called when it is... well,
+	 * viewed later).
+	 */
+	public void removeViewLater(UniqueId itemId) {
+		mViewLater.remove(itemId);
+		
+		// The view later list may or may not have been the last reference
+		// to that itemId, so if there are no more references remove it from
+		// the all item set.
+		removeFromAllItemsIfNotReferenced(itemId);
+	}
+	
+	/**
 	 * Get the replies content that this user has authored
 	 * @return
 	 */
@@ -220,10 +298,11 @@ public class UserContext implements Serializable {
 	 * Check if an item is referenced in any of our lists, and if not
 	 * remove it from the allItemSet
 	 */
-	private void maybeRemoveFromAllItemSet(UniqueId id) {
+	private void removeFromAllItemsIfNotReferenced(UniqueId id) {
 		if (!mRecentlyViewed.contains(id) &&
 			!mUserReplies.contains(id) &&
-			!mUserFavorites.contains(id)) 
+			!mUserFavorites.contains(id) &&
+			!mViewLater.contains(id)) 
 		{
 			mAllItemSet.remove(id);
 		}
@@ -253,7 +332,7 @@ public class UserContext implements Serializable {
 			UniqueId removed = mRecentlyViewed.remove(mRecentlyViewed.size() - 1);
 			
 			// Check if the removed item is still in the all item set
-			maybeRemoveFromAllItemSet(removed);
+			removeFromAllItemsIfNotReferenced(removed);
 		}
 	}
 	

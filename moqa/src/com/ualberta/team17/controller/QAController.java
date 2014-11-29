@@ -129,14 +129,34 @@ public class QAController {
 	}
 	
 	/**
+	 * Get the items that have been marked as to be viewed later
+	 * most recently with QAController::markViewLater
+	 * @return An IncrementalResult that will be populated with the to be viewed later items
+	 */
+	public IncrementalResult getViewLaterItems() {
+		return mDataManager.doQuery(
+				mDataManager.getUserContext().getViewLater(), 
+				new IdentityComparator());
+	}
+	
+	/**
 	 * Mark an item as recently viewed
 	 * Mainly to be used for questions.
 	 * @param item
 	 */
 	public void markRecentlyViewed(QAModel item) {
-		mDataManager.markRecentlyViewed(item.getUniqueId());
+		mDataManager.markRecentlyViewed(item);
 	}
 	
+	/**
+	 * Mark an item as to be viewed later
+	 * Mainly to be used for questions
+	 * @param item The item to mark as to be viewed later
+	 */
+	public void markViewLater(QAModel item) {
+		mDataManager.markViewLater(item);
+	}
+	 
 	/**
 	 * Upvote a given question or answer
 	 * @param target The item to upvote

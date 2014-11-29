@@ -24,4 +24,6 @@
 	<color name="comment_grey">#666666</color>
 	<color name="dark_grey">#525252</color>
 	<color name="transparent">#00000000</color>
+	<color name="app_bg">#ecc59b</color>
+	<color name="highlighted">#BB4394CA</color>
 </resources>
