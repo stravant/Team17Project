@@ -347,10 +347,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			TextView upvoteTextView = (TextView) iconSideView.findViewById(R.id.upvoteCount);
 			
 			ImageButton favoriteButton = (ImageButton) iconSideView.findViewById(R.id.favoriteButton);
-			ImageButton upvoteButton = (ImageButton) iconSideView.findViewById(R.id.upvoteButton);	
-						
-			//replace with button or imagebutton
-			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);					
+			ImageButton upvoteButton = (ImageButton) iconSideView.findViewById(R.id.upvoteButton);							
 			
 			RelativeLayout commentTabButton = (RelativeLayout) tabSelectView.findViewById(R.id.commentTabHolder);
 			RelativeLayout attachmentTabButton = (RelativeLayout) tabSelectView.findViewById(R.id.viewAttachmentHolder);			
@@ -360,6 +357,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			rqTabButton.setOnClickListener(new TabSelectListener(Tab.RQ));
 			
 			LinearLayout commentsView = (LinearLayout) tabContentView.findViewById(R.id.commentView);		
+			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);			
 			AttachmentView attachmentsView = (AttachmentView) tabContentView.findViewById(R.id.attachmentView);		
 
 			if(qaItem.parent.mType == ItemType.Question) {
@@ -372,6 +370,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				
 				titleTextView.setText(question.getTitle());
 				upvoteTextView.setText("" + question.getUpvoteCount());
+				
 				if(question.getReplyCount() == 1) {
 					answerCountView.setText(getString(R.string.answer_count_one));
 				} else {
