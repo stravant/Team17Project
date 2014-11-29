@@ -210,7 +210,7 @@
 	                android:layout_height="wrap_content"
 	                android:layout_centerHorizontal="true"
 	                android:layout_below="@+id/commentView"	                
-	                android:text="Add new Comment"
+	                android:text="Add a Comment"
 	                android:gravity="center"
 	                android:layout_gravity="center"
 	                style="@style/subtleButton"
