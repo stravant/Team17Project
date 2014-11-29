@@ -7,7 +7,7 @@
 	    android:id="@+id/content"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    style="@style/darkLayout"
+	    style="@style/lightLayout"
 	    android:weightSum="1"
 	    android:orientation="horizontal"
 	    android:divider="@drawable/v_divider"
@@ -17,8 +17,8 @@
 		<RelativeLayout 
 	        android:id="@+id/textSide"	        
 	        android:layout_width="0dp"
-	        android:layout_weight=".75"
-	        android:layout_height="fill_parent"        
+	        android:layout_weight=".85"
+	        android:layout_height="wrap_content"        
 	        style="@style/lightLayout" >
 	        
 		    <TextView
@@ -73,9 +73,10 @@
 		    android:id="@+id/iconSide"
 		    style="@style/lightLayout"
 		    android:layout_width="0dp"
-		    android:layout_height="fill_parent"
+		    android:layout_height="100dp"
+			android:layout_centerVertical="true"		    
 		    android:layout_toRightOf="@+id/textSide"
-		    android:layout_weight=".25" >
+		    android:layout_weight=".15" >
 
 
 		    <ImageButton
@@ -83,23 +84,26 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_centerHorizontal="true"
+		        android:layout_above="@+id/upvoteCount"
 		        android:background="@drawable/ic_action_collapse" />
 
 		    <TextView
 		        android:id="@+id/upvoteCount"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:layout_below="@+id/upvoteButton"
+		        android:layout_centerVertical="true"
 		        android:layout_centerHorizontal="true"
 		        android:gravity="center"
-		        android:text="0" />
+		        android:text="0" 
+		        style="@style/titleText3"/>
 
 		    <ImageButton
 		        android:id="@+id/favoriteButton"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:layout_below="@+id/upvoteCount"
-		        android:layout_centerHorizontal="true"
+		        android:layout_centerHorizontal="true"		       
+		        android:layout_marginTop="4dp"
 		        android:background="@drawable/ic_action_favorite" />
 		</RelativeLayout>
 		
@@ -134,9 +138,9 @@
 			    android:layout_width="0dp"
                 android:layout_weight="0.33"	   
 			    android:layout_height="wrap_content"			          
-			    style="@style/mediumLayout" >		    
+			    style="@style/selectedTab" >		    
 		        
-		        <ImageButton
+		        <ImageView
 	                android:id="@+id/commentTabButton"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"                
@@ -151,9 +155,9 @@
 			    android:layout_width="0dp"
                 android:layout_weight="0.33"	   
 			    android:layout_height="wrap_content"			          
-			    style="@style/lightmediumLayout" >
+			    style="@style/unselectedTab" >
 		        
-			    <ImageButton
+			    <ImageView
 	                android:id="@+id/viewAttachmentButton"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"   
@@ -167,7 +171,7 @@
 			    android:layout_width="0dp"
                 android:layout_weight="0.33"	   
 			    android:layout_height="fill_parent"			          
-			    style="@style/lightmediumLayout" >
+			    style="@style/unselectedTab" >
 			    
                 <TextView
 	                android:id="@+id/relatedViewButton"
@@ -175,9 +179,10 @@
 	                android:layout_height="wrap_content"
 	                android:layout_centerHorizontal="true"	
 	                android:layout_centerVertical="true"                
-	                android:text="RQ"
+	                android:text="Related"
 	                android:gravity="center"
 	                android:layout_gravity="center"
+	                style="@style/bodyText4"
        			/>        			
 		    </RelativeLayout>
                           
@@ -199,7 +204,7 @@
                 android:orientation="vertical" >
             </LinearLayout>
             
-            <TextView
+            <Button
 	                android:id="@+id/createCommentButton"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
@@ -208,6 +213,7 @@
 	                android:text="Add new Comment"
 	                android:gravity="center"
 	                android:layout_gravity="center"
+	                style="@style/subtleButton"
        			/>  
        			
        		<com.ualberta.team17.view.AttachmentView

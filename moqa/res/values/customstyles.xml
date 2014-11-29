@@ -15,6 +15,12 @@
 	    <item name="android:textSize">@dimen/medium_text</item>	    
 	</style>
 	
+	<style name="titleText3">
+	    <item name="android:background">@color/milk</item>	    
+	    <item name="android:textColor">@color/compl_blue_split1</item>
+	    <item name="android:textSize">@dimen/extra_large_text</item>	    
+	</style>
+	
 	<style name="bodyText1">
 	    <item name="android:background">@color/milk</item>	    
 	    <item name="android:textColor">@color/black</item>
@@ -39,6 +45,11 @@
 	    <item name="android:textSize">@dimen/large_text</item>	    	    
 	</style>
 	
+	<style name="bodyText4">	   	    
+	    <item name="android:textColor">@color/dark_grey</item>
+	    <item name="android:textSize">@dimen/medium_text</item>	    	      
+	</style>
+	
 	<style name="authorText1">
 	    <item name="android:background">@color/milk</item>	    
 	    <item name="android:textColor">@color/compl_blue_split2</item>
@@ -49,6 +60,14 @@
 	    <item name="android:background">@color/milk3</item>	    
 	    <item name="android:textColor">@color/comment_grey</item>
 	    <item name="android:textSize">@dimen/small_text</item>	     
+	</style>
+	
+	<style name="selectedTab">
+	    <item name="android:background">@color/milk3</item>
+	</style>	
+	
+	<style name="unselectedTab">
+	    <item name="android:background">@color/milk2</item>
 	</style>	
 	
 	<style name="lightLayout">
@@ -79,6 +98,13 @@
 	<style name="basicButton" parent="android:attr/buttonStyleSmall">
 	    <item name="android:background">@drawable/basic_button</item>
 	    <item name="android:textColor">@color/white</item>
+	</style>
+	
+	<style name="subtleButton" parent="android:attr/buttonStyleSmall">
+	    <item name="android:background">@drawable/sb_selector</item>
+	    <item name="android:textColor">@drawable/sb_text</item>
+	    <item name="android:textSize">@dimen/medium_text</item>
+	    <item name="android:minHeight">0dp</item>
 	</style>
 	
 </resources>
