@@ -1,5 +1,6 @@
 package com.ualberta.team17.view;
 
+import java.nio.channels.SelectableChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.R.id;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
@@ -20,6 +22,7 @@ import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
 
+import android.R.color;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +30,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +41,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class QuestionViewActivity extends Activity implements IQAView {
@@ -50,6 +55,12 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private enum Mode {
 		CREATE,
 		DISPLAY
+	}
+	
+	private enum Tab {
+		COMMENT,
+		ATTACHMENT,
+		RQ		
 	}
 	
 	/**
@@ -321,32 +332,45 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			View qaItemView = convertView;
 			if (null == qaItemView) {
 				qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
-				}
+				}		
 
-			View userBar = qaItemView.findViewById(R.id.userBar);
 			
-			TextView titleTextView = (TextView) qaItemView.findViewById(R.id.titleText);
-			TextView bodyTextView = (TextView) qaItemView.findViewById(R.id.bodyText);
+			View textSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.textSide);
+			View iconSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.iconSide);
+			View tabSelectView = qaItemView.findViewById(R.id.tabSection).findViewById(R.id.tabSelect);
+			View tabContentView = qaItemView.findViewById(R.id.tabSection).findViewById(R.id.tabContent);
+			
+			TextView titleTextView = (TextView) textSideView.findViewById(R.id.titleText);
+			TextView bodyTextView = (TextView) textSideView.findViewById(R.id.bodyText);
 			TextView answerCountView = (TextView) qaItemView.findViewById(R.id.answerCountView);
-			TextView authorTextView = (TextView) userBar.findViewById(R.id.authorText);
+			TextView authorTextView = (TextView) textSideView.findViewById(R.id.authorBar).findViewById(R.id.authorText);
+			TextView upvoteTextView = (TextView) iconSideView.findViewById(R.id.upvoteCount);
 			
-			AttachmentView attachmentsView = (AttachmentView) qaItemView.findViewById(R.id.attachmentView);
+			ImageButton favoriteButton = (ImageButton) iconSideView.findViewById(R.id.favoriteButton);
+			ImageButton upvoteButton = (ImageButton) iconSideView.findViewById(R.id.upvoteButton);							
+			
+			RelativeLayout commentTabButton = (RelativeLayout) tabSelectView.findViewById(R.id.commentTabHolder);
+			RelativeLayout attachmentTabButton = (RelativeLayout) tabSelectView.findViewById(R.id.viewAttachmentHolder);			
+			RelativeLayout rqTabButton = (RelativeLayout) tabSelectView.findViewById(R.id.relatedViewHolder);
+			commentTabButton.setOnClickListener(new TabSelectListener(Tab.COMMENT));
+			attachmentTabButton.setOnClickListener(new TabSelectListener(Tab.ATTACHMENT));			
+			rqTabButton.setOnClickListener(new TabSelectListener(Tab.RQ));
+			
+			LinearLayout commentsView = (LinearLayout) tabContentView.findViewById(R.id.commentView);		
+			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);			
+			AttachmentView attachmentsView = (AttachmentView) tabContentView.findViewById(R.id.attachmentView);		
 
-			ImageButton favoriteButton = (ImageButton) userBar.findViewById(R.id.favoriteButton);
-			ImageButton attachmentButton = (ImageButton) userBar.findViewById(R.id.viewAttachmentButton);
-			ImageButton commentButton = (ImageButton) userBar.findViewById(R.id.createCommentButton);
-			ImageButton upvoteButton = (ImageButton) userBar.findViewById(R.id.upvoteButton);
-
-			LinearLayout commentsView = (LinearLayout) qaItemView.findViewById(R.id.commentView);
 			if(qaItem.parent.mType == ItemType.Question) {
 				QuestionItem question = (QuestionItem) qaItem.parent;
 				
+				tabSelectView.setVisibility(View.VISIBLE);
 				titleTextView.setVisibility(View.VISIBLE);
-				favoriteButton.setVisibility(View.VISIBLE);
-				attachmentButton.setVisibility(View.VISIBLE);
+				favoriteButton.setVisibility(View.VISIBLE);				
 				answerCountView.setVisibility(View.VISIBLE);
 				
 				titleTextView.setText(question.getTitle());
+				upvoteTextView.setText("" + question.getUpvoteCount());
+				
 				if(question.getReplyCount() == 1) {
 					answerCountView.setText(getString(R.string.answer_count_one));
 				} else {
@@ -357,9 +381,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				attachmentsView.setVisibility(qaItem.attachments.size() > 0 ? View.VISIBLE : View.GONE);
 
 			} else if (qaItem.parent.mType == ItemType.Answer) {
+				tabSelectView.setVisibility(View.GONE);
 				titleTextView.setVisibility(View.GONE);
-				favoriteButton.setVisibility(View.GONE);
-				attachmentButton.setVisibility(View.GONE);
+				favoriteButton.setVisibility(View.GONE);				
 				answerCountView.setVisibility(View.GONE);
 				attachmentsView.setVisibility(View.GONE);
 				
@@ -484,7 +508,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		
 	}
 	
-	private class AddAnswerListener implements View.OnClickListener {
+	private class AddAnswerListener implements View.OnClickListener {		
 
 		@Override
 		public void onClick(View v) {
@@ -492,6 +516,70 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			popup.show(getFragmentManager(), "answer");
 			
 		}		
+	}
+	
+	private class TabSelectListener implements View.OnClickListener {
+		private Tab tab;
+		
+		public TabSelectListener(Tab val) {
+			super();
+			tab = val;
+		}
+		
+		@Override
+		public void onClick(View v) {
+			LinearLayout tabSelect = (LinearLayout) v.getParent();
+			RelativeLayout tabSection = (RelativeLayout) tabSelect.getParent();
+			RelativeLayout tabContent = (RelativeLayout) tabSection.findViewById(R.id.tabContent);
+			
+			RelativeLayout commentTab = (RelativeLayout) tabSelect.findViewById(R.id.commentTabHolder);
+			RelativeLayout attachmentTab = (RelativeLayout) tabSelect.findViewById(R.id.viewAttachmentHolder);
+			RelativeLayout rqTab = (RelativeLayout) tabSelect.findViewById(R.id.relatedViewHolder);
+			
+			//Set the same as unselectedtab style
+			commentTab.setBackgroundColor(Color.parseColor("#fcf2d3"));
+			attachmentTab.setBackgroundColor(Color.parseColor("#fcf2d3"));
+			rqTab.setBackgroundColor(Color.parseColor("#fcf2d3"));
+			
+			v.setBackgroundColor(Color.parseColor("#f7ebca"));
+
+			View commentView = tabContent.findViewById(R.id.commentView);
+			View commentCButton = tabContent.findViewById(R.id.createCommentButton);
+			View attachmentView = tabContent.findViewById(R.id.attachmentView);
+			//View rqView = tabContent.findViewById(R.id.rqView);
+			
+			switch (tab) {
+			
+				case COMMENT: 
+					commentView.setVisibility(View.VISIBLE);
+					commentCButton.setVisibility(View.VISIBLE);
+					attachmentView.setVisibility(View.GONE);
+					//rqView.setVisibility(View.GONE);
+					break;
+					
+				case ATTACHMENT:
+					commentView.setVisibility(View.GONE);
+					commentCButton.setVisibility(View.GONE);
+					attachmentView.setVisibility(View.VISIBLE);
+					//rqView.setVisibility(View.GONE);
+					break;
+				
+				case RQ:
+					commentView.setVisibility(View.GONE);
+					commentCButton.setVisibility(View.GONE);
+					attachmentView.setVisibility(View.GONE);
+					//rqView.setVisibility(View.VISIBLE);
+					break;		
+					
+				default: 
+					commentView.setVisibility(View.GONE);
+					commentCButton.setVisibility(View.GONE);
+					attachmentView.setVisibility(View.GONE);
+					//rqView.setVisibility(View.GONE);
+					break;
+			}
+		}
+		
 	}
 	
 	private class AddCommentListener implements View.OnClickListener {
