@@ -21,7 +21,7 @@ import com.ualberta.team17.R;
 public class TaxonomyMenuFragment extends Fragment {
 	private String[] myTaxonomy;
 	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
+	ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
 	OnItemSelectedListener mListener;
 	@Override
