@@ -47,6 +47,13 @@ public class AttachmentItem extends AuthoredItem {
 		return mData;
 	}
 	
+	/* Setters */
+	// This needs to exist because an attachment can be created before
+	// its parent question, so we may need to connect it later.
+	public void setParent(UniqueId parent) {
+		this.mParentItem = parent;
+	}
+	
 	/**
 	 * Encode a bitmap into a byte array.
 	 * @param image The image to encode

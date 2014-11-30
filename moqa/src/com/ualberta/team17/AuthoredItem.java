@@ -21,7 +21,8 @@ public abstract class AuthoredItem extends QAModel {
 	public static final String FIELD_PARENT = "parent";
 	public static final String FIELD_DATE = "date";
 
-	private UniqueId mParentItem;
+	// This is protected because Attachments may need to change it.
+	protected UniqueId mParentItem;
 	private String mAuthor;
 	private Date mDate;
 	
