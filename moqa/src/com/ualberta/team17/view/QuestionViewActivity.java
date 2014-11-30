@@ -338,14 +338,22 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private class QABody {
 		public AuthoredTextItem parent;
 		public List<CommentItem> comments;
-		public List<AttachmentItem> attachments;
 		
 		public QABody(AuthoredTextItem initParent) {
 			parent = initParent;
 			comments = new ArrayList<CommentItem>();
+		}
+	}
+	
+	private class QuestionBody extends QABody {
+		public List<AttachmentItem> attachments;
+
+		public QuestionBody(AuthoredTextItem initParent) {
+			super(initParent);
 			attachments = new ArrayList<AttachmentItem>();
 		}
-	}	
+		
+	}
 	
 	/**
 	 * Adapter for QABody. Connects the body of the Question/Answer
@@ -369,10 +377,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		 * Returns the view after adding the list content.
 		 */
 		public View getView( int position, View convertView, ViewGroup parent ) {
-			QABody qaItem = mObjects.get(position);
+			QABody qaBody = mObjects.get(position);
 
 			LayoutInflater inflater = null;
-			if (null == convertView || qaItem.comments.size() > 0) {
+			if (null == convertView || qaBody.comments.size() > 0) {
 				inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			}
 
@@ -407,8 +415,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);			
 			AttachmentView attachmentsView = (AttachmentView) tabContentView.findViewById(R.id.attachmentView);		
 
-			if(qaItem.parent.mType == ItemType.Question) {
-				QuestionItem question = (QuestionItem) qaItem.parent;
+			if(qaBody.parent.mType == ItemType.Question) {
+				QuestionItem question = (QuestionItem) qaBody.parent;
+				QuestionBody questionBody = (QuestionBody) qaBody;
 				
 				tabSelectView.setVisibility(View.VISIBLE);
 				titleTextView.setVisibility(View.VISIBLE);
@@ -425,9 +434,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				}
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 
-				attachmentsView.setVisibility(qaItem.attachments.size() > 0 ? View.VISIBLE : View.GONE);
-
-			} else if (qaItem.parent.mType == ItemType.Answer) {
+				attachmentsView.setVisibility(questionBody.attachments.size() > 0 ? View.VISIBLE : View.GONE);
+				
+				for (AttachmentItem attachment: questionBody.attachments) {
+					attachmentsView.addAttachment(attachment);
+				}
+				
+			} else if (qaBody.parent.mType == ItemType.Answer) {
 				tabSelectView.setVisibility(View.GONE);
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);				
@@ -439,20 +452,16 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				throw new IllegalStateException();
 			}
 						
-			commentButton.setTag(qaItem.parent.getUniqueId());
+			commentButton.setTag(qaBody.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
-			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
+			upvoteButton.setOnClickListener(new UpvoteListener(qaBody.parent));
 			
-			bodyTextView.setText(qaItem.parent.getBody());
-			authorTextView.setText(qaItem.parent.getAuthor());
-			
-			for (AttachmentItem attachment: qaItem.attachments) {
-				attachmentsView.addAttachment(attachment);
-			}
+			bodyTextView.setText(qaBody.parent.getBody());
+			authorTextView.setText(qaBody.parent.getAuthor());
 
-			for (int i = 0; i < qaItem.comments.size(); i++){
-				CommentItem comment = qaItem.comments.get(i);
+			for (int i = 0; i < qaBody.comments.size(); i++){
+				CommentItem comment = qaBody.comments.get(i);
 				
 				View commentView = inflater.inflate(R.layout.comment, parent, false);
 				TextView commentBody = (TextView) commentView.findViewById(R.id.commentText);
@@ -491,7 +500,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		@Override
 		public void itemsArrived(List<QAModel> item, int index) {				
 			ListView qaList = (ListView) findViewById(R.id.qaItemView);
-			QABody parentBody = findById(mQuestion.getUniqueId());
+			QuestionBody parentBody = (QuestionBody) findById(mQuestion.getUniqueId());
 
 			for(QAModel qaitem : item ) {
 				if (qaitem.mType == ItemType.Answer) {
