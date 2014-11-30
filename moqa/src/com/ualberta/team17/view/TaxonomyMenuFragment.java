@@ -103,11 +103,7 @@ public class TaxonomyMenuFragment extends Fragment {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 	
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getActivity().getMenuInflater().inflate(R.menu.question_list_actions, menu);
-		return true;
-	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	

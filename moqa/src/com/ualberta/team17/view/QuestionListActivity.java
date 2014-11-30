@@ -1,5 +1,6 @@
 package com.ualberta.team17.view;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +22,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -80,6 +84,23 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 			fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 			setTitle(getResources().getText(R.string.action_search));
 		}
+		
+		// set the actionbar to use the custom view
+		getActionBar().setDisplayShowCustomEnabled(true);
+		//set the custom view to use
+		getActionBar().setCustomView(R.layout.sort_menu_icon);
+		ImageButton iv = (ImageButton) findViewById(R.id.imgRightMenu);
+		iv.setOnClickListener(new View.OnClickListener() {
+		                @Override
+		                public void onClick(View v) {
+		                	if(rightDrawerLayout.isDrawerOpen(Gravity.START)
+		                			&& !rightDrawerLayout.isDrawerOpen(Gravity.END))
+		                		return;
+		                	if(!rightDrawerLayout.isDrawerOpen(Gravity.END))
+		                        rightDrawerLayout.openDrawer(Gravity.END);
+		                    else
+		                        rightDrawerLayout.closeDrawer(Gravity.END); }
+		            });
 
 	}
 	@Override
@@ -119,7 +140,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		SearchItem si = new SearchItem(this.getBaseContext());
 		mi.setActionView(si);
 		si.setReturnListener(new SearchReturnListener());
-		
+
 		return true;
 	}
 
@@ -131,7 +152,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-
 		if (leftDrawer.mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
@@ -139,10 +159,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 			fragment.createNewQuestion();
 			return true;
 		}
-		if (id == R.id.action_sort_date) {
-			fragment.applyDateSort(item);
-			return true;
-		}	
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -160,28 +176,37 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 			rightDrawerList = (ListView) findViewById(R.id.right_drawer);
 			rightDrawerList.setAdapter(new ArrayAdapter<String>(getActivity(),
 					R.layout.sort_drawer_item, sortOptions));
-
+			setHasOptionsMenu(true);
 			rightDrawerList.setOnItemClickListener(new RightDrawerItemClickListener());
-
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 			getActionBar().setHomeButtonEnabled(true);
-			/*
-			 * TODO: add menu toggle button on top right
-			 */
 			View rootView = inflater.inflate(R.layout.question_list, container, false);
 			return rootView;
 		}
 		private class RightDrawerItemClickListener implements ListView.OnItemClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				//Does Nothing
+				int num_taxonomies = 5;
+				//String[] mySort = getResources().getStringArray(R.array.sortOptions);
+				Bundle args = new Bundle();
+				args.putInt(ListFragment.TAXONOMY_NUM, position+num_taxonomies);
+				fragment = new ListFragment();
+				FragmentManager fragmentManager = getFragmentManager();
+				fragment.setArguments(args);
+				fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+				//setTitle(mySort[position]);
 			}
 		}
 		@Override
 		public void onConfigurationChanged(Configuration newConfig) {
 			super.onConfigurationChanged(newConfig);
-			rightDrawerToggle.onConfigurationChanged(newConfig);
+			leftDrawer.mDrawerToggle.onConfigurationChanged(newConfig);
 		}
+		@Override
+		public boolean onOptionsItemSelected(MenuItem item) {
+		
+			return super.onOptionsItemSelected(item);
+		}	
 
 	}
 	

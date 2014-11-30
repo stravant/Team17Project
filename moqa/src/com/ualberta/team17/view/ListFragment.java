@@ -107,6 +107,17 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getRecentItems();
 			datafilter = null;
 			break;
+		case 6:
+			comp = new DateComparator();
+			comp.setCompareDirection(SortDirection.Ascending);
+			DataFilter df = new DataFilter();
+			df.setTypeFilter(ItemType.Question);
+			mIR = QAController.getInstance().getObjects(df, comp);
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
 		}
 		
 		addObserver(mIR);		

@@ -1,0 +1,14 @@
+
+    <ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/imgRightMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|center_vertical"
+        android:background="@android:drawable/ic_menu_sort_by_size"
+        android:baselineAlignBottom="true"
+        android:contentDescription="@string/sortmenu"
+        android:duplicateParentState="true"
+        android:fitsSystemWindows="true"
+        android:longClickable="true"
+        android:tag="sort_icon" />
+
