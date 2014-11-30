@@ -34,7 +34,8 @@
         <activity
             android:name=".view.QuestionViewActivity"
             android:label="@string/title_activity_question_view"
-            android:parentActivityName=".view.QuestionListActivity" >
+            android:parentActivityName=".view.QuestionListActivity" 
+            android:uiOptions="splitActionBarWhenNarrow">
         </activity>
         <activity
             android:name=".view.QuestionTaxonomyActivity"
