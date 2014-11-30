@@ -2,108 +2,236 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/darkRelativeLayout">    "
+    style="@style/darkLayout">    
+	<LinearLayout
+	    android:id="@+id/content"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    style="@style/lightLayout"
+	    android:weightSum="1"
+	    android:orientation="horizontal"
+	    android:divider="@drawable/v_divider"
+	    android:showDividers="middle"
+	    android:dividerPadding="5dp"
+	    >
+		<RelativeLayout 
+	        android:id="@+id/textSide"	        
+	        android:layout_width="0dp"
+	        android:layout_weight=".85"
+	        android:layout_height="wrap_content"        
+	        style="@style/lightLayout" >
+	        
+		    <TextView
+		        android:id="@+id/titleText"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_alignParentRight="true"
+		        android:layout_alignParentTop="true"
+		        android:ems="10"
+		        style="@style/titleText1"        
+		        android:text="title"        
+		        >
+			</TextView>
+			
+			<TextView
+		        android:id="@+id/bodyText"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_alignParentLeft="true"
+		        android:layout_below="@+id/titleText"
+		        android:ems="10"
+		        android:text="body"
+		        style="@style/bodyText1"
+		        >
+		     </TextView>
+		
+		    <RelativeLayout 
+		        android:id="@+id/authorBar"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/bodyText"
+		        style="@style/lightLayout" >  			    		
+			    			
+			    <TextView
+			        android:id="@+id/authorText"
+			        android:layout_width="fill_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_alignParentRight="true"
+			        android:layout_alignParentTop="true"			                
+			        android:ems="10"
+			        android:gravity="right|bottom"
+			        android:text="author"
+			        style="@style/authorText1"
+			        />
+			    
+			</RelativeLayout>
+			
+	    </RelativeLayout>		
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:ems="10"
-        style="@style/titleText1"        
-        android:text="title"        
-        >
-	</TextView>
+		<RelativeLayout
+		    android:id="@+id/iconSide"
+		    style="@style/lightLayout"
+		    android:layout_width="0dp"
+		    android:layout_height="100dp"
+			android:layout_centerVertical="true"		    
+		    android:layout_toRightOf="@+id/textSide"
+		    android:layout_weight=".15" >
+
+
+		    <ImageButton
+		        android:id="@+id/upvoteButton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerHorizontal="true"
+		        android:layout_above="@+id/upvoteCount"
+		        android:background="@drawable/ic_action_collapse" />
+
+		    <TextView
+		        android:id="@+id/upvoteCount"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_centerVertical="true"
+		        android:layout_centerHorizontal="true"
+		        android:gravity="center"
+		        android:text="0" 
+		        style="@style/titleText3"/>
+
+		    <ImageButton
+		        android:id="@+id/favoriteButton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/upvoteCount"
+		        android:layout_centerHorizontal="true"		       
+		        android:layout_marginTop="4dp"
+		        android:background="@drawable/ic_action_favorite" />
+		</RelativeLayout>
+		
+	</LinearLayout>  
 	
-	<TextView
-        android:id="@+id/bodyText"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/titleText"
-        android:ems="10"
-        android:text="body"
-        style="@style/bodyText1"
-        >
-     </TextView>
+	<View
+	    android:id="@+id/splitter"
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"	    
+	    android:background="@android:color/darker_gray"
+	    android:layout_below="@+id/content" />
+	
+	<RelativeLayout 
+	    android:id="@+id/tabSection"
+	    android:layout_width="fill_parent"	   
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/splitter"      
+	    style="@style/mediumLayout" >		
+	    
+	    <LinearLayout
+		    android:id="@+id/tabSelect"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    style="@style/mediumLayout"
+		    android:weightSum="1"
+		    android:orientation="horizontal"
+		    android:divider="?android:dividerHorizontal"
+	    	android:showDividers="middle">
+		    
+		    <RelativeLayout
+		        android:id="@+id/commentTabHolder"
+			    android:layout_width="0dp"
+                android:layout_weight="0.33"	   
+			    android:layout_height="wrap_content"			          
+			    style="@style/selectedTab" >		    
+		        
+		        <ImageView
+	                android:id="@+id/commentTabButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"                
+	                android:background="@color/transparent"
+	                android:layout_centerHorizontal="true"
+	                android:src="@drawable/ic_action_chat" />
+		        
+			</RelativeLayout>
+		    
+			<RelativeLayout
+		        android:id="@+id/viewAttachmentHolder"
+			    android:layout_width="0dp"
+                android:layout_weight="0.33"	   
+			    android:layout_height="wrap_content"			          
+			    style="@style/unselectedTab" >
+		        
+			    <ImageView
+	                android:id="@+id/viewAttachmentButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"   
+	                android:layout_centerHorizontal="true"             
+	                android:background="@drawable/ic_action_attachment" />
+			    
+		    </RelativeLayout>
+            
+            <RelativeLayout
+		        android:id="@+id/relatedViewHolder"
+			    android:layout_width="0dp"
+                android:layout_weight="0.33"	   
+			    android:layout_height="fill_parent"			          
+			    style="@style/unselectedTab" >
+			    
+                <TextView
+	                android:id="@+id/relatedViewButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_centerHorizontal="true"	
+	                android:layout_centerVertical="true"                
+	                android:text="Related"
+	                android:gravity="center"
+	                android:layout_gravity="center"
+	                style="@style/bodyText4"
+       			/>        			
+		    </RelativeLayout>
+                          
+            
+		</LinearLayout>   
+		
+	    <RelativeLayout 
+		    android:id="@+id/tabContent"
+		    android:layout_width="fill_parent"	   
+		    android:layout_height="wrap_content"
+		    android:layout_below="@+id/tabSelect"      
+		    style="@style/mediumLayout" >
+            
+            <LinearLayout
+                android:id="@+id/commentView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:orientation="vertical" >
+            </LinearLayout>
+            
+            <Button
+	                android:id="@+id/createCommentButton"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:layout_centerHorizontal="true"
+	                android:layout_below="@+id/commentView"	                
+	                android:text="Add a Comment"
+	                android:gravity="center"
+	                android:layout_gravity="center"
+	                style="@style/subtleButton"
+       			/>  
+       			
+       		<com.ualberta.team17.view.AttachmentView
+			    android:id="@+id/attachmentView"
+		        android:layout_width="fill_parent"
+		        android:layout_height="@dimen/attachment_view_height"
+		        android:layout_alignParentLeft="true"		        
+		        android:visibility="gone"/>
 
-	<com.ualberta.team17.view.AttachmentView
-	    android:id="@+id/attachmentView"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/attachment_view_height"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/bodyText"/>
-
-    <RelativeLayout 
-        android:id="@+id/userBar"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/attachmentView"
-        style="@style/lightRelativeLayout" >
+		</RelativeLayout>		
+	</RelativeLayout>
         
-	    <ImageButton
-	        android:id="@+id/createCommentButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_toRightOf="@+id/upvoteButton"
-	        android:src="@drawable/ic_action_chat"
-	        android:background="@color/transparent" />
-	
-	    <ImageButton
-	        android:id="@+id/favoriteButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_toRightOf="@+id/createCommentButton"
-	        android:background="@drawable/ic_action_favorite" />
-	
-	    <ImageButton
-	        android:id="@+id/viewAttachmentButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"
-	        android:layout_toRightOf="@+id/favoriteButton"
-	        android:background="@drawable/ic_action_attachment" />
-	
-	    <ImageButton
-	        android:id="@+id/upvoteButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_centerVertical="true"	        
-	        android:background="@drawable/ic_action_collapse" />
-	
-	    <TextView
-	        android:id="@+id/authorText"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentRight="true"
-	        android:layout_alignParentTop="true"
-	        android:layout_toRightOf="@+id/viewAttachmentButton"	        
-	        android:ems="10"
-	        android:gravity="right|bottom"
-	        android:text="author"
-	        style="@style/authorText1"
-	        />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/commentView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/userBar"
-        android:orientation="vertical" >
-    </LinearLayout>
-    
     <TextView 
         android:id="@+id/answerCountView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/commentView"
+        android:layout_below="@+id/tabSection"
        	style="@style/bodyText1Alt"
         android:text="5 Answers"
         android:gravity="center"/>

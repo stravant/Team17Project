@@ -90,7 +90,7 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 2:
-			mIR = QAController.getInstance().getFavorites();
+			mIR = QAController.getInstance().getFavorites(null);
 			datafilter = null;
 			break;
 		case 3:
@@ -104,7 +104,7 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 5:
-			mIR = QAController.getInstance().getRecentItems();
+			mIR = QAController.getInstance().getRecentItems(null);
 			datafilter = null;
 			break;
 		case 6:
