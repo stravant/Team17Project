@@ -188,6 +188,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			Button submitButton = (Button) createQuestionView.findViewById(R.id.createQuestionSubmitButton);
 			EditText titleText = (EditText) createQuestionView.findViewById(R.id.createQuestionTitleView);
 			EditText bodyText = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
+
 			
 			ImageButton addAttachmentButton = (ImageButton) addAttachmentView.findViewById(R.id.addAttachmentButton);
 			
