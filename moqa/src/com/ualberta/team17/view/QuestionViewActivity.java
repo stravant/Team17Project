@@ -28,11 +28,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -43,6 +44,23 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
+import com.ualberta.team17.AuthoredTextItem;
+import com.ualberta.team17.CommentItem;
+import com.ualberta.team17.ItemType;
+import com.ualberta.team17.QAModel;
+import com.ualberta.team17.QuestionItem;
+import com.ualberta.team17.R;
+import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.controller.QAController;
+import com.ualberta.team17.datamanager.DataFilter;
+import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.IIncrementalObserver;
+import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.comparators.DateComparator;
+import com.ualberta.team17.datamanager.comparators.IdComparator;
 
 public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
@@ -278,6 +296,35 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Creates the toolbar at the top of the app.
+	 */
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.moqa_menu, menu);
+		
+		menu.setGroupVisible(R.id.questionlist_group, false);
+		menu.setGroupVisible(R.id.questionview_group, true);
+		
+		return true;
+	}
+	
+	/**
+	 * Use this to respond to specific action clicks.
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+
+		if (id == R.id.action_new_question2) {
+			return true;
+		}
+		if (id == R.id.action_new_answer) {
+			return true;
+		}	
+		return super.onOptionsItemSelected(item);
 	}
 	
 	/**

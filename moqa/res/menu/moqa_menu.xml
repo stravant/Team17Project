@@ -23,15 +23,16 @@
     </group>
     <group android:id="@+id/questionview_group">
 	    
-        <item 
-	        android:id="@+id/action_search2"
-	        android:title="@string/action_search"
-	        android:showAsAction="always"/>
         
         <item 
 	        android:id="@+id/action_new_question2"
 	        android:title="@string/action_new_question"
 	        android:icon="@android:drawable/ic_menu_add"
+	        android:showAsAction="always"/>
+        
+        <item 
+	        android:id="@+id/action_new_answer"
+	        android:title="@string/createAnswer"
 	        android:showAsAction="always"/>
         
     </group>
