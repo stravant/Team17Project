@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:moqa="http://schemas.android.com/apk/lib/com.ualberta.team17.view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -54,8 +55,9 @@
 	    <com.ualberta.team17.view.AttachmentView
 	        android:id="@+id/addAttachmentView"
 	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_above="@+id/createQuestionSubmitButton"/>
+	        android:layout_height="64dp"
+	        android:layout_above="@+id/createQuestionSubmitButton"
+	        moqa:adding_enabled="true"/>
 	    
 	    <EditText
 	        android:id="@+id/createQuestionBodyView"

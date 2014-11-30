@@ -48,8 +48,11 @@ public class AttachmentView extends HorizontalScrollView {
 	}
 
 	private void init(AttributeSet attrs, int defStyle) {
+		// Get adding enabled attribute if present.
+		mAddingEnabled = attrs.getAttributeBooleanValue(R.attr.adding_enabled, false);
+		
 		// Create the linear layout
-		baseLayout = new LinearLayout(getContext());
+		baseLayout = new LinearLayout(getContext()); 
 		baseLayout.setOrientation(LinearLayout.HORIZONTAL);
 		baseLayout.setId(LAYOUT_VIEW_ID);
 		
@@ -57,7 +60,7 @@ public class AttachmentView extends HorizontalScrollView {
 		mAddAttachmentView = new ImageView(getContext());
 		mAddAttachmentView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_attachment_large));
 		mAddAttachmentView.setVisibility(getAddingEnabled() ? ImageView.VISIBLE : ImageView.GONE);
-		mAddAttachmentView.setLayoutParams(new LinearLayout.LayoutParams(this.getHeight(), LayoutParams.MATCH_PARENT));
+		//mAddAttachmentView.setLayoutParams(new LinearLayout.LayoutParams(this.getHeight(), LayoutParams.MATCH_PARENT));
 		mAddAttachmentView.setOnClickListener(new AddAttachmentOnClickListener());
 		baseLayout.addView(mAddAttachmentView);
 
@@ -75,10 +78,10 @@ public class AttachmentView extends HorizontalScrollView {
 			Bitmap image = item.getImage();
 
 			imageView.setImageBitmap(item.getImage());
-			imageView.setLayoutParams(
+			/*imageView.setLayoutParams(
 					new LinearLayout.LayoutParams(
 							(int)(image.getWidth() * ((float)this.getHeight())/image.getHeight()),
-							LayoutParams.MATCH_PARENT));
+							LayoutParams.MATCH_PARENT));*/
 
 			imageView.setOnClickListener(new ImageViewOnClickListener());
 
