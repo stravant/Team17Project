@@ -51,16 +51,21 @@
 	        android:text="Title"
 	        />
 	    
+	    <com.ualberta.team17.view.AttachmentView
+	        android:id="@+id/addAttachmentView"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/createQuestionSubmitButton"/>
+	    
 	    <EditText
 	        android:id="@+id/createQuestionBodyView"
 	        android:layout_below="@id/createQuestionTitleView"
-	        android:layout_above="@id/createQuestionBodyView"
+	        android:layout_above="@id/addAttachmentView"
 	        android:layout_width="match_parent"
 	        android:layout_height="fill_parent"
 	        android:gravity="left|top"
 	        android:background="@color/milk2"
-	        android:text="Body"
-	        />
+	        android:text="Body" />
 	    
 	    <Button
 	        android:id="@+id/createQuestionSubmitButton"
