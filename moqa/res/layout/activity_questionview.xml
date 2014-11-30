@@ -41,7 +41,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:orientation="vertical"
-	    android:background="@color/coffee"
+	    android:background="@color/white"
 	    android:visibility="visible" >
 	    
 	    <EditText 
@@ -51,13 +51,27 @@
 	        android:background="@color/milk"
 	        android:text="Title"
 	        />
-	    
-	    <com.ualberta.team17.view.AttachmentView
+	    <RelativeLayout
 	        android:id="@+id/addAttachmentView"
 	        android:layout_width="match_parent"
-	        android:layout_height="64dp"
-	        android:layout_above="@+id/createQuestionSubmitButton"
-	        moqa:adding_enabled="true"/>
+	        android:layout_height="@dimen/attachment_view_height"
+	        android:layout_above="@+id/createQuestionSubmitButton" >
+	    
+	    <com.ualberta.team17.view.AttachmentDisplayView
+	        android:id="@+id/addAttachmentDisplayView"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_toLeftOf="@+id/addAttachmentButton" />
+	    
+	    <ImageButton 
+	        android:id="@+id/addAttachmentButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentRight="true"
+	        android:src="@drawable/ic_action_new_attachment"
+	        android:background="?android:selectableItemBackground" />
+	    
+	    </RelativeLayout>
 	    
 	    <EditText
 	        android:id="@+id/createQuestionBodyView"

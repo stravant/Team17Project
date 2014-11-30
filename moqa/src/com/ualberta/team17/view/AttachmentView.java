@@ -12,12 +12,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
@@ -27,9 +30,9 @@ public class AttachmentView extends HorizontalScrollView {
 	private List<AttachmentItem> mAttachments = new ArrayList<AttachmentItem>();
 	private List<ImageView> mImageViews = new ArrayList<ImageView>();
 	private LinearLayout baseLayout;
-	private boolean mAddingEnabled = false;
+	private boolean mAddingEnabled = true;
 	private QuestionItem mParentItem;
-	private ImageView mAddAttachmentView;
+	private ImageButton mAddAttachmentView;
 	private IAddAttachmentListener mAddAttachmentListener; 
 
 	public AttachmentView(Context context) {
@@ -48,19 +51,34 @@ public class AttachmentView extends HorizontalScrollView {
 	}
 
 	private void init(AttributeSet attrs, int defStyle) {
-		// Get adding enabled attribute if present.
-		mAddingEnabled = attrs.getAttributeBooleanValue(R.attr.adding_enabled, false);
+		Context context = getContext();
 		
+		// Get adding enabled attribute if present.
+		/*TypedArray a = context.obtainStyledAttributes(
+				attrs,
+				R.styleable.AttachmentView,
+				defStyle, 0);
+		
+		try {
+			mAddingEnabled = a.getBoolean(R.styleable.AttachmentView_adding_enabled, false);
+		} finally {
+			a.recycle();
+		}*/
+		 
 		// Create the linear layout
-		baseLayout = new LinearLayout(getContext()); 
+		baseLayout = new LinearLayout(context); 
 		baseLayout.setOrientation(LinearLayout.HORIZONTAL);
+		baseLayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		baseLayout.setBackgroundColor(Color.CYAN);
 		baseLayout.setId(LAYOUT_VIEW_ID);
 		
 		// Create the add attachment view
-		mAddAttachmentView = new ImageView(getContext());
-		mAddAttachmentView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_attachment_large));
+		mAddAttachmentView = new ImageButton(context);
+		mAddAttachmentView.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_new_attachment));
+		mAddAttachmentView.setBackgroundColor(Color.GREEN);
 		mAddAttachmentView.setVisibility(getAddingEnabled() ? ImageView.VISIBLE : ImageView.GONE);
 		//mAddAttachmentView.setLayoutParams(new LinearLayout.LayoutParams(this.getHeight(), LayoutParams.MATCH_PARENT));
+		mAddAttachmentView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		mAddAttachmentView.setOnClickListener(new AddAttachmentOnClickListener());
 		baseLayout.addView(mAddAttachmentView);
 

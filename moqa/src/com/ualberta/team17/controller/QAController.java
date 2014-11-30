@@ -317,6 +317,27 @@ public class QAController {
 	}
 	
 	/**
+	 * Creates an AttachmentItem from a bitmap of an image.
+	 * 
+	 * The attachment is not saved by the data manager yet, as it's possible the
+	 * user will change their mind and not create the question.
+	 * 
+	 * @param name The name of the attachment.
+	 * @param image The image to attach.
+	 * @return
+	 */
+	public AttachmentItem createDetachedAttachment(String name, Bitmap image) {
+		UserContext creator = mDataManager.getUserContext();
+		AttachmentItem item = new AttachmentItem(new UniqueId(creator),
+				null,
+				creator.getUserName(),
+				Calendar.getInstance().getTime(),
+				name,
+				image);
+		return item;
+	}
+	
+	/**
 	 * Creates an AttachmentItem from a Uri of an image on the device. The image
 	 * will be synchronously loaded in.
 	 * 

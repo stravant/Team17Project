@@ -29,6 +29,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -70,6 +71,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	protected QAController mController;	
 	protected QABodyAdapter mAdapter;
 	
+	// Attachment items that are added during question creation.
+	private List<AttachmentItem> mAddedAttachments;
+	
 	private enum Mode {
 		CREATE,
 		DISPLAY
@@ -99,6 +103,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		listview.setAdapter(createNewAdapter());
 		IncrementalResult questionChildrenResult = mController.getChildren(question, new DateComparator());
 		questionChildrenResult.addObserver(new QuestionChildrenResultListener());
+		
 	}	
 	
 	/**
@@ -164,13 +169,24 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			setMode(Mode.DISPLAY);
 			
 			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
-			queryQuestion(id);			
+			queryQuestion(id);
+			
 		} else {
 			setMode(Mode.CREATE);
 			
 			Button submitButton = (Button) createQuestionView.findViewById(R.id.createQuestionSubmitButton);
 			EditText titleText = (EditText) createQuestionView.findViewById(R.id.createQuestionTitleView);
 			EditText bodyText = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
+
+			
+			// TEST STUFF
+			AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
+					BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_attachment)
+					);
+			AttachmentDisplayView adv = (AttachmentDisplayView) createQuestionView.findViewById(R.id.addAttachmentView);
+			
+			adv.addAttachment(testA1);
+			// END TEST STUFF
 			
 			submitButton.setOnClickListener(new SubmitQuestionListener(titleText, bodyText));
 		}
@@ -221,7 +237,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	public void setQuestion(QuestionItem question) {
 		resetContent();
 		mQuestion = question;
-		mQABodies.add(new QABody(question));
+		mQABodies.add(new QuestionBody(question));
 		refresh();
 	}
 	
@@ -413,7 +429,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			
 			LinearLayout commentsView = (LinearLayout) tabContentView.findViewById(R.id.commentView);		
 			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);			
-			AttachmentView attachmentsView = (AttachmentView) tabContentView.findViewById(R.id.attachmentView);		
+			AttachmentDisplayView attachmentsView = (AttachmentDisplayView) tabContentView.findViewById(R.id.attachmentView);		
 
 			if(qaBody.parent.mType == ItemType.Question) {
 				QuestionItem question = (QuestionItem) qaBody.parent;
@@ -435,6 +451,17 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 
 				attachmentsView.setVisibility(questionBody.attachments.size() > 0 ? View.VISIBLE : View.GONE);
+				
+				attachmentsView.clearAttachments();
+				
+				// TEST STUFF
+				AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
+						BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_attachment)
+						);
+				attachmentsView.addAttachment(testA1);
+				attachmentsView.setVisibility(View.VISIBLE);
+				// END TEST STUFF
+				
 				
 				for (AttachmentItem attachment: questionBody.attachments) {
 					attachmentsView.addAttachment(attachment);
@@ -561,7 +588,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			setMode(Mode.DISPLAY);
 			setQuestion(controller.createQuestion(mTitleView.getText().toString(), mBodyView.getText().toString()));
 		}
-		
 	}
 	
 	private class AddAnswerListener implements View.OnClickListener {		
@@ -778,6 +804,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			}
 		}		
 			
-	}	
+	}
 	
 }
