@@ -261,6 +261,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	}
 	
 	private void focusRelated() {	
+		/*
 		View tabSection = mQuestionView.findViewById(R.id.tabSection);
 		View tabSelect = tabSection.findViewById(R.id.tabSelect);	
 		View tabContent = tabSection.findViewById(R.id.tabContent);
@@ -273,6 +274,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		TabSelectListener ts = new TabSelectListener(Tab.RQ);		
 		ts.onClick(rqTabButton);
 		refresh();
+		*/
+		QuestionBody qb = (QuestionBody) this.mQABodies.get(0);
+		qb.currentTab = Tab.RQ;
 	}
 	
 	/**
@@ -435,6 +439,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	
 	private class QuestionBody extends QABody {
 		public List<AttachmentItem> attachments;
+		public Tab currentTab;
 
 		public QuestionBody(AuthoredTextItem initParent) {
 			super(initParent);
@@ -495,12 +500,16 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			RelativeLayout attachmentTabButton = (RelativeLayout) tabSelectView.findViewById(R.id.viewAttachmentHolder);			
 			RelativeLayout rqTabButton = (RelativeLayout) tabSelectView.findViewById(R.id.relatedViewHolder);
 			commentTabButton.setOnClickListener(new TabSelectListener(Tab.COMMENT));
-			attachmentTabButton.setOnClickListener(new TabSelectListener(Tab.ATTACHMENT));			
-			rqTabButton.setOnClickListener(new TabSelectListener(Tab.RQ));
+			attachmentTabButton.setOnClickListener(new TabSelectListener(Tab.ATTACHMENT));	
+			TabSelectListener rqListener = new TabSelectListener(Tab.RQ);
+			rqTabButton.setOnClickListener(rqListener);
 			
 			LinearLayout commentsView = (LinearLayout) tabContentView.findViewById(R.id.commentView);		
 			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);			
-			AttachmentDisplayView attachmentsView = (AttachmentDisplayView) tabContentView.findViewById(R.id.attachmentView);		
+			AttachmentDisplayView attachmentsView = (AttachmentDisplayView) tabContentView.findViewById(R.id.attachmentView);	
+			
+			TextView rqTitle = (TextView) tabContentView.findViewById(R.id.relatedTitle); 
+			QuestionBody qb = (QuestionBody) QuestionViewActivity.this.mQABodies.get(0);
 
 
 			if(qaBody.parent.mType == ItemType.Question) {
@@ -514,6 +523,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				
 				titleTextView.setText(question.getTitle());
 				upvoteTextView.setText("" + question.getUpvoteCount());
+				
+				if (qb.currentTab == Tab.RQ) {
+					rqTitle.setText("You may also be able to answer these questions");
+					rqListener.onClick(rqTabButton);
+				}
 				
 				if(question.getReplyCount() == 1) {
 					answerCountView.setText(getString(R.string.answer_count_one));
@@ -702,40 +716,40 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				case COMMENT: 
 					commentView.setVisibility(View.VISIBLE);
 					commentCButton.setVisibility(View.VISIBLE);
-					attachmentView.setVisibility(View.GONE);
+					attachmentView.setVisibility(View.GONE);	
 					hideRelatedQuestionsTab();
 					relatedView.setVisibility(View.GONE);
 					relatedTitle.setVisibility(View.GONE);
-					
+										
 					break;
 					
 				case ATTACHMENT:
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
-					attachmentView.setVisibility(View.VISIBLE);
+					attachmentView.setVisibility(View.VISIBLE);		
 					hideRelatedQuestionsTab();
 					relatedView.setVisibility(View.GONE);
-					relatedTitle.setVisibility(View.GONE);
+					relatedTitle.setVisibility(View.GONE);					
 					
 					break;
 				
 				case RQ:
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
-					attachmentView.setVisibility(View.GONE);
-					showRelatedQuestionsTab();
+					attachmentView.setVisibility(View.GONE);				
 					relatedView.setVisibility(View.VISIBLE);
 					relatedTitle.setVisibility(View.VISIBLE);
+					showRelatedQuestionsTab();
 					
 					break;		
 					
 				default: 
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
-					attachmentView.setVisibility(View.GONE);
+					attachmentView.setVisibility(View.GONE);	
 					hideRelatedQuestionsTab();
 					relatedView.setVisibility(View.GONE);
-					relatedTitle.setVisibility(View.GONE);
+					relatedTitle.setVisibility(View.GONE);					
 					
 					break;
 			}
@@ -828,9 +842,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				String body = answerBody.getText().toString();
 				AddAnswerPopup.this.dismiss();
 				AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
-				addAnswers(newAnswer);
+				addAnswers(newAnswer);				
 				loadContent(getQuestion());	
 				focusRelated();
+				
 			}
 		}		
 		
