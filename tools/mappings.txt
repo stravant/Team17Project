@@ -23,9 +23,6 @@
 			}
 		},
 		"answer": {
-			"_parent": {
-				"type": "question"
-			},
 			"properties": {
 				"id": {
 					"type": "string",
