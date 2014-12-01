@@ -24,6 +24,12 @@
 	        android:icon="@android:drawable/ic_menu_add"
 	        android:showAsAction="always"/>
         
+        <item
+            android:id="@+id/action_read_later"
+            android:title="@string/action_read_later"
+            android:icon="@drawable/ic_action_time"
+            android:showAsAction="always"/>
+        
         <item 
 	        android:id="@+id/action_new_answer"
 	        android:title="@string/createAnswer"
