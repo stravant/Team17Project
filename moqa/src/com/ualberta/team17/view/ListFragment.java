@@ -60,6 +60,7 @@ public class ListFragment extends Fragment {
 		TopQuestions,
 		TopAnswers,
 		RecentActivity,
+		ReadLater,
 		RelatedQuestions;
 
 		public int getId() {
@@ -76,6 +77,8 @@ public class ListFragment extends Fragment {
 				return 4;
 			case RecentActivity:
 				return 5;
+			case ReadLater:
+				return 6;
 			default:
 				return -1;
 			}
@@ -182,6 +185,10 @@ public class ListFragment extends Fragment {
 			break;
 		case RecentActivity:
 			mIR = QAController.getInstance().getRecentItems(comp);
+			datafilter = null;
+			break;
+		case ReadLater:
+			mIR = QAController.getInstance().getViewLaterItems(comp);
 			datafilter = null;
 			break;
 		case RelatedQuestions:
