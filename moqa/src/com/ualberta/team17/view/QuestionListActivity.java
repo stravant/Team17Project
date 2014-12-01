@@ -1,6 +1,7 @@
 package com.ualberta.team17.view;
 
 import android.app.Activity;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -24,7 +25,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.R;
-import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
+import com.ualberta.team17.view.OnItemSelectedListener;
 
 /**
  * This class displays the list of requested questions and answers. It receives an intent
@@ -85,17 +86,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		//set the custom view to use
 		getActionBar().setCustomView(R.layout.sort_menu_icon);
 		ImageButton iv = (ImageButton) findViewById(R.id.imgRightMenu);
-		iv.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if(rightDrawerLayout.isDrawerOpen(Gravity.START)
-						&& !rightDrawerLayout.isDrawerOpen(Gravity.END))
-					return;
-				if(!rightDrawerLayout.isDrawerOpen(Gravity.END))
-					rightDrawerLayout.openDrawer(Gravity.END);
-				else
-					rightDrawerLayout.closeDrawer(Gravity.END); }
-		});
+		iv.setOnClickListener(new SortMenuToggle());
 
 	}
 	@Override
@@ -237,6 +228,17 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}	
 	}
 
+	private class SortMenuToggle implements View.OnClickListener {
+		@Override
+		public void onClick(View v) {
+			if(rightDrawerLayout.isDrawerOpen(Gravity.START)
+					&& !rightDrawerLayout.isDrawerOpen(Gravity.END))
+				return;
+			if(!rightDrawerLayout.isDrawerOpen(Gravity.END))
+				rightDrawerLayout.openDrawer(Gravity.END);
+			else
+				rightDrawerLayout.closeDrawer(Gravity.END); }
+	}
 	/**
 	 * Triggered whenever the enter is hit while the search bar is active.
 	 * 
