@@ -24,6 +24,12 @@ import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 
+/**
+ * The QAController is responsible for the management of all QAModels.
+ * 
+ * It creates them and operates them (there are no delete scenarios).
+ *
+ */
 public class QAController {
 	private static QAController mControllerInstance;
 	DataManager mDataManager;

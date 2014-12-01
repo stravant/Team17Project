@@ -42,7 +42,8 @@ import com.ualberta.team17.UpvoteItem;
  *
  * @author michaelblouin
  */
-@SuppressLint("DefaultLocale") public class NetworkDataManager implements IDataSourceManager {
+@SuppressLint("DefaultLocale")
+public class NetworkDataManager implements IDataSourceManager {
 	protected Boolean mIsAvailable = null;
 
 	protected String mEsServerUrl;

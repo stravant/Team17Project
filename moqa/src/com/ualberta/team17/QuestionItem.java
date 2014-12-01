@@ -8,6 +8,11 @@ import android.util.Log;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * A QAModel that represents a user question and all related derived info.
+ * 
+ * @author michaelblouin
+ */
 public class QuestionItem extends AuthoredTextItem {	
 	public static final String FIELD_TITLE = "title";
 	public static final String FIELD_REPLIES = "replies";

@@ -13,6 +13,12 @@ import com.ualberta.team17.ItemType;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 import com.ualberta.team17.datamanager.DataFilter.DataFilterType;
 
+/**
+ * The ESSearchBuilder is responsible for taking a DataFilter object and outputting
+ * JSON that can be sent directly to Elastic Search to perform a query.
+ * 
+ * @author michaelblouin
+ */
 public class ESSearchBuilder {
 	public static final Integer MAX_ES_RESULTS = 100;
 	private JsonObject mQueryObject;
@@ -24,6 +30,12 @@ public class ESSearchBuilder {
 		mComparator = comparator; 
 	}
 
+	/**
+	 * Applies the required parameters to the supplied Jest builder.
+	 * 
+	 * @param builder The builder to apply parameters to.
+	 * @return
+	 */
 	public Builder getBuilder(Builder builder) {
 		Integer maxResults = mFilter.getMaxResults();
 
@@ -45,6 +57,10 @@ public class ESSearchBuilder {
 		return builder;
 	}
 
+	/**
+	 * Gets a Jest query builder that contains all required non-query parameters.
+	 * @return
+	 */
 	public Builder getBuilder() {
 		return getBuilder(new Builder(toString()));
 	}
@@ -95,7 +111,16 @@ public class ESSearchBuilder {
 					getJsonObjectWithProperty(comparison, filter.getFilter())))
 		);
 	}
-	
+
+	/**
+	 * Gets a JsonObject that represents the query that should be sent to elastic search.
+	 * 
+	 * Note that this build the query object and caches it. After this has been called once, 
+	 * you cannot change the ESSearchBuilder in any way -- the changes will not be reflected in the
+	 * query object.
+	 * 
+	 * @return
+	 */
 	public JsonObject getJsonQueryObject() {
 		if (null != mQueryObject) {
 			return mQueryObject;
