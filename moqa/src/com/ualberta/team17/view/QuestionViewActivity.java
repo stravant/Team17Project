@@ -78,7 +78,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private enum Tab {
 		COMMENT,
 		ATTACHMENT,
-		RQ		
+		RQ	
 	}
 	
 	/**
@@ -136,7 +136,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		ListView qaList = (ListView) findViewById(R.id.qaItemView);
 		mAdapter = new QABodyAdapter(this, R.id.qaItemView, mQABodies);
 		qaList.invalidate();
-		qaList.setAdapter(mAdapter);		
+		qaList.setAdapter(mAdapter);	
 	}
 		
 	/**

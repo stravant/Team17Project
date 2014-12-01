@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +48,15 @@ public class ListFragment extends Fragment {
 	private DataFilter datafilter = new DataFilter();
 	private QuestionListAdapter mAdapter;
 	private List<QAModel> mItems;
+	
+	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
+	
+	private class UpdateOnItemUpdateListener implements IQAView {
+		@Override
+		public void update(QAModel model) {
+			mAdapter.notifyDataSetChanged();
+		}
+	}
 	
 	@Override
     public void onAttach(Activity activity) {
@@ -171,8 +181,7 @@ public class ListFragment extends Fragment {
 		
 		if (qaModel instanceof AnswerItem) {
 			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, ((AnswerItem) qaModel).getParentItem().toString());
-		}
-		else {
+		} else {
 			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, qaModel.getUniqueId().toString());
 		}
 		startActivity(intent);
@@ -246,14 +255,15 @@ public class ListFragment extends Fragment {
 	private void addObserver(IncrementalResult ir) {
 		if (ir != null) {
 			ir.addObserver(new IIncrementalObserver() {
-	
 				@Override
-				public void itemsArrived(List<QAModel> item, int index) {
+				public void itemsArrived(List<QAModel> items, int index) {
 					Activity activity = ListFragment.this.getActivity();
 					if (activity == null) {
 						return;
 					}
-
+					for (QAModel item: items) {
+						item.addView(mItemUpdatedListener);
+					}
 					mItems.clear();
 					mItems.addAll(mIR.getCurrentResults());
 					mAdapter.notifyDataSetChanged();				
@@ -307,6 +317,7 @@ public class ListFragment extends Fragment {
 			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentText);
 			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
 			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
+			TextView repliesTextView = (TextView) convertView.findViewById(R.id.answerCountView);
 			
 			// Set the data using getField
 			if (null != item.getField(AuthoredTextItem.FIELD_COMMENTS)) {

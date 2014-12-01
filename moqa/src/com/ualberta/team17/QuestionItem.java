@@ -25,7 +25,7 @@ public class QuestionItem extends AuthoredTextItem {
 	}
 	
 	/* Reply count */
-	public int getReplyCount() {
+	public int getReplyCount() {	
 		return mReplyCount;
 	}
 	

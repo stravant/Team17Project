@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,6 +19,7 @@ import io.searchbox.params.Parameters;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
 import com.searchly.jestdroid.JestClientFactory;
 import com.searchly.jestdroid.DroidClientConfig;
@@ -63,10 +65,12 @@ import com.ualberta.team17.UpvoteItem;
 	private class QueryTask extends AsyncTask<Void, Void, List<List<QAModel>>> {
 		private Search mSearch;
 		private IncrementalResult mResult;
+		private Callable<Void> mChain;
 
-		public QueryTask(Search search, IncrementalResult result) {
+		public QueryTask(Search search, IncrementalResult result, Callable<Void> doChain) {
 			mSearch = search;
 			mResult = result;
+			mChain = doChain;
 		}
 
 		@Override
@@ -108,6 +112,11 @@ import com.ualberta.team17.UpvoteItem;
 			if (null != results.get(0)) {
 				mResult.addObjects(results.get(0));					
 			}
+			
+			// Do the query chain
+			try {
+				mChain.call();
+			} catch (Exception e) {};
 		}
 
 		/**
@@ -356,7 +365,7 @@ import com.ualberta.team17.UpvoteItem;
 	}
 
 	@Override
-	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result) {
+	public void query(final DataFilter filter, final IItemComparator comparator, final IncrementalResult result, final IDataSourceManager chainTo) {
 		if (null == mJestClient) {
 			initJestClient();
 		}
@@ -369,7 +378,14 @@ import com.ualberta.team17.UpvoteItem;
 			.addIndex(mEsServerIndex)
 			.build();
 
-		QueryTask task = new QueryTask(search, result);
+		QueryTask task = new QueryTask(search, result, new Callable<Void>() {
+			@Override
+			public Void call() throws Exception {
+				chainTo.query(filter, comparator, result, null);
+				return null;
+			}
+			
+		});
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		else
@@ -377,7 +393,7 @@ import com.ualberta.team17.UpvoteItem;
 	}
 
 	@Override
-	public void query(List<UniqueId> ids, IncrementalResult result) {
+	public void query(List<UniqueId> ids, IncrementalResult result, IDataSourceManager chainTo) {
 		return;
 	}
 

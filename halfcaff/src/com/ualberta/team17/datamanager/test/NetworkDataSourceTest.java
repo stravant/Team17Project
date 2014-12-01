@@ -133,7 +133,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
 		dataFilter.setTypeFilter(ItemType.Question);
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, 3));
 
@@ -154,7 +154,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
 		dataFilter.setTypeFilter(ItemType.Answer);
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, 5));
 
@@ -175,7 +175,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
 		dataFilter.setTypeFilter(ItemType.Comment);
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, 1));
 
@@ -199,7 +199,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		result = new IncrementalResult(comparator);
 		dataFilter.addFieldFilter(AuthoredTextItem.FIELD_BODY, searchStr, FilterComparison.QUERY_STRING);
 
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, 5));
 
@@ -225,7 +225,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		result = new IncrementalResult(comparator);
 		dataFilter.setMaxResults(50);
 
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, 31));
 
@@ -272,7 +272,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		dataFilter.setMaxResults(3);
 
 		result = new IncrementalResult(comparator);
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, expectedResults));
 
@@ -336,7 +336,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);
 
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertFalse("No results arrived", waitForResults(result, 1));
 		assertTrue("Data source notified unavailable", availableListener.wasNotified);
@@ -415,7 +415,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 
 		for (int i = 0; i < numRepeats; ++i) {
 			dataFilter.setPage(i);
-			dataManager.query(dataFilter, comparator, result);
+			dataManager.query(dataFilter, comparator, result, null);
 		}
 
 		assertTrue("Results arrived", waitForResults(result, numRepeats));
@@ -447,7 +447,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 			QAModel.FIELD_ID, 
 			testQuestion.getUniqueId().toString(), 
 			DataFilter.FilterComparison.EQUALS);
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, 1));
 
@@ -503,7 +503,7 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 			AuthoredTextItem.FIELD_BODY,
 			"test_DataSourceMultipleItemSave",
 			DataFilter.FilterComparison.QUERY_STRING);
-		dataManager.query(dataFilter, comparator, result);
+		dataManager.query(dataFilter, comparator, result, null);
 
 		assertTrue("Results arrived", waitForResults(result, 5));
 
