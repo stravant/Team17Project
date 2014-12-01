@@ -29,6 +29,7 @@
         <item>Most Upvoted Questions</item>
         <item>Most Upvoted Answers</item>
         <item>Recently Viewed</item>
+        <item>Read Later</item>
     </string-array>
     <string-array name="sortOptions">
         <item>Newest First</item>
