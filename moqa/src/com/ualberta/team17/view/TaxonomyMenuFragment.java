@@ -9,7 +9,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,12 @@ import android.widget.ListView;
 import com.ualberta.team17.R;
 import com.ualberta.team17.view.ListFragment.Taxonomy;
 
+/**
+ * UI fragment used to display taxonomy menu drawer
+ * 
+ * @author divyank
+ *
+ */
 public class TaxonomyMenuFragment extends Fragment {
 	private String[] myTaxonomy;
 	private DrawerLayout mDrawerLayout;
@@ -54,35 +59,19 @@ public class TaxonomyMenuFragment extends Fragment {
 		mDrawerList.setAdapter(new ArrayAdapter<String>(activity,
 				R.layout.drawer_list_item, myTaxonomy));
 		mDrawerList.setOnItemClickListener(new LeftDrawerItemClickListener());
-
 		activity.getActionBar().setDisplayHomeAsUpEnabled(true);
 		activity.getActionBar().setHomeButtonEnabled(true);
 		
-		mDrawerToggle = new ActionBarDrawerToggle(
-				activity,                  
-				mDrawerLayout,
-				R.drawable.ic_drawer,  
-				R.string.drawer_open,  
-				R.string.drawer_close  
-				) {
-			public void onDrawerClosed(View view) {
-				activity.getActionBar().setTitle(activity.getTitle());
-				activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				activity.getActionBar().setTitle(activity.getTitle());
-				activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
-		};	
+		mDrawerToggle = new DrawerToggle(activity, mDrawerLayout, R.drawable.ic_drawer,
+				R.string.drawer_open, R.string.drawer_close);	
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		
 		if (savedInstanceState == null) {
 			mListener.onItemSelected(Taxonomy.AllQuestions);
 			mDrawerList.setItemChecked(0, true);
 			getActivity().setTitle(myTaxonomy[0]);
 			mDrawerLayout.closeDrawer(mDrawerList);
 		}
-
 		View rootView = inflater.inflate(R.layout.question_list, container, false);
 		return rootView;
 	}
@@ -121,6 +110,7 @@ public class TaxonomyMenuFragment extends Fragment {
 			mDrawerLayout.closeDrawer(mDrawerList);
 		}
 	}
+
 	public interface OnItemSelectedListener {
 		public void onItemSelected(Taxonomy selectedTaxonomy);
 	}
@@ -136,5 +126,27 @@ public class TaxonomyMenuFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	
 		return super.onOptionsItemSelected(item);
-	}	
+	}
+	public class DrawerToggle extends ActionBarDrawerToggle
+	{
+		Activity activity;
+		public DrawerToggle(Activity activity, DrawerLayout drawerLayout,
+				int drawerImageRes, int openDrawerContentDescRes,
+				int closeDrawerContentDescRes) {
+			super(activity, drawerLayout, drawerImageRes, openDrawerContentDescRes,
+					closeDrawerContentDescRes);
+			this.activity = activity;
+		}
+
+		@Override
+		public void onDrawerClosed(View view) {
+			activity.getActionBar().setTitle(activity.getTitle());
+			activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+		}
+		@Override
+		public void onDrawerOpened(View drawerView) {
+			activity.getActionBar().setTitle(activity.getTitle());
+			activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+		}
+	}
 }
