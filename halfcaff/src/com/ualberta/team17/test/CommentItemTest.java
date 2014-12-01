@@ -19,6 +19,9 @@ public class CommentItemTest extends TestCase {
 		notifyCount = 0;
 	}
 	
+	/**
+	 * Tests that comment upvoting works properly.
+	 */
 	public void test_CI1_Upvote()
 	{
 		assertEquals("No upvotes", testComment.getUpvoteCount(), 0);
@@ -28,6 +31,9 @@ public class CommentItemTest extends TestCase {
 		assertEquals("One upvote", testComment.getUpvoteCount(), 1);
 	}
 	
+	/**
+	 * Tests that views are notified on upvote.
+	 */
 	public void test_CI2_UpvoteNotifiesView()
 	{
 		IQAView dummyView = new IQAView() {
@@ -40,6 +46,9 @@ public class CommentItemTest extends TestCase {
 		assertTrue( "View was notified", notified );			
 	}
 	
+	/**
+	 * Tests that views removed from the observer list are not notified.
+	 */
 	public void test_CI3_DeleteView()
 	{		
 		IQAView dummyView = new IQAView() {
@@ -53,6 +62,9 @@ public class CommentItemTest extends TestCase {
 		assertFalse("No views were nofified", notified);		
 	}
 	
+	/**
+	 * Tests that all views are notified on update.
+	 */
 	public void test_CI4_NotifyViews()
 	{		
 		IQAView dummyViewA = new IQAView() {
