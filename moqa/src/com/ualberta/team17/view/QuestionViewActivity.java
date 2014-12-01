@@ -38,6 +38,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +72,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
+	private View mQuestionView; //needed for accessing views outside of the adapter
 	protected QAController mController;	
 	protected QABodyAdapter mAdapter;
 	protected Fragment mRelatedQuestions;
@@ -99,11 +101,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 * @param question
 	 */
 	private void loadContent(QuestionItem question) {
-		setQuestion(question);
+		setQuestion(question);		
 		ListView listview = (ListView) findViewById(R.id.qaItemView);
 		listview.setAdapter(createNewAdapter());
 		IncrementalResult questionChildrenResult = mController.getChildren(question, new DateComparator());
-		questionChildrenResult.addObserver(new QuestionChildrenResultListener());
+		questionChildrenResult.addObserver(new QuestionChildrenResultListener());		
 	}	
 	
 	/**
@@ -163,7 +165,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		mController = QAController.getInstance();		
 		
 		((Button) displayQuestionView.findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
-		mAdapter = createNewAdapter();
+		mAdapter = createNewAdapter();	
 		
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
 			setMode(Mode.DISPLAY);
@@ -233,6 +235,21 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private void resetContent() {
 		mQuestion = null;
 		mQABodies = new ArrayList<QABody>();
+	}
+	
+	private void focusRelated() {	
+		View tabSection = mQuestionView.findViewById(R.id.tabSection);
+		View tabSelect = tabSection.findViewById(R.id.tabSelect);	
+		View tabContent = tabSection.findViewById(R.id.tabContent);
+		
+		TextView relatedTitle = (TextView) tabContent.findViewById(R.id.relatedTitle);
+		relatedTitle.setText("You may also be able to answer these questions");
+		
+		RelativeLayout rqTabButton = (RelativeLayout) tabSelect.findViewById(R.id.relatedViewHolder);
+		
+		TabSelectListener ts = new TabSelectListener(Tab.RQ);		
+		ts.onClick(rqTabButton);
+		refresh();
 	}
 	
 	/**
@@ -342,14 +359,14 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			fragmentArgs.putSerializable(ListFragment.TAXONOMY_NUM, Taxonomy.RelatedQuestions);
 			fragmentArgs.putSerializable(ListFragment.QUESTION_ID_EXTRA, mQuestion.getUniqueId());
 			mRelatedQuestions.setArguments(fragmentArgs);
-			fragmentManager.beginTransaction().add(R.id.tabContent, mRelatedQuestions).commit();
+			fragmentManager.beginTransaction().add(R.id.relatedView, mRelatedQuestions).commit();						
 		}
 	}
-
+	
 	private void hideRelatedQuestionsTab() {
 		if (null != mRelatedQuestions) {
 			System.out.println("Successfully hid fragment");
-			getFragmentManager().beginTransaction().hide(mRelatedQuestions).commit();
+			getFragmentManager().beginTransaction().hide(mRelatedQuestions).commit();								
 		}
 	}
 	
@@ -405,8 +422,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			View qaItemView = convertView;
 			if (null == qaItemView) {
 				qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
-				}		
-
+			}		
 			
 			View textSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.textSide);
 			View iconSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.iconSide);
@@ -434,6 +450,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			AttachmentView attachmentsView = (AttachmentView) tabContentView.findViewById(R.id.attachmentView);		
 
 			if(qaItem.parent.mType == ItemType.Question) {
+				mQuestionView = qaItemView;
 				QuestionItem question = (QuestionItem) qaItem.parent;
 				
 				tabSelectView.setVisibility(View.VISIBLE);
@@ -619,7 +636,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			View commentView = tabContent.findViewById(R.id.commentView);
 			View commentCButton = tabContent.findViewById(R.id.createCommentButton);
 			View attachmentView = tabContent.findViewById(R.id.attachmentView);
-			Fragment rqView = getFragmentManager().findFragmentById(RELATED_QUESTIONS_FRAGMENT_ID);
+			View relatedView = tabContent.findViewById(R.id.relatedView);
+			View relatedTitle = tabContent.findViewById(R.id.relatedTitle);			
 			
 			switch (tab) {
 			
@@ -628,6 +646,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					commentCButton.setVisibility(View.VISIBLE);
 					attachmentView.setVisibility(View.GONE);
 					hideRelatedQuestionsTab();
+					relatedView.setVisibility(View.GONE);
+					relatedTitle.setVisibility(View.GONE);
+					
 					break;
 					
 				case ATTACHMENT:
@@ -635,6 +656,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.VISIBLE);
 					hideRelatedQuestionsTab();
+					relatedView.setVisibility(View.GONE);
+					relatedTitle.setVisibility(View.GONE);
+					
 					break;
 				
 				case RQ:
@@ -642,6 +666,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.GONE);
 					showRelatedQuestionsTab();
+					relatedView.setVisibility(View.VISIBLE);
+					relatedTitle.setVisibility(View.VISIBLE);
+					
 					break;		
 					
 				default: 
@@ -649,6 +676,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.GONE);
 					hideRelatedQuestionsTab();
+					relatedView.setVisibility(View.GONE);
+					relatedTitle.setVisibility(View.GONE);
+					
 					break;
 			}
 		}
@@ -741,7 +771,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				AddAnswerPopup.this.dismiss();
 				AnswerItem newAnswer = mController.createAnswer(getQuestion(), body);								
 				addAnswers(newAnswer);
-				loadContent(getQuestion());		
+				loadContent(getQuestion());	
+				focusRelated();
 			}
 		}		
 		
