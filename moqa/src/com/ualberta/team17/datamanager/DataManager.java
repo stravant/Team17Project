@@ -18,6 +18,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
@@ -295,6 +296,7 @@ public class DataManager {
 			.registerTypeAdapter(CommentItem.class, new CommentItem.GsonTypeAdapter())
 			.registerTypeAdapter(QuestionItem.class, new QuestionItem.GsonTypeAdapter())
 			.registerTypeAdapter(UpvoteItem.class, new UpvoteItem.GsonTypeAdapter())
+			.registerTypeAdapter(AttachmentItem.class, new AttachmentItem.GsonTypeAdapter())
 			.serializeNulls()
 			.create();
 	}

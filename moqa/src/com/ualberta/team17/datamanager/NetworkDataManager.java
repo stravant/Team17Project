@@ -26,6 +26,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.ItemType;
@@ -193,6 +194,10 @@ import com.ualberta.team17.UpvoteItem;
 
 						case Upvote:
 							newObject = gson.fromJson(source, UpvoteItem.class);
+							break;
+
+						case Attachment:
+							newObject = gson.fromJson(source,  AttachmentItem.class);
 							break;
 
 						default:

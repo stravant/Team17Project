@@ -96,9 +96,14 @@ public class AttachmentItem extends AuthoredItem {
 	}
 	
 	/* Serialization */
-	public static abstract class GsonTypeAdapter<T extends AttachmentItem> extends QAModel.GsonTypeAdapter<T> {
+	public static class GsonTypeAdapter extends QAModel.GsonTypeAdapter<AttachmentItem> {
 		@Override
-		public boolean parseField(T item, String name, JsonReader reader) throws IOException {
+		public AttachmentItem read(JsonReader reader) throws IOException {
+			return readInto(new AttachmentItem(null, null, null, null, null, (Bitmap)null), reader);
+		}	
+
+		@Override
+		public boolean parseField(AttachmentItem item, String name, JsonReader reader) throws IOException {
 			if (super.parseField(item, name, reader)) {
 				return true;
 			} else if (name.equals(AttachmentItem.FIELD_DATA)) {
@@ -114,7 +119,7 @@ public class AttachmentItem extends AuthoredItem {
 		}
 
 		@Override
-		public void writeFields(JsonWriter writer, T item) throws IOException {
+		public void writeFields(JsonWriter writer, AttachmentItem item) throws IOException {
 			super.writeFields(writer, item); 
 			
 			// Encode 
