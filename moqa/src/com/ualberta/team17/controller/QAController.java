@@ -144,10 +144,14 @@ public class QAController {
 	 * most recently with QAController::markViewLater
 	 * @return An IncrementalResult that will be populated with the to be viewed later items
 	 */
-	public IncrementalResult getViewLaterItems() {
+	public IncrementalResult getViewLaterItems(IItemComparator comparator) {
+		if (null == comparator) {
+			comparator = new IdentityComparator();
+		}
+
 		return mDataManager.doQuery(
 				mDataManager.getUserContext().getViewLater(), 
-				new IdentityComparator());
+				comparator);
 	}
 	
 	/**
@@ -279,7 +283,7 @@ public class QAController {
 				parent, 
 				creator.getUserName(), 
 				Calendar.getInstance().getTime(), 
-				name, 
+				name,
 				data);
 		mDataManager.saveItem(item);
 		return item;
@@ -314,5 +318,59 @@ public class QAController {
 	 */
 	public AttachmentItem createAttachment(UniqueId parent, String name, Uri imageUri) {
 		return createAttachment(parent, name, mDataManager.readImageFromUri(imageUri));
+	}
+	
+	/**
+	 * Creates an AttachmentItem from a bitmap of an image.
+	 * 
+	 * The attachment is not saved by the data manager yet, as it's possible the
+	 * user will change their mind and not create the question.
+	 * 
+	 * @param name The name of the attachment.
+	 * @param image The image to attach.
+	 * @return
+	 */
+	public AttachmentItem createDetachedAttachment(String name, Bitmap image) {
+		UserContext creator = mDataManager.getUserContext();
+		AttachmentItem item = new AttachmentItem(new UniqueId(creator),
+				null,
+				creator.getUserName(),
+				Calendar.getInstance().getTime(),
+				name,
+				image);
+		return item;
+	}
+	
+	/**
+	 * Creates an AttachmentItem from a Uri of an image on the device. The image
+	 * will be synchronously loaded in.
+	 * 
+	 * The attachment is not saved by the data manager yet, as it's possible the
+	 * user will change their mind and not create the question.
+	 * 
+	 * @param name The name of the attachment.
+	 * @param image The URI of the image to attach.
+	 * @return
+	 */
+	public AttachmentItem createDetachedAttachment(String name, Uri image) {
+		UserContext creator = mDataManager.getUserContext();
+		AttachmentItem item = new AttachmentItem(new UniqueId(creator),
+				null,
+				creator.getUserName(),
+				Calendar.getInstance().getTime(),
+				name,
+				mDataManager.readImageFromUri(image));
+		return item;
+	}
+	
+	/**
+	 * Connects a detached attachment to a specified parent and saves it.
+	 * 
+	 * @param item The item to attach.
+	 * @param parent The Id of the parent to connect to.
+	 */
+	public void connectAttachment(AttachmentItem item, UniqueId parent) {
+		item.setParent(parent);
+		mDataManager.saveItem(item);
 	}
 }

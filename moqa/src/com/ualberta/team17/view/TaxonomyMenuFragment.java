@@ -2,13 +2,13 @@ package com.ualberta.team17.view;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ualberta.team17.R;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 
+/**
+ * UI fragment used to display taxonomy menu drawer
+ * 
+ * @author divyank
+ *
+ */
 public class TaxonomyMenuFragment extends Fragment {
 	private String[] myTaxonomy;
 	private DrawerLayout mDrawerLayout;
@@ -52,49 +59,60 @@ public class TaxonomyMenuFragment extends Fragment {
 		mDrawerList.setAdapter(new ArrayAdapter<String>(activity,
 				R.layout.drawer_list_item, myTaxonomy));
 		mDrawerList.setOnItemClickListener(new LeftDrawerItemClickListener());
-
 		activity.getActionBar().setDisplayHomeAsUpEnabled(true);
 		activity.getActionBar().setHomeButtonEnabled(true);
 		
-		mDrawerToggle = new ActionBarDrawerToggle(
-				activity,                  
-				mDrawerLayout,
-				R.drawable.ic_drawer,  
-				R.string.drawer_open,  
-				R.string.drawer_close  
-				) {
-			public void onDrawerClosed(View view) {
-				activity.getActionBar().setTitle(activity.getTitle());
-				activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
-
-			public void onDrawerOpened(View drawerView) {
-				activity.getActionBar().setTitle(activity.getTitle());
-				activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-			}
-		};	
+		mDrawerToggle = new DrawerToggle(activity, mDrawerLayout, R.drawable.ic_drawer,
+				R.string.drawer_open, R.string.drawer_close);	
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
+		
 		if (savedInstanceState == null) {
-			mListener.onItemSelected(0);
+			mListener.onItemSelected(Taxonomy.AllQuestions);
 			mDrawerList.setItemChecked(0, true);
 			getActivity().setTitle(myTaxonomy[0]);
 			mDrawerLayout.closeDrawer(mDrawerList);
 		}
-
 		View rootView = inflater.inflate(R.layout.question_list, container, false);
 		return rootView;
 	}
 	private class LeftDrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			mListener.onItemSelected(position);
+			Taxonomy selectedTaxonomy;
+
+			switch (position) {
+			case 1:
+				selectedTaxonomy = Taxonomy.MyActivity;
+				break;
+			case 2:
+				selectedTaxonomy = Taxonomy.MyFavorites;
+				break;
+			case 3:
+				selectedTaxonomy = Taxonomy.TopQuestions;
+				break;
+			case 4:
+				selectedTaxonomy = Taxonomy.TopAnswers;
+				break;
+			case 5:
+				selectedTaxonomy = Taxonomy.RecentActivity;
+				break;
+			case 6:
+				selectedTaxonomy = Taxonomy.ReadLater;
+				break;
+			default:
+				selectedTaxonomy = Taxonomy.AllQuestions;
+			}
+
+			mListener.onItemSelected(selectedTaxonomy);
+
 			// update selected item and title, then close the drawer
 			mDrawerList.setItemChecked(position, true);
 			mDrawerLayout.closeDrawer(mDrawerList);
 		}
 	}
+
 	public interface OnItemSelectedListener {
-		public void onItemSelected(int position);
+		public void onItemSelected(Taxonomy selectedTaxonomy);
 	}
 
 	@Override
@@ -108,5 +126,27 @@ public class TaxonomyMenuFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	
 		return super.onOptionsItemSelected(item);
-	}	
+	}
+	public class DrawerToggle extends ActionBarDrawerToggle
+	{
+		Activity activity;
+		public DrawerToggle(Activity activity, DrawerLayout drawerLayout,
+				int drawerImageRes, int openDrawerContentDescRes,
+				int closeDrawerContentDescRes) {
+			super(activity, drawerLayout, drawerImageRes, openDrawerContentDescRes,
+					closeDrawerContentDescRes);
+			this.activity = activity;
+		}
+
+		@Override
+		public void onDrawerClosed(View view) {
+			activity.getActionBar().setTitle(activity.getTitle());
+			activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+		}
+		@Override
+		public void onDrawerOpened(View drawerView) {
+			activity.getActionBar().setTitle(activity.getTitle());
+			activity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+		}
+	}
 }

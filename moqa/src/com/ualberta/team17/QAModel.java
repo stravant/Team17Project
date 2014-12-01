@@ -30,7 +30,9 @@ public abstract class QAModel {
 	
 	/* Model update notification behavior */
 	public final void addView(IQAView view) {
-		mViews.add(view);
+		if (!mViews.contains(view)) {
+			mViews.add(view);
+		}
 	}
 	public final void deleteView(IQAView view) {
 		mViews.remove(view);

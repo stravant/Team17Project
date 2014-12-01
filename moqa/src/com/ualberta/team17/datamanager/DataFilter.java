@@ -14,7 +14,9 @@ public class DataFilter {
 	private List<FieldFilter> mFieldFilters;
 	private Integer mMaxResults = DEFAULT_NUM_RESULTS;
 	private Integer mResultsPage;
-	
+
+	private DataFilterType mFilterType = DataFilterType.QUERY;
+
 	public class FieldFilter {
 		private String mField;
 		private String mFilter;
@@ -72,6 +74,11 @@ public class DataFilter {
 		SHOULD
 	}
 
+	public enum DataFilterType {
+		QUERY,
+		MORE_LIKE_THIS
+	}
+
 	public void setTypeFilter(ItemType type) {
 		mTypeFilter = type;
 	}
@@ -87,7 +94,15 @@ public class DataFilter {
 	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode, CombinationMode combinationMode) {
 		mFieldFilters.add(new FieldFilter(field, filter, comparisonMode, combinationMode));
 	}
-	
+
+	public void setDataFilterType(DataFilterType type) {
+		mFilterType = type;
+	}
+
+	public DataFilterType getDataFilterType() {
+		return mFilterType;
+	}
+
 	public List<FieldFilter> getFieldFilters() {
 		return mFieldFilters;
 	}
@@ -104,6 +119,11 @@ public class DataFilter {
 		// Have we matched a must / should item?
 		boolean matchedShould = false; // Until contested
 		boolean matchedMust = false; // Until contested
+		
+		// If there are no filters, trivially accept (we already passed the item type test).
+		if (mFieldFilters.isEmpty()) {
+			return true;
+		}
 		
 		// For each filter
 		for (FieldFilter f: mFieldFilters) {

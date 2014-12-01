@@ -1,14 +1,12 @@
 package com.ualberta.team17.view;
 
-import android.app.ActionBar;
 import android.app.Activity;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -16,20 +14,18 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.R;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
 
 /**
@@ -91,36 +87,33 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		//set the custom view to use
 		getActionBar().setCustomView(R.layout.sort_menu_icon);
 		ImageButton iv = (ImageButton) findViewById(R.id.imgRightMenu);
-		iv.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if(rightDrawerLayout.isDrawerOpen(Gravity.START)
-						&& !rightDrawerLayout.isDrawerOpen(Gravity.END))
-					return;
-				if(!rightDrawerLayout.isDrawerOpen(Gravity.END))
-					rightDrawerLayout.openDrawer(Gravity.END);
-				else
-					rightDrawerLayout.closeDrawer(Gravity.END); }
-		});
+		iv.setOnClickListener(new SortMenuToggle());
 
 	}
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		leftDrawer.mDrawerToggle.syncState();
+		if (null != leftDrawer && null != leftDrawer.mDrawerToggle) {
+			leftDrawer.mDrawerToggle.syncState();
+		}
 	}
 
-	private void selectItem(int position) {
+	/**
+	 * Refreshes item list when taxonomy is selected
+	 * 
+	 * @author Divyank
+	 */
+	private void selectItem(Taxonomy selectedTaxonomy) {
 		// update the main content by replacing fragments
 		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		args = new Bundle();
-		args.putInt(ListFragment.TAXONOMY_NUM, position);
+		args.putSerializable(ListFragment.TAXONOMY_NUM, selectedTaxonomy);
 		fragment = new ListFragment();
 		FragmentManager fragmentManager = getFragmentManager();
 		fragment.setArguments(args);
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-		setTitle(myTaxonomy[position]);
+		setTitle(myTaxonomy[selectedTaxonomy.getId()]);
 	}
 
 
@@ -133,6 +126,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 
 		menu.setGroupVisible(R.id.questionlist_group, true);
 		menu.setGroupVisible(R.id.questionview_group, false);
+		menu.setGroupVisible(R.id.questioncreation_group, false);
 
 		// Get the search menu item
 		MenuItem mi = menu.findItem(R.id.action_search);
@@ -144,15 +138,17 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	}
 
 	/**
-	 * This handles the menu at the top of this view.
+	 * This handles the menus at the top and bottom of this view.
 	 * 
 	 * @author Jared
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (leftDrawer.mDrawerToggle.onOptionsItemSelected(item)) {
-			return true;
+		if(!rightDrawerLayout.isDrawerOpen(Gravity.END)) {
+			if (leftDrawer.mDrawerToggle.onOptionsItemSelected(item)) {
+				return true;
+			}
 		}
 		if (id == R.id.action_new_question) {
 			fragment.createNewQuestion();
@@ -160,9 +156,11 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	/***
+	 * Called by taxonomy fragment when an item is selected 
+	 */
 	@Override
-	public void onItemSelected(int position) {
+	public void onItemSelected(Taxonomy position) {
 		selectItem(position);
 		if(rightDrawerList != null) {
 			rightDrawerList.setItemChecked(0, false);
@@ -170,7 +168,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 			rightDrawerList.setItemChecked(2, false);
 		}
 	}
-
+	
 	/**
 	 * Recreates the ListFragment with the previous bundle.
 	 */
@@ -178,7 +176,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		if (args == null) {
 			return;
 		}
-
 		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		int taxonomy = args.getInt(ListFragment.TAXONOMY_NUM);
 
@@ -188,7 +185,12 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 		setTitle(myTaxonomy[taxonomy]);
 	}
-
+	/**
+	 * UI fragment used by QuestionListActivity to display the Sort Menu Drawer
+	 * on the right
+	 * 
+	 * @author Divyank 
+	 */
 	public class SortMenuFragment extends Fragment {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -208,17 +210,21 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		private class RightDrawerItemClickListener implements ListView.OnItemClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				int mTaxonomy = args.getInt(ListFragment.TAXONOMY_NUM, -1);
+				Taxonomy taxonomy = (Taxonomy) args.getSerializable(ListFragment.TAXONOMY_NUM);
+				if (null == taxonomy) {
+					return;
+				}
+
 				args.putInt(SORT_TYPE, position);
 				rightDrawerList.setItemChecked(position, true);
 				rightDrawerLayout.closeDrawer(rightDrawerList);
-				if(mTaxonomy == 3 || mTaxonomy == 4) {
-					selectItem(0);
+				if(taxonomy == Taxonomy.TopQuestions || taxonomy == Taxonomy.TopAnswers) {
+					selectItem(Taxonomy.AllQuestions);
 					leftDrawer.mDrawerList.setItemChecked(0, true);
 					return;
 				}
-				refresh();
 
+				refresh();
 			}
 		}
 		@Override
@@ -228,12 +234,21 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
-
 			return super.onOptionsItemSelected(item);
 		}	
-
 	}
 
+	private class SortMenuToggle implements View.OnClickListener {
+		@Override
+		public void onClick(View v) {
+			if(rightDrawerLayout.isDrawerOpen(Gravity.START)
+					&& !rightDrawerLayout.isDrawerOpen(Gravity.END))
+				return;
+			if(!rightDrawerLayout.isDrawerOpen(Gravity.END))
+				rightDrawerLayout.openDrawer(Gravity.END);
+			else
+				rightDrawerLayout.closeDrawer(Gravity.END); }
+	}
 	/**
 	 * Triggered whenever the enter is hit while the search bar is active.
 	 * 

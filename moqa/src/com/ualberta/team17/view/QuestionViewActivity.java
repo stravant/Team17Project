@@ -27,9 +27,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,14 +67,25 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 
 public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
+	private final static int RELATED_QUESTIONS_FRAGMENT_ID = 356;
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
 	protected QAController mController;	
 	protected QABodyAdapter mAdapter;
+	private Mode mMode = Mode.DISPLAY;
+	protected Fragment mRelatedQuestions;
+	
+	private EditText mCreateTitleView;
+	private EditText mCreateBodyView;
+	
+	// Attachment items that are added during question creation.
+	private List<AttachmentItem> mAddedAttachments;
+	private AttachmentDisplayView mAddedAttachmentsView;
 	
 	private enum Mode {
 		CREATE,
@@ -78,7 +95,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private enum Tab {
 		COMMENT,
 		ATTACHMENT,
-		RQ		
+		RQ	
 	}
 	
 	/**
@@ -86,6 +103,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 */
 	public QuestionViewActivity() {
 		mQABodies = new ArrayList<QABody>();
+		mAddedAttachments = new ArrayList<AttachmentItem>();
 	}
 		
 	/**
@@ -99,6 +117,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		listview.setAdapter(createNewAdapter());
 		IncrementalResult questionChildrenResult = mController.getChildren(question, new DateComparator());
 		questionChildrenResult.addObserver(new QuestionChildrenResultListener());
+		
 	}	
 	
 	/**
@@ -136,7 +155,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		ListView qaList = (ListView) findViewById(R.id.qaItemView);
 		mAdapter = new QABodyAdapter(this, R.id.qaItemView, mQABodies);
 		qaList.invalidate();
-		qaList.setAdapter(mAdapter);		
+		qaList.setAdapter(mAdapter);	
 	}
 		
 	/**
@@ -156,28 +175,38 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
-		
-		((Button) displayQuestionView.findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
+			
 		mAdapter = createNewAdapter();
+		
+		View addAttachmentView = createQuestionView.findViewById(R.id.addAttachmentView);
+		mAddedAttachmentsView = (AttachmentDisplayView) addAttachmentView.findViewById(R.id.addAttachmentDisplayView);
 		
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
 			setMode(Mode.DISPLAY);
 			
 			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
-			queryQuestion(id);			
+			queryQuestion(id);
+			
 		} else {
 			setMode(Mode.CREATE);
 			
-			Button submitButton = (Button) createQuestionView.findViewById(R.id.createQuestionSubmitButton);
-			EditText titleText = (EditText) createQuestionView.findViewById(R.id.createQuestionTitleView);
-			EditText bodyText = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
+			mCreateTitleView = (EditText) createQuestionView.findViewById(R.id.createQuestionTitleView);
+			mCreateBodyView = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
+			ImageButton addAttachmentButton = (ImageButton) addAttachmentView.findViewById(R.id.addAttachmentButton);			addAttachmentButton.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					requestImage();
+				}
+				
+			});
 			
-			submitButton.setOnClickListener(new SubmitQuestionListener(titleText, bodyText));
 		}
 		
 	}
 	
 	public void setMode(Mode mode) {
+		mMode = mode;
 		View displayQuestionView = findViewById(R.id.displayQuestionView);
 		View createQuestionView = findViewById(R.id.createQuestionView);
 		
@@ -220,8 +249,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 */
 	public void setQuestion(QuestionItem question) {
 		resetContent();
+		question.addView(this);
 		mQuestion = question;
-		mQABodies.add(new QABody(question));
+		mQABodies.add(new QuestionBody(question));
 		refresh();
 	}
 	
@@ -298,17 +328,57 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		return null;
 	}
 	
+	private static final int IMAGE_REQUEST = 1888;
+	
+	private void requestImage() {
+		Intent imageIntent = new Intent();
+		imageIntent.setType("image/*");
+		imageIntent.setAction(Intent.ACTION_GET_CONTENT);
+		imageIntent.addCategory(Intent.CATEGORY_OPENABLE);
+		
+		startActivityForResult(imageIntent, IMAGE_REQUEST);
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
+			Uri imageUri = data.getData();
+			String name = imageUri.getLastPathSegment();
+			AttachmentItem newAttachment = mController.createDetachedAttachment(name, imageUri);
+			
+			mAddedAttachments.add(newAttachment);
+			mAddedAttachmentsView.addAttachment(newAttachment);
+		}
+	}
+	
 	/**
 	 * Creates the toolbar at the top of the app.
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.moqa_menu, menu);
+		mMenu = menu;
 		
 		menu.setGroupVisible(R.id.questionlist_group, false);
-		menu.setGroupVisible(R.id.questionview_group, true);
+		setMenu(mMode);
 		
 		return true;
+	}
+	private Menu mMenu;
+	
+	private void setMenu(Mode mode) {
+		if(mMenu == null) {
+			throw new NullPointerException();
+		}
+		switch(mode) {
+		case CREATE:
+			mMenu.setGroupVisible(R.id.questioncreation_group, true);
+			mMenu.setGroupVisible(R.id.questionview_group, false);
+			break;
+		case DISPLAY:
+			mMenu.setGroupVisible(R.id.questioncreation_group, false);
+			mMenu.setGroupVisible(R.id.questionview_group, true);
+			break;
+		}
 	}
 	
 	/**
@@ -319,12 +389,49 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		int id = item.getItemId();
 
 		if (id == R.id.action_new_question2) {
+			Intent intent = new Intent(this, QuestionViewActivity.class);		
+			startActivity(intent);
 			return true;
 		}
 		if (id == R.id.action_new_answer) {
+			DialogFragment popup = new AddAnswerPopup();	
+			popup.show(getFragmentManager(), "answer");
 			return true;
-		}	
+		}
+		if(id == R.id.action_submit_question) {
+			setMode(Mode.DISPLAY);
+			setQuestion(mController.createQuestion(mCreateTitleView.getText().toString(), mCreateBodyView.getText().toString()));
+			for(AttachmentItem attachment : mAddedAttachments) {
+				mController.connectAttachment(attachment, mQuestion.mUniqueId);
+			}
+			return true;
+		}
+		if(id == R.id.action_read_later) {
+			mController.markViewLater(mQuestion);
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void showRelatedQuestionsTab() {
+		FragmentManager fragmentManager = getFragmentManager();
+		if (null != mRelatedQuestions) {
+			fragmentManager.beginTransaction().show(mRelatedQuestions).commit();
+		} else {
+			mRelatedQuestions = new ListFragment();
+			Bundle fragmentArgs = new Bundle();
+			fragmentArgs.putSerializable(ListFragment.TAXONOMY_NUM, Taxonomy.RelatedQuestions);
+			fragmentArgs.putSerializable(ListFragment.QUESTION_ID_EXTRA, mQuestion.getUniqueId());
+			mRelatedQuestions.setArguments(fragmentArgs);
+			fragmentManager.beginTransaction().add(R.id.tabContent, mRelatedQuestions).commit();
+		}
+	}
+
+	private void hideRelatedQuestionsTab() {
+		if (null != mRelatedQuestions) {
+			System.out.println("Successfully hid fragment");
+			getFragmentManager().beginTransaction().hide(mRelatedQuestions).commit();
+		}
 	}
 	
 	/**
@@ -338,14 +445,22 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private class QABody {
 		public AuthoredTextItem parent;
 		public List<CommentItem> comments;
-		public List<AttachmentItem> attachments;
 		
 		public QABody(AuthoredTextItem initParent) {
 			parent = initParent;
 			comments = new ArrayList<CommentItem>();
+		}
+	}
+	
+	private class QuestionBody extends QABody {
+		public List<AttachmentItem> attachments;
+
+		public QuestionBody(AuthoredTextItem initParent) {
+			super(initParent);
 			attachments = new ArrayList<AttachmentItem>();
 		}
-	}	
+		
+	}
 	
 	/**
 	 * Adapter for QABody. Connects the body of the Question/Answer
@@ -369,18 +484,19 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		 * Returns the view after adding the list content.
 		 */
 		public View getView( int position, View convertView, ViewGroup parent ) {
-			QABody qaItem = mObjects.get(position);
+			QABody qaBody = mObjects.get(position);
 
 			LayoutInflater inflater = null;
-			if (null == convertView || qaItem.comments.size() > 0) {
+			if (null == convertView || qaBody.comments.size() > 0) {
 				inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			}
 
 			View qaItemView = convertView;
 			if (null == qaItemView) {
 				qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
-				}		
-
+			}
+			
+			Resources res = getResources();
 			
 			View textSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.textSide);
 			View iconSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.iconSide);
@@ -405,10 +521,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			
 			LinearLayout commentsView = (LinearLayout) tabContentView.findViewById(R.id.commentView);		
 			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);			
-			AttachmentView attachmentsView = (AttachmentView) tabContentView.findViewById(R.id.attachmentView);		
+			AttachmentDisplayView attachmentsView = (AttachmentDisplayView) tabContentView.findViewById(R.id.attachmentView);		
 
-			if(qaItem.parent.mType == ItemType.Question) {
-				QuestionItem question = (QuestionItem) qaItem.parent;
+			if(qaBody.parent.mType == ItemType.Question) {
+				QuestionItem question = (QuestionItem) qaBody.parent;
+				QuestionBody questionBody = (QuestionBody) qaBody;
 				
 				tabSelectView.setVisibility(View.VISIBLE);
 				titleTextView.setVisibility(View.VISIBLE);
@@ -416,43 +533,57 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				answerCountView.setVisibility(View.VISIBLE);
 				
 				titleTextView.setText(question.getTitle());
-				upvoteTextView.setText("" + question.getUpvoteCount());
 				
 				if(question.getReplyCount() == 1) {
 					answerCountView.setText(getString(R.string.answer_count_one));
 				} else {
 					answerCountView.setText(String.format(getString(R.string.answer_count), question.getReplyCount()));
 				}
+				
+				if(question.isFavorited()) {
+					Drawable favoriteHighlighted = res.getDrawable(R.drawable.ic_action_favorite_blue);
+					favoriteButton.setImageDrawable(favoriteHighlighted);
+				}
+				
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 
-				attachmentsView.setVisibility(qaItem.attachments.size() > 0 ? View.VISIBLE : View.GONE);
-
-			} else if (qaItem.parent.mType == ItemType.Answer) {
+				attachmentsView.setVisibility(View.GONE);
+				
+				attachmentsView.clearAttachments();
+				
+				for (AttachmentItem attachment: questionBody.attachments) {
+					attachmentsView.addAttachment(attachment);
+				}
+				
+			} else if (qaBody.parent.mType == ItemType.Answer) {
 				tabSelectView.setVisibility(View.GONE);
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);				
 				answerCountView.setVisibility(View.GONE);
 				attachmentsView.setVisibility(View.GONE);
 				
+
+				
 			} else {
 				// This should never happen. If it does, a bad object was added to the list.
 				throw new IllegalStateException();
 			}
 						
-			commentButton.setTag(qaItem.parent.getUniqueId());
+			commentButton.setTag(qaBody.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
-			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
-			
-			bodyTextView.setText(qaItem.parent.getBody());
-			authorTextView.setText(qaItem.parent.getAuthor());
-			
-			for (AttachmentItem attachment: qaItem.attachments) {
-				attachmentsView.addAttachment(attachment);
+			if(qaBody.parent.haveUpvoted()) {
+				Drawable highlightedUpvote = res.getDrawable(R.drawable.ic_action_collapse_blue);
+				upvoteButton.setImageDrawable(highlightedUpvote);
 			}
+			upvoteButton.setOnClickListener(new UpvoteListener(qaBody.parent));
+			upvoteTextView.setText("" + qaBody.parent.getUpvoteCount());
+			
+			bodyTextView.setText(qaBody.parent.getBody());
+			authorTextView.setText(qaBody.parent.getAuthor());
 
-			for (int i = 0; i < qaItem.comments.size(); i++){
-				CommentItem comment = qaItem.comments.get(i);
+			for (int i = 0; i < qaBody.comments.size(); i++){
+				CommentItem comment = qaBody.comments.get(i);
 				
 				View commentView = inflater.inflate(R.layout.comment, parent, false);
 				TextView commentBody = (TextView) commentView.findViewById(R.id.commentText);
@@ -491,7 +622,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		@Override
 		public void itemsArrived(List<QAModel> item, int index) {				
 			ListView qaList = (ListView) findViewById(R.id.qaItemView);
-			QABody parentBody = findById(mQuestion.getUniqueId());
+			QuestionBody parentBody = (QuestionBody) findById(mQuestion.getUniqueId());
 
 			for(QAModel qaitem : item ) {
 				if (qaitem.mType == ItemType.Answer) {
@@ -551,8 +682,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			QAController controller = QAController.getInstance();
 			setMode(Mode.DISPLAY);
 			setQuestion(controller.createQuestion(mTitleView.getText().toString(), mBodyView.getText().toString()));
+			for(AttachmentItem item : mAddedAttachments) {
+				controller.connectAttachment(item, mQuestion.mUniqueId);
+			}
 		}
-		
 	}
 	
 	private class AddAnswerListener implements View.OnClickListener {		
@@ -593,7 +726,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			View commentView = tabContent.findViewById(R.id.commentView);
 			View commentCButton = tabContent.findViewById(R.id.createCommentButton);
 			View attachmentView = tabContent.findViewById(R.id.attachmentView);
-			//View rqView = tabContent.findViewById(R.id.rqView);
+			Fragment rqView = getFragmentManager().findFragmentById(RELATED_QUESTIONS_FRAGMENT_ID);
 			
 			switch (tab) {
 			
@@ -601,28 +734,28 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					commentView.setVisibility(View.VISIBLE);
 					commentCButton.setVisibility(View.VISIBLE);
 					attachmentView.setVisibility(View.GONE);
-					//rqView.setVisibility(View.GONE);
+					hideRelatedQuestionsTab();
 					break;
 					
 				case ATTACHMENT:
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.VISIBLE);
-					//rqView.setVisibility(View.GONE);
+					hideRelatedQuestionsTab();
 					break;
 				
 				case RQ:
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.GONE);
-					//rqView.setVisibility(View.VISIBLE);
+					showRelatedQuestionsTab();
 					break;		
 					
 				default: 
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.GONE);
-					//rqView.setVisibility(View.GONE);
+					hideRelatedQuestionsTab();
 					break;
 			}
 		}
@@ -769,6 +902,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			}
 		}		
 			
-	}	
+	}
 	
 }
