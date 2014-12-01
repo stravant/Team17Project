@@ -508,7 +508,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 				attachmentsView.setVisibility(View.GONE);
 				
-				attachmentsView.clearAttachments();				
+				attachmentsView.clearAttachments();
 				
 				for (AttachmentItem attachment: questionBody.attachments) {
 					attachmentsView.addAttachment(attachment);
