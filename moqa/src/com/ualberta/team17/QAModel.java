@@ -6,8 +6,10 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.Until;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.view.IQAView;
 
 /*
@@ -63,6 +65,32 @@ public abstract class QAModel {
 	@Override
 	public int hashCode() {
 		return getUniqueId().hashCode();
+	}
+	
+	/**
+	 * Add this to parent's derived info
+	 * @param ctx
+	 * @param parentItem
+	 */
+	public abstract void addToParentDerivedInfo(UserContext ctx, QAModel parentItem);
+	
+	/**
+	 * Calculate an item's initial derived info
+	 * @param ctx The user context to get the item's local 
+	 *            information (favorited, recently viewed, etc) from.
+	 */
+	public void calculateInitialDerivedInfo(UserContext ctx) {
+		if (ctx != null && (this instanceof QuestionItem)) {
+			// Also check if the item is favorited
+			if (ctx.isFavorited(this.getUniqueId())) {
+				((QuestionItem)this).setFavorited();
+			}
+		
+			// And check if the item is to be viewed later
+			if (ctx.shouldViewLater(this.getUniqueId())) {
+				((QuestionItem)this).setViewLater();
+			}
+		}
 	}
 	
 	/* Introspection for stuff */

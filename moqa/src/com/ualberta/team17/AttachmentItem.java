@@ -10,6 +10,7 @@ import android.util.Base64;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.ualberta.team17.datamanager.UserContext;
 
 /**
  * Represents an attachment to a question. The parent is always a question, although the question
@@ -104,6 +105,12 @@ public class AttachmentItem extends AuthoredItem {
 			}
 		}
 		return mImage;
+	}
+	
+	@Override
+	public void addToParentDerivedInfo(UserContext ctx, QAModel parentItem) {
+		// Count attachments
+		((QuestionItem)parentItem).setHasAttachments();
 	}
 	
 	/* Serialization */
