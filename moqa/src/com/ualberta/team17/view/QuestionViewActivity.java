@@ -516,6 +516,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				QuestionItem question = (QuestionItem) qaBody.parent;
 				QuestionBody questionBody = (QuestionBody) qaBody;
 				
+				authorTextView.setOnClickListener(new QuestionAuthorListener());
+				
 				tabSelectView.setVisibility(View.VISIBLE);
 				titleTextView.setVisibility(View.VISIBLE);
 				favoriteButton.setVisibility(View.VISIBLE);				
@@ -545,6 +547,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				}
 				
 			} else if (qaBody.parent.mType == ItemType.Answer) {
+				authorTextView.setOnClickListener(new AnswerAuthorListener());
 				tabSelectView.setVisibility(View.GONE);
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);				
@@ -798,6 +801,26 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		public void onClick(View v) {
 			QAController controller = QAController.getInstance();
 			controller.addFavorite(mItem);
+		}
+		
+	}
+	
+	private class QuestionAuthorListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			//launch intent to QLA
+			
+		}
+		
+	}
+	
+	private class AnswerAuthorListener implements View.OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			//launch intent to QLA
+			
 		}
 		
 	}
