@@ -6,6 +6,10 @@ import java.util.Date;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * A QAModel that represents a comment on either a question or answer.
+ *
+ */
 public class CommentItem extends AuthoredTextItem {
 	/* Ctor */
 	public CommentItem(UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount) {

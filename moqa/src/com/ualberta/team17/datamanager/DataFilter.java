@@ -8,6 +8,12 @@ import com.ualberta.team17.DateStringFormat;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 
+/**
+ * A DataFilter represents a Data Manager query. Combined with a Comparator it is everything
+ * you need to query either the local or network data manager (although it has knowledge of neither.)
+ * 
+ * @author michaelblouin
+ */
 public class DataFilter {
 	public static final int DEFAULT_NUM_RESULTS = 10;
 	private ItemType mTypeFilter;
@@ -17,6 +23,11 @@ public class DataFilter {
 
 	private DataFilterType mFilterType = DataFilterType.QUERY;
 
+	/**
+	 * Describes all of the filtering information for a field in the DataFilter.
+	 * 
+	 * @author michaelblouin
+	 */
 	public class FieldFilter {
 		private String mField;
 		private String mFilter;
@@ -79,18 +90,52 @@ public class DataFilter {
 		MORE_LIKE_THIS
 	}
 
+	/**
+	 * Sets the item type filter that must be satisfied. It is preferred to use this method than
+	 * to query for item type using a field filter, as it will execute faster.
+	 * 
+	 * @param type
+	 */
 	public void setTypeFilter(ItemType type) {
 		mTypeFilter = type;
 	}
 
+	/**
+	 * Gets the item type filter.
+	 * @return
+	 */
 	public ItemType getTypeFilter() {
 		return mTypeFilter;
 	}
 
+	/**
+	 * Adds the field to the data filter, using the specified comparison mode.
+	 * 
+	 * This will cause items to be returned that contain the field matching the arguments.
+	 * 
+	 * @param field
+	 * @param filter
+	 * @param comparisonMode
+	 */
 	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode) {
 		addFieldFilter(field, filter, comparisonMode, null);
 	}
 
+	/**
+	 * Adds the field to the data filter, using the specified comparison mode and combination mode.
+	 * 
+	 * The combination mode specifies how this filter combines with the other filter types. With the MUST
+	 * combination mode the filter must be satisfied by every object in the result. Using the SHOULD combination
+	 * mode objects do not need to satisfy the requirement UNLESS it is the only filter on the object.
+	 * 
+	 * If an IdentityComparator is used, items matching one or more SHOULD filters will be boosted above those
+	 * that do not match.
+	 * 
+	 * @param field
+	 * @param filter
+	 * @param comparisonMode
+	 * @param combinationMode
+	 */
 	public void addFieldFilter(String field, String filter, FilterComparison comparisonMode, CombinationMode combinationMode) {
 		mFieldFilters.add(new FieldFilter(field, filter, comparisonMode, combinationMode));
 	}
@@ -103,15 +148,28 @@ public class DataFilter {
 		return mFilterType;
 	}
 
+	/**
+	 * Returns the list of FieldFilters that make up the DataFilter.
+	 * @return
+	 */
 	public List<FieldFilter> getFieldFilters() {
 		return mFieldFilters;
 	}
 	
-	// Accepted items must follow the following rules:
-	//  - If there is a type filter, it must be satisfied
-	//  - All MUST filters must be satisfied
-	//  - If there are no MUST filters, then at least one SHOULD filter must be satisfied
+	/**
+	 * Checks if the given item matches the Data Filter. 
+	 * 
+	 * Note that not all of the elastic search functionality is available in this method.
+	 * 
+	 * @param item
+	 * @return Returns True if the item matches, and false if not.
+	 */
 	public Boolean accept(QAModel item) {
+		// Accepted items must follow the following rules:
+		//  - If there is a type filter, it must be satisfied
+		//  - All MUST filters must be satisfied
+		//  - If there are no MUST filters, then at least one SHOULD filter must be satisfied
+
 		// Always satisfy must filter.
 		if (getTypeFilter() != null && item.getItemType() != getTypeFilter())
 			return false;
@@ -253,18 +311,38 @@ public class DataFilter {
 		}
 	}
 
+	/**
+	 * Gets the maximum number of results to be returned in a single page by the filter.
+	 * @return
+	 */
 	public Integer getMaxResults() {
 		return mMaxResults;
 	}
 
+	/**
+	 * Sets the maximum number of results to be returned in a single page by the filter.
+	 * @param maxResults
+	 */
 	public void setMaxResults(Integer maxResults) {
 		mMaxResults = maxResults;
 	}
 
+	/**
+	 * Gets the current page number of the data filter.
+	 * @return
+	 */
 	public Integer getPage() {
 		return mResultsPage;
 	}
 
+	/**
+	 * Sets the current page number for the data filter.
+	 * 
+	 * Note that it is perfectly fine to use the same DataFilter instance to query subsequent pages
+	 * in a single query (ie the filter need not be reconstructed.)
+	 * 
+	 * @param page
+	 */
 	public void setPage(Integer page) {
 		mResultsPage = page;
 	}

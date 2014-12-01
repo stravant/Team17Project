@@ -11,6 +11,10 @@ import android.util.Base64;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * Represents an attachment to a question. The parent is always a question, although the question
+ * may have many AttachmentItem children.
+ */
 public class AttachmentItem extends AuthoredItem {
 	public static final String FIELD_NAME = "name";
 	public static final String FIELD_DATA = "data";

@@ -168,14 +168,6 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			
 			break;
-		case AllQuestions:
-			if (comp == null) {
-				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Descending);
-			}	
-			datafilter.setTypeFilter(ItemType.Question);
-			mIR = QAController.getInstance().getObjects(datafilter, comp);
-			break;
 		case MyActivity:
 			if (comp == null) {
 				comp = new DateComparator();
@@ -219,6 +211,15 @@ public class ListFragment extends Fragment {
 			comp = new IdentityComparator();
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
+		default:
+			case AllQuestions:
+				if (comp == null) {
+					comp = new DateComparator();
+					comp.setCompareDirection(SortDirection.Descending);
+				}	
+				datafilter.setTypeFilter(ItemType.Question);
+				mIR = QAController.getInstance().getObjects(datafilter, comp);
+				break;
 		}
 		
 		addObserver(mIR);		
@@ -227,9 +228,10 @@ public class ListFragment extends Fragment {
 		mItems = new ArrayList<QAModel>();
 		if (mIR != null) {
 			mItems.addAll(mIR.getCurrentResults());
-			mAdapter = new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mItems);
-			qList.setAdapter(mAdapter);
 		}
+
+		mAdapter = new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mItems);
+		qList.setAdapter(mAdapter);
 
 		qList.setOnScrollListener(new InfiniteScoller());
 		
@@ -333,12 +335,21 @@ public class ListFragment extends Fragment {
 					if (activity == null) {
 						return;
 					}
+
 					for (QAModel item: items) {
 						item.addView(mItemUpdatedListener);
 					}
+
+					if (null == mItems) {
+						mItems = new ArrayList<QAModel>();
+					}
+
 					mItems.clear();
 					mItems.addAll(mIR.getCurrentResults());
-					mAdapter.notifyDataSetChanged();				
+					
+					if (null != mAdapter) {
+						mAdapter.notifyDataSetChanged();
+					}
 				}
 			});
 		}
