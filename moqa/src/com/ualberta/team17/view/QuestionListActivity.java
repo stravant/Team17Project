@@ -30,6 +30,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.R;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
 
 /**
@@ -108,19 +109,21 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		leftDrawer.mDrawerToggle.syncState();
+		if (null != leftDrawer && null != leftDrawer.mDrawerToggle) {
+			leftDrawer.mDrawerToggle.syncState();
+		}
 	}
 
-	private void selectItem(int position) {
+	private void selectItem(Taxonomy selectedTaxonomy) {
 		// update the main content by replacing fragments
 		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		args = new Bundle();
-		args.putInt(ListFragment.TAXONOMY_NUM, position);
+		args.putSerializable(ListFragment.TAXONOMY_NUM, selectedTaxonomy);
 		fragment = new ListFragment();
 		FragmentManager fragmentManager = getFragmentManager();
 		fragment.setArguments(args);
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-		setTitle(myTaxonomy[position]);
+		setTitle(myTaxonomy[selectedTaxonomy.getId()]);
 	}
 
 
@@ -162,7 +165,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	}
 
 	@Override
-	public void onItemSelected(int position) {
+	public void onItemSelected(Taxonomy position) {
 		selectItem(position);
 		if(rightDrawerList != null) {
 			rightDrawerList.setItemChecked(0, false);
@@ -208,17 +211,21 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		private class RightDrawerItemClickListener implements ListView.OnItemClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				int mTaxonomy = args.getInt(ListFragment.TAXONOMY_NUM, -1);
+				Taxonomy taxonomy = (Taxonomy) args.getSerializable(ListFragment.TAXONOMY_NUM);
+				if (null == taxonomy) {
+					return;
+				}
+
 				args.putInt(SORT_TYPE, position);
 				rightDrawerList.setItemChecked(position, true);
 				rightDrawerLayout.closeDrawer(rightDrawerList);
-				if(mTaxonomy == 3 || mTaxonomy == 4) {
-					selectItem(0);
+				if(taxonomy == Taxonomy.TopQuestions || taxonomy == Taxonomy.TopAnswers) {
+					selectItem(Taxonomy.AllQuestions);
 					leftDrawer.mDrawerList.setItemChecked(0, true);
 					return;
 				}
-				refresh();
 
+				refresh();
 			}
 		}
 		@Override
