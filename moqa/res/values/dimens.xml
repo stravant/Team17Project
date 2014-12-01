@@ -17,6 +17,7 @@
     <dimen name="min_listview_height">40dp</dimen>
     <dimen name="title_text">16dp</dimen>
 
-    <dimen name="attachment_view_height">80dp</dimen>
+    <dimen name="attachment_view_height">64dp</dimen>
+    <dimen name="attachment_margin">10dp</dimen>
 
 </resources>

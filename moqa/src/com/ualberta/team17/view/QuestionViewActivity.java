@@ -31,7 +31,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -75,6 +77,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	protected QABodyAdapter mAdapter;
 	protected Fragment mRelatedQuestions;
 	
+	// Attachment items that are added during question creation.
+	private List<AttachmentItem> mAddedAttachments;
+	private AttachmentDisplayView mAddedAttachmentsView;
+	
 	private enum Mode {
 		CREATE,
 		DISPLAY
@@ -91,6 +97,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 */
 	public QuestionViewActivity() {
 		mQABodies = new ArrayList<QABody>();
+		mAddedAttachments = new ArrayList<AttachmentItem>();
 	}
 		
 	/**
@@ -104,6 +111,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		listview.setAdapter(createNewAdapter());
 		IncrementalResult questionChildrenResult = mController.getChildren(question, new DateComparator());
 		questionChildrenResult.addObserver(new QuestionChildrenResultListener());
+		
 	}	
 	
 	/**
@@ -165,11 +173,15 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		((Button) displayQuestionView.findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
 		mAdapter = createNewAdapter();
 		
+		View addAttachmentView = createQuestionView.findViewById(R.id.addAttachmentView);
+		mAddedAttachmentsView = (AttachmentDisplayView) addAttachmentView.findViewById(R.id.addAttachmentDisplayView);
+		
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
 			setMode(Mode.DISPLAY);
 			
 			UniqueId id = UniqueId.fromString((String)intent.getSerializableExtra(QUESTION_ID_EXTRA));
-			queryQuestion(id);			
+			queryQuestion(id);
+			
 		} else {
 			setMode(Mode.CREATE);
 			
@@ -177,7 +189,18 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			EditText titleText = (EditText) createQuestionView.findViewById(R.id.createQuestionTitleView);
 			EditText bodyText = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
 			
+			ImageButton addAttachmentButton = (ImageButton) addAttachmentView.findViewById(R.id.addAttachmentButton);
+			
 			submitButton.setOnClickListener(new SubmitQuestionListener(titleText, bodyText));
+			addAttachmentButton.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					requestImage();
+				}
+				
+			});
+			
 		}
 		
 	}
@@ -226,7 +249,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	public void setQuestion(QuestionItem question) {
 		resetContent();
 		mQuestion = question;
-		mQABodies.add(new QABody(question));
+		mQABodies.add(new QuestionBody(question));
 		refresh();
 	}
 	
@@ -303,6 +326,28 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		return null;
 	}
 	
+	private static final int IMAGE_REQUEST = 1888;
+	
+	private void requestImage() {
+		Intent imageIntent = new Intent();
+		imageIntent.setType("image/*");
+		imageIntent.setAction(Intent.ACTION_GET_CONTENT);
+		imageIntent.addCategory(Intent.CATEGORY_OPENABLE);
+		
+		startActivityForResult(imageIntent, IMAGE_REQUEST);
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
+			Uri imageUri = data.getData();
+			String name = imageUri.getLastPathSegment();
+			AttachmentItem newAttachment = mController.createDetachedAttachment(name, imageUri);
+			
+			mAddedAttachments.add(newAttachment);
+			mAddedAttachmentsView.addAttachment(newAttachment);
+		}
+	}
+	
 	/**
 	 * Creates the toolbar at the top of the app.
 	 */
@@ -364,14 +409,22 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	private class QABody {
 		public AuthoredTextItem parent;
 		public List<CommentItem> comments;
-		public List<AttachmentItem> attachments;
 		
 		public QABody(AuthoredTextItem initParent) {
 			parent = initParent;
 			comments = new ArrayList<CommentItem>();
+		}
+	}
+	
+	private class QuestionBody extends QABody {
+		public List<AttachmentItem> attachments;
+
+		public QuestionBody(AuthoredTextItem initParent) {
+			super(initParent);
 			attachments = new ArrayList<AttachmentItem>();
 		}
-	}	
+		
+	}
 	
 	/**
 	 * Adapter for QABody. Connects the body of the Question/Answer
@@ -395,10 +448,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		 * Returns the view after adding the list content.
 		 */
 		public View getView( int position, View convertView, ViewGroup parent ) {
-			QABody qaItem = mObjects.get(position);
+			QABody qaBody = mObjects.get(position);
 
 			LayoutInflater inflater = null;
-			if (null == convertView || qaItem.comments.size() > 0) {
+			if (null == convertView || qaBody.comments.size() > 0) {
 				inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			}
 
@@ -431,10 +484,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			
 			LinearLayout commentsView = (LinearLayout) tabContentView.findViewById(R.id.commentView);		
 			Button commentButton = (Button) tabContentView.findViewById(R.id.createCommentButton);			
-			AttachmentView attachmentsView = (AttachmentView) tabContentView.findViewById(R.id.attachmentView);		
+			AttachmentDisplayView attachmentsView = (AttachmentDisplayView) tabContentView.findViewById(R.id.attachmentView);		
 
-			if(qaItem.parent.mType == ItemType.Question) {
-				QuestionItem question = (QuestionItem) qaItem.parent;
+			if(qaBody.parent.mType == ItemType.Question) {
+				QuestionItem question = (QuestionItem) qaBody.parent;
+				QuestionBody questionBody = (QuestionBody) qaBody;
 				
 				tabSelectView.setVisibility(View.VISIBLE);
 				titleTextView.setVisibility(View.VISIBLE);
@@ -451,9 +505,15 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				}
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 
-				attachmentsView.setVisibility(qaItem.attachments.size() > 0 ? View.VISIBLE : View.GONE);
-
-			} else if (qaItem.parent.mType == ItemType.Answer) {
+				attachmentsView.setVisibility(View.GONE);
+				
+				attachmentsView.clearAttachments();				
+				
+				for (AttachmentItem attachment: questionBody.attachments) {
+					attachmentsView.addAttachment(attachment);
+				}
+				
+			} else if (qaBody.parent.mType == ItemType.Answer) {
 				tabSelectView.setVisibility(View.GONE);
 				titleTextView.setVisibility(View.GONE);
 				favoriteButton.setVisibility(View.GONE);				
@@ -465,20 +525,16 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				throw new IllegalStateException();
 			}
 						
-			commentButton.setTag(qaItem.parent.getUniqueId());
+			commentButton.setTag(qaBody.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
-			upvoteButton.setOnClickListener(new UpvoteListener(qaItem.parent));
+			upvoteButton.setOnClickListener(new UpvoteListener(qaBody.parent));
 			
-			bodyTextView.setText(qaItem.parent.getBody());
-			authorTextView.setText(qaItem.parent.getAuthor());
-			
-			for (AttachmentItem attachment: qaItem.attachments) {
-				attachmentsView.addAttachment(attachment);
-			}
+			bodyTextView.setText(qaBody.parent.getBody());
+			authorTextView.setText(qaBody.parent.getAuthor());
 
-			for (int i = 0; i < qaItem.comments.size(); i++){
-				CommentItem comment = qaItem.comments.get(i);
+			for (int i = 0; i < qaBody.comments.size(); i++){
+				CommentItem comment = qaBody.comments.get(i);
 				
 				View commentView = inflater.inflate(R.layout.comment, parent, false);
 				TextView commentBody = (TextView) commentView.findViewById(R.id.commentText);
@@ -517,7 +573,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		@Override
 		public void itemsArrived(List<QAModel> item, int index) {				
 			ListView qaList = (ListView) findViewById(R.id.qaItemView);
-			QABody parentBody = findById(mQuestion.getUniqueId());
+			QuestionBody parentBody = (QuestionBody) findById(mQuestion.getUniqueId());
 
 			for(QAModel qaitem : item ) {
 				if (qaitem.mType == ItemType.Answer) {
@@ -577,8 +633,10 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			QAController controller = QAController.getInstance();
 			setMode(Mode.DISPLAY);
 			setQuestion(controller.createQuestion(mTitleView.getText().toString(), mBodyView.getText().toString()));
+			for(AttachmentItem item : mAddedAttachments) {
+				controller.connectAttachment(item, mQuestion.mUniqueId);
+			}
 		}
-		
 	}
 	
 	private class AddAnswerListener implements View.OnClickListener {		
@@ -795,6 +853,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			}
 		}		
 			
-	}	
+	}
 	
 }

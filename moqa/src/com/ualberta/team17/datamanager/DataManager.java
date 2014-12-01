@@ -18,6 +18,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.ualberta.team17.AnswerItem;
+import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.CommentItem;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
@@ -295,6 +296,7 @@ public class DataManager {
 			.registerTypeAdapter(CommentItem.class, new CommentItem.GsonTypeAdapter())
 			.registerTypeAdapter(QuestionItem.class, new QuestionItem.GsonTypeAdapter())
 			.registerTypeAdapter(UpvoteItem.class, new UpvoteItem.GsonTypeAdapter())
+			.registerTypeAdapter(AttachmentItem.class, new AttachmentItem.GsonTypeAdapter())
 			.serializeNulls()
 			.create();
 	}
@@ -303,10 +305,32 @@ public class DataManager {
 
 	public Bitmap readImageFromUri(Uri uri) {
 		try {
-			return MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri);	
+			return getResizedBitmap(
+					MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), uri));	
 		} catch (IOException e) {
 			return null;
 		}
+	}
+	
+	private final static int MAX_IMAGE_SIZE = 65536; // 64 KB
+	
+	/**
+	 * Resizes a bitmap so it is at most 64 KB.
+	 * @param b The original bitmap.
+	 * @return The resized bitmap.
+	 */
+	private Bitmap getResizedBitmap(Bitmap b) {
+		int bitmapSize = b.getByteCount();
+		if(bitmapSize < MAX_IMAGE_SIZE) {
+			return b;
+		}
+		
+		double multiplier = Math.sqrt((double) MAX_IMAGE_SIZE / (double) bitmapSize);
+		return Bitmap.createScaledBitmap(b,
+				(int) (multiplier * b.getWidth()),
+				(int) (multiplier * b.getHeight()),
+				false);
+		
 	}
 	
 	//////////////////////////////////////////////////////////////////////////////

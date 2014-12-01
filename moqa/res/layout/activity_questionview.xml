@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:moqa="http://schemas.android.com/apk/lib/com.ualberta.team17.view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -40,7 +41,7 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
 	    android:orientation="vertical"
-	    android:background="@color/coffee"
+	    android:background="@color/milk"
 	    android:visibility="visible" >
 	    
 	    <EditText 
@@ -48,19 +49,39 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:background="@color/milk"
-	        android:text="Title"
+	        android:hint="Title"
 	        />
+	    <RelativeLayout
+	        android:id="@+id/addAttachmentView"
+	        android:layout_width="match_parent"
+	        android:layout_height="@dimen/attachment_view_height"
+	        android:layout_above="@+id/createQuestionSubmitButton" >
+	    
+	    <com.ualberta.team17.view.AttachmentDisplayView
+	        android:id="@+id/addAttachmentDisplayView"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_toLeftOf="@+id/addAttachmentButton" />
+	    
+	    <ImageButton 
+	        android:id="@+id/addAttachmentButton"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentRight="true"
+	        android:src="@drawable/ic_action_new_attachment"
+	        android:background="?android:selectableItemBackground" />
+	    
+	    </RelativeLayout>
 	    
 	    <EditText
 	        android:id="@+id/createQuestionBodyView"
 	        android:layout_below="@id/createQuestionTitleView"
-	        android:layout_above="@id/createQuestionBodyView"
+	        android:layout_above="@id/addAttachmentView"
 	        android:layout_width="match_parent"
 	        android:layout_height="fill_parent"
 	        android:gravity="left|top"
 	        android:background="@color/milk2"
-	        android:text="Body"
-	        />
+	        android:hint="Body" />
 	    
 	    <Button
 	        android:id="@+id/createQuestionSubmitButton"
