@@ -107,6 +107,9 @@ public class TaxonomyMenuFragment extends Fragment {
 			case 5:
 				selectedTaxonomy = Taxonomy.RecentActivity;
 				break;
+			case 6:
+				selectedTaxonomy = Taxonomy.ReadLater;
+				break;
 			default:
 				selectedTaxonomy = Taxonomy.AllQuestions;
 			}

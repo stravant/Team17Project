@@ -144,10 +144,14 @@ public class QAController {
 	 * most recently with QAController::markViewLater
 	 * @return An IncrementalResult that will be populated with the to be viewed later items
 	 */
-	public IncrementalResult getViewLaterItems() {
+	public IncrementalResult getViewLaterItems(IItemComparator comparator) {
+		if (null == comparator) {
+			comparator = new IdentityComparator();
+		}
+
 		return mDataManager.doQuery(
 				mDataManager.getUserContext().getViewLater(), 
-				new IdentityComparator());
+				comparator);
 	}
 	
 	/**
