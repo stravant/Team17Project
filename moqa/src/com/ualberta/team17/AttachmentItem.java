@@ -96,7 +96,7 @@ public class AttachmentItem extends AuthoredItem {
 	}
 	
 	/* Serialization */
-	public static class GsonTypeAdapter extends QAModel.GsonTypeAdapter<AttachmentItem> {
+	public static class GsonTypeAdapter extends AuthoredItem.GsonTypeAdapter<AttachmentItem> {
 		@Override
 		public AttachmentItem read(JsonReader reader) throws IOException {
 			return readInto(new AttachmentItem(null, null, null, null, null, (Bitmap)null), reader);
