@@ -39,6 +39,8 @@ import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 public class ListFragment extends Fragment {
 	public static final String TAXONOMY_NUM = "taxonomy_number";
 	public static final String FILTER_EXTRA = "FILTER";
+	public final static String SORT_TYPE = "sort_type";
+
 	
 	private IncrementalResult mIR;
 	private DataFilter datafilter = new DataFilter();
@@ -56,7 +58,30 @@ public class ListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_question_list, container, false);
 	    int mTaxonomy = getArguments().getInt(TAXONOMY_NUM, -1);
 	    
-		IItemComparator comp;
+		IItemComparator comp = null;
+		int mSort = getArguments().getInt(SORT_TYPE);
+		if (mSort != 0) {
+			switch (mSort) {
+			//Ascending Date
+			case 0:
+				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Ascending);
+				break;
+			//Descending Date	
+			case 1:
+				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Descending);
+				break;
+			//Descending Attachments	
+			case 2:
+				/*
+				 * TODO set comp to AttachmentComparator()
+				 * 
+				 */
+				break;
+			}
+			
+		}
 		
 		switch (mTaxonomy) {
 		case -1:
@@ -79,18 +104,22 @@ public class ListFragment extends Fragment {
 			
 			break;
 		case 0:
-			comp = new DateComparator();
+			if (comp == null) {
+				comp = new DateComparator();
+			}	
 			datafilter.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 1:
-			comp = new DateComparator();
-			comp.setCompareDirection(SortDirection.Descending);
+			if (comp == null) {
+				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Descending);
+			}	
 			datafilter.addFieldFilter(AuthoredItem.FIELD_AUTHOR, QAController.getInstance().getUserContext().getUserName(), FilterComparison.EQUALS);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 2:
-			mIR = QAController.getInstance().getFavorites(null);
+			mIR = QAController.getInstance().getFavorites(comp);
 			datafilter = null;
 			break;
 		case 3:
@@ -104,7 +133,7 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case 5:
-			mIR = QAController.getInstance().getRecentItems(null);
+			mIR = QAController.getInstance().getRecentItems(comp);
 			datafilter = null;
 			break;
 		}

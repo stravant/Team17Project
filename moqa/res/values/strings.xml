@@ -30,8 +30,9 @@
         <item>Recently Viewed</item>
     </string-array>
     <string-array name="sortOptions">
-        <item>Sort By Date</item>
-        <item>More Stuff Here</item>
+        <item>Newest First</item>
+        <item>Oldest First</item>
+        <item>Attachments First</item>
     </string-array>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -41,5 +42,6 @@
     <string name="comment_popup_title">Add a comment</string>
     <string name="answer_count">%d Answers</string>
     <string name="answer_count_one">1 Answer</string>
+    <string name="sortmenu">SortMenu</string>
 
 </resources>
