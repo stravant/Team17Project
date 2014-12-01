@@ -182,7 +182,7 @@ public class QAController {
 		UniqueId id = new UniqueId(creator.getUserName() + "_Upvote_" + target.getUniqueId().toString());
 		
 		// Create and save the upvote item
-		UpvoteItem up = new UpvoteItem(id, target.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime());
+		UpvoteItem up = new UpvoteItem(id, target.getUniqueId(), creator.getUserName(), Calendar.getInstance().getTime(), target.getItemType());
 		up.setStoragePolicy(StoragePolicy.Cached);
 		mDataManager.saveItem(up);
 	}

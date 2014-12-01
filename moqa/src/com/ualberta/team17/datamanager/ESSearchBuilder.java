@@ -137,7 +137,14 @@ public class ESSearchBuilder {
 			}
 		}
 
-		if (!filteredQueryObj.has("query")) {
+		if (mFilter instanceof TopUpvotedDataFilter) {
+			TopUpvotedDataFilter filter = (TopUpvotedDataFilter)mFilter;
+			JsonObject queryObj = getJsonObjectWithProperty("type", filter.getChildFilterType());
+			queryObj.add("query", getJsonObjectWithProperty("match_all", new JsonObject()));
+			queryObj.addProperty("score", filter.getScoringType());
+			queryObj.addProperty("factor", filter.getScoringFactor());
+			filteredQueryObj.add("query", getJsonObjectWithProperty("top_children", queryObj));
+		} else if (!filteredQueryObj.has("query")) {
 			filteredQueryObj.add("query", getJsonObjectWithProperty("match_all", new JsonObject()));
 		}
 

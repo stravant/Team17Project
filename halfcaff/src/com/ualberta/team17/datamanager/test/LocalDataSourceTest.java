@@ -94,7 +94,8 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		return new UpvoteItem(new UniqueId(Integer.toString(id)), 
 				target, 
 				userContext.getUserName(), 
-				new Date(0));
+				new Date(0),
+				ItemType.Question);
 	}
 	
 	/**

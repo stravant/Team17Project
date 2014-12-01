@@ -8,6 +8,7 @@ import com.ualberta.team17.AttachmentItem;
 import com.ualberta.team17.AuthoredItem;
 import com.ualberta.team17.AuthoredTextItem;
 import com.ualberta.team17.CommentItem;
+import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
@@ -156,7 +157,8 @@ public class ItemSerializationTest extends TestCase {
 				UniqueId.fromString("afec9e56592966a0dff5ba2e49008a3e"), 
 				UniqueId.fromString("8f2c5ea88535ddd26a54a2e4be21da7b"), 
 				"upvoteSerializationTestAuthor", 
-				new Date(12394364));
+				new Date(12394364),
+				ItemType.Question);
 
 		assertAuthoredItemEquals(
 				initialItem, 
@@ -166,7 +168,8 @@ public class ItemSerializationTest extends TestCase {
 				UniqueId.fromString("113e83ce33b74c31b7a2980103a45771"), 
 				UniqueId.fromString("fac2cc89f6de4cb81c81688b622772e8"), 
 				"upvoteSerializationTestAuthor2", 
-				new Date());
+				new Date(),
+				ItemType.Question);
 
 		assertAuthoredItemEquals(
 				noParent, 
