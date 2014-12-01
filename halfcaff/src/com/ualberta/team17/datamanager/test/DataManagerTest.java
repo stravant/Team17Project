@@ -150,7 +150,7 @@ public class DataManagerTest extends DataManagerTester<LocalDataManager> {
 		controller.markViewLater(q2);
 		
 		// Query back
-		IncrementalResult r = controller.getViewLaterItems();
+		IncrementalResult r = controller.getViewLaterItems(null);
 		assertTrue(waitForResults(r, 2));
 		assertEquals(q2.getUniqueId(), r.getCurrentResults().get(0).getUniqueId());
 		assertEquals(q1.getUniqueId(), r.getCurrentResults().get(1).getUniqueId());
@@ -163,7 +163,7 @@ public class DataManagerTest extends DataManagerTester<LocalDataManager> {
 		controller.markRecentlyViewed(q1);
 		
 		// Check change
-		IncrementalResult r2 = controller.getViewLaterItems();
+		IncrementalResult r2 = controller.getViewLaterItems(null);
 		assertTrue(waitForResults(r2, 1));
 		assertEquals(q2.getUniqueId(), r2.getCurrentResults().get(0).getUniqueId());
 		
