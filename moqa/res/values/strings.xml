@@ -9,6 +9,7 @@
     <string name="title_activity_question_view">View Question</string>
     <string name="title_activity_taxonomy_view">Taxonomies</string>
     <string name="action_new_question">New Question</string>
+    <string name="action_read_later">Read Later</string>
     <string name="action_sort">Sort</string>
     <string name="action_sort_date_asc">Sort by Date (Asc)</string>
     <string name="action_sort_date_desc">Sort by Date (Desc)</string>
