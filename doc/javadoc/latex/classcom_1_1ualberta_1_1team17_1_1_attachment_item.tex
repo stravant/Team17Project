@@ -1,0 +1,91 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{\section{com.\+ualberta.\+team17.\+Attachment\+Item Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item}\index{com.\+ualberta.\+team17.\+Attachment\+Item@{com.\+ualberta.\+team17.\+Attachment\+Item}}
+}
+
+
+Inherits \hyperlink{classcom_1_1ualberta_1_1team17_1_1_authored_item}{com.\+ualberta.\+team17.\+Authored\+Item}.
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class {\bfseries Gson\+Type\+Adapter}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_ab01c18fd1671c8821416e8327fb329ee}{{\bfseries Attachment\+Item} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} id, \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent\+Id, String author, Date date, String name, byte\mbox{[}$\,$\mbox{]} data)}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_ab01c18fd1671c8821416e8327fb329ee}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a8b05960ae7091a81c106281d05a5b1f4}{{\bfseries Attachment\+Item} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} id, \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent\+Id, String author, Date date, String name, Bitmap image)}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a8b05960ae7091a81c106281d05a5b1f4}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_ac534b25a4ba46f7205aa2d968eb55744}{String {\bfseries get\+Name} ()}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_ac534b25a4ba46f7205aa2d968eb55744}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_ad5ac032b3287f8fef28f41a41eb4cb85}{byte\mbox{[}$\,$\mbox{]} {\bfseries get\+Data} ()}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_ad5ac032b3287f8fef28f41a41eb4cb85}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a83798585a33dcbd6d0bbcb37767b21d4}{void {\bfseries set\+Parent} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent)}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a83798585a33dcbd6d0bbcb37767b21d4}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a240df8af84dfeb0986563aff4970f224}{Bitmap {\bfseries get\+Image} ()}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a240df8af84dfeb0986563aff4970f224}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static byte\mbox{[}$\,$\mbox{]} \hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a84b3922d4bdaf53008adbff338cd8dc9}{encode\+Bitmap} (Bitmap image)
+\item 
+static Bitmap \hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a4d4ff030ffe0d774348aa74fc60eefc1}{decode\+Bitmap} (byte\mbox{[}$\,$\mbox{]} data)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a60c36781f1a3bbc6bb4ed4f364fbfa35}{static final String {\bfseries F\+I\+E\+L\+D\+\_\+\+N\+A\+M\+E} = \char`\"{}name\char`\"{}}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a60c36781f1a3bbc6bb4ed4f364fbfa35}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a8de1dea79f5d16531fc5de1857c6ab61}{static final String {\bfseries F\+I\+E\+L\+D\+\_\+\+D\+A\+T\+A} = \char`\"{}data\char`\"{}}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a8de1dea79f5d16531fc5de1857c6ab61}
+
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Represents an attachment to a question. The parent is always a question, although the question may have many \hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} children. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a4d4ff030ffe0d774348aa74fc60eefc1}{\index{com\+::ualberta\+::team17\+::\+Attachment\+Item@{com\+::ualberta\+::team17\+::\+Attachment\+Item}!decode\+Bitmap@{decode\+Bitmap}}
+\index{decode\+Bitmap@{decode\+Bitmap}!com\+::ualberta\+::team17\+::\+Attachment\+Item@{com\+::ualberta\+::team17\+::\+Attachment\+Item}}
+\subsubsection[{decode\+Bitmap}]{\setlength{\rightskip}{0pt plus 5cm}static Bitmap com.\+ualberta.\+team17.\+Attachment\+Item.\+decode\+Bitmap (
+\begin{DoxyParamCaption}
+\item[{byte\mbox{[}$\,$\mbox{]}}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a4d4ff030ffe0d774348aa74fc60eefc1}
+Decode a byte array into a bitmap image 
+\begin{DoxyParams}{Parameters}
+{\em data} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The decoded image 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a84b3922d4bdaf53008adbff338cd8dc9}{\index{com\+::ualberta\+::team17\+::\+Attachment\+Item@{com\+::ualberta\+::team17\+::\+Attachment\+Item}!encode\+Bitmap@{encode\+Bitmap}}
+\index{encode\+Bitmap@{encode\+Bitmap}!com\+::ualberta\+::team17\+::\+Attachment\+Item@{com\+::ualberta\+::team17\+::\+Attachment\+Item}}
+\subsubsection[{encode\+Bitmap}]{\setlength{\rightskip}{0pt plus 5cm}static byte \mbox{[}$\,$\mbox{]} com.\+ualberta.\+team17.\+Attachment\+Item.\+encode\+Bitmap (
+\begin{DoxyParamCaption}
+\item[{Bitmap}]{image}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classcom_1_1ualberta_1_1team17_1_1_attachment_item_a84b3922d4bdaf53008adbff338cd8dc9}
+Encode a bitmap into a byte array. 
+\begin{DoxyParams}{Parameters}
+{\em image} & The image to encode \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The encoded image 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/Attachment\+Item.\+java\end{DoxyCompactItemize}

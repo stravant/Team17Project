@@ -1,0 +1,118 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{\section{com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}\index{com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result@{com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a73d16d75d3e57080dc4ca83525175906}{get\+Comparator} ()
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a11ca05c0fb2605742eee10772b5f4535}{Incremental\+Result} (\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} sort)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a20d252ee8145bbf9b2589dc8d4592f8f}{add\+Observer} (\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_incremental_observer}{I\+Incremental\+Observer} observer)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a3ada133e416beceb7c31934650d8719a}{add\+Observer} (\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_incremental_observer}{I\+Incremental\+Observer} observer, \hyperlink{enumcom_1_1ualberta_1_1team17_1_1_item_type}{Item\+Type} type)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a247fc35515e27829740623b8f09cad16}{add\+Objects} (List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} $>$ objects)
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a0bdaf908d6f11cb51736a2e6ed054fe1}{get\+Current\+Results\+Of\+Type} (\hyperlink{enumcom_1_1ualberta_1_1team17_1_1_item_type}{Item\+Type} type)
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a7e902c453fe5d9f806451c4c0054df64}{get\+Current\+Results} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A synchronized ordered collection object that represents the results of a query to the application's data source(s). Results may arrive in any order, and the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} notifies observers that results have arrived, and in what position in the result when they do arrive. The \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} also supports type filtering. If a query would result in multiple types of results being returned, both the getter and notification functions of the Incremencal\+Result come in type-\/filtered variants as well. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a11ca05c0fb2605742eee10772b5f4535}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}!Incremental\+Result@{Incremental\+Result}}
+\index{Incremental\+Result@{Incremental\+Result}!com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}}
+\subsubsection[{Incremental\+Result}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result.\+Incremental\+Result (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Item\+Comparator}}]{sort}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a11ca05c0fb2605742eee10772b5f4535}
+Constructor, from a comparator. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a247fc35515e27829740623b8f09cad16}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}!add\+Objects@{add\+Objects}}
+\index{add\+Objects@{add\+Objects}!com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}}
+\subsubsection[{add\+Objects}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result.\+add\+Objects (
+\begin{DoxyParamCaption}
+\item[{List$<$ {\bf Q\+A\+Model} $>$}]{objects}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a247fc35515e27829740623b8f09cad16}
+Main public interface used by producers to add objects to the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result}. The objects may be passed in in any order, the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} will handle sorting them and grouping notifications together in a nice way. 
+\begin{DoxyParams}{Parameters}
+{\em objects} & The objects to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a20d252ee8145bbf9b2589dc8d4592f8f}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}!add\+Observer@{add\+Observer}}
+\index{add\+Observer@{add\+Observer}!com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}}
+\subsubsection[{add\+Observer}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result.\+add\+Observer (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Incremental\+Observer}}]{observer}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a20d252ee8145bbf9b2589dc8d4592f8f}
+Adds an observer, and calls it's notify method immediately for every currently present result before returning. Once added, the observer will be notified when any items are added to the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result}. 
+\begin{DoxyParams}{Parameters}
+{\em observer} & The observer to notify. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a3ada133e416beceb7c31934650d8719a}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}!add\+Observer@{add\+Observer}}
+\index{add\+Observer@{add\+Observer}!com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}}
+\subsubsection[{add\+Observer}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result.\+add\+Observer (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Incremental\+Observer}}]{observer, }
+\item[{{\bf Item\+Type}}]{type}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a3ada133e416beceb7c31934650d8719a}
+Adds an observer, but only notifies it of results with a given item type rather than all results. \begin{DoxySeeAlso}{See also}
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a20d252ee8145bbf9b2589dc8d4592f8f}{add\+Observer(\+I\+Incremental\+Observer obs)} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{Parameters}
+{\em observer} & The observer to notify \\
+\hline
+{\em type} & The type of items to notify the observer on \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a73d16d75d3e57080dc4ca83525175906}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}!get\+Comparator@{get\+Comparator}}
+\index{get\+Comparator@{get\+Comparator}!com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}}
+\subsubsection[{get\+Comparator}]{\setlength{\rightskip}{0pt plus 5cm}{\bf I\+Item\+Comparator} com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result.\+get\+Comparator (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a73d16d75d3e57080dc4ca83525175906}
+Gets the \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} this \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} uses to sort its items. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a7e902c453fe5d9f806451c4c0054df64}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}!get\+Current\+Results@{get\+Current\+Results}}
+\index{get\+Current\+Results@{get\+Current\+Results}!com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}}
+\subsubsection[{get\+Current\+Results}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Q\+A\+Model}$>$ com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result.\+get\+Current\+Results (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a7e902c453fe5d9f806451c4c0054df64}
+Get all of the current results, in sorted order. \begin{DoxyReturn}{Returns}
+All of the items currently in the result 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a0bdaf908d6f11cb51736a2e6ed054fe1}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}!get\+Current\+Results\+Of\+Type@{get\+Current\+Results\+Of\+Type}}
+\index{get\+Current\+Results\+Of\+Type@{get\+Current\+Results\+Of\+Type}!com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result@{com\+::ualberta\+::team17\+::datamanager\+::\+Incremental\+Result}}
+\subsubsection[{get\+Current\+Results\+Of\+Type}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Q\+A\+Model}$>$ com.\+ualberta.\+team17.\+datamanager.\+Incremental\+Result.\+get\+Current\+Results\+Of\+Type (
+\begin{DoxyParamCaption}
+\item[{{\bf Item\+Type}}]{type}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result_a0bdaf908d6f11cb51736a2e6ed054fe1}
+Get the current list of results, only including items of a specific type, in sorted order. 
+\begin{DoxyParams}{Parameters}
+{\em type} & The type of items to include \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The items of that type 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/datamanager/Incremental\+Result.\+java\end{DoxyCompactItemize}

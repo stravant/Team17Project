@@ -1,0 +1,219 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}{\section{com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}\index{com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter@{com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter}}
+}
+
+
+Inherited by \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_more_like_this_filter}{com.\+ualberta.\+team17.\+datamanager.\+More\+Like\+This\+Filter}, and \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_top_upvoted_data_filter}{com.\+ualberta.\+team17.\+datamanager.\+Top\+Upvoted\+Data\+Filter}.
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_combination_mode}{Combination\+Mode}
+\item 
+enum \hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_data_filter_type}{Data\+Filter\+Type}
+\item 
+class \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_field_filter}{Field\+Filter}
+\item 
+enum \hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_filter_comparison}{Filter\+Comparison}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ab97f07f4e7313ba3da2555c39d6c9bc3}{set\+Type\+Filter} (\hyperlink{enumcom_1_1ualberta_1_1team17_1_1_item_type}{Item\+Type} type)
+\item 
+\hyperlink{enumcom_1_1ualberta_1_1team17_1_1_item_type}{Item\+Type} \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ac276395e60c793fba5933a83b6c8d125}{get\+Type\+Filter} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a97018db86362064f7bfdea6ff42843f3}{add\+Field\+Filter} (String field, String filter, \hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_filter_comparison}{Filter\+Comparison} comparison\+Mode)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a9bd0a1010dc4d49ede4ba3210810abdc}{add\+Field\+Filter} (String field, String filter, \hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_filter_comparison}{Filter\+Comparison} comparison\+Mode, \hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_combination_mode}{Combination\+Mode} combination\+Mode)
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a77923badfade04eea47309f663c3f799}{void {\bfseries set\+Data\+Filter\+Type} (\hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_data_filter_type}{Data\+Filter\+Type} type)}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a77923badfade04eea47309f663c3f799}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a8024e202d7e12422a8c2d49b4650acbe}{\hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_data_filter_type}{Data\+Filter\+Type} {\bfseries get\+Data\+Filter\+Type} ()}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a8024e202d7e12422a8c2d49b4650acbe}
+
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_1_1_field_filter}{Field\+Filter} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a1525fdc6e57f4dfa34a00a84ed8475a6}{get\+Field\+Filters} ()
+\item 
+Boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a8d1b8a7265dd61f96a418d3ca50b5459}{accept} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} item)
+\item 
+Integer \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a3ae1d88c647b0783b83475b11e4dbaf7}{get\+Max\+Results} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a501386e6b7b0e1364759a5c8449af5f3}{set\+Max\+Results} (Integer max\+Results)
+\item 
+Integer \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ae38d28da071c8e83786b2aafb0dd76e0}{get\+Page} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_aa69d64c98292788be09b525d2e0186b7}{set\+Page} (Integer page)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_af8d3cecda4310bc59913a927da2456b5}{static final int {\bfseries D\+E\+F\+A\+U\+L\+T\+\_\+\+N\+U\+M\+\_\+\+R\+E\+S\+U\+L\+T\+S} = 10}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_af8d3cecda4310bc59913a927da2456b5}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}{Data\+Filter} represents a Data Manager query. Combined with a Comparator it is everything you need to query either the local or network data manager (although it has knowledge of neither.)
+
+\begin{DoxyAuthor}{Author}
+michaelblouin 
+\end{DoxyAuthor}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a8d1b8a7265dd61f96a418d3ca50b5459}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!accept@{accept}}
+\index{accept@{accept}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{accept}]{\setlength{\rightskip}{0pt plus 5cm}Boolean com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+accept (
+\begin{DoxyParamCaption}
+\item[{{\bf Q\+A\+Model}}]{item}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a8d1b8a7265dd61f96a418d3ca50b5459}
+Checks if the given item matches the Data Filter.
+
+Note that not all of the elastic search functionality is available in this method.
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns True if the item matches, and false if not. 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a97018db86362064f7bfdea6ff42843f3}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!add\+Field\+Filter@{add\+Field\+Filter}}
+\index{add\+Field\+Filter@{add\+Field\+Filter}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{add\+Field\+Filter}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+add\+Field\+Filter (
+\begin{DoxyParamCaption}
+\item[{String}]{field, }
+\item[{String}]{filter, }
+\item[{{\bf Filter\+Comparison}}]{comparison\+Mode}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a97018db86362064f7bfdea6ff42843f3}
+Adds the field to the data filter, using the specified comparison mode.
+
+This will cause items to be returned that contain the field matching the arguments.
+
+
+\begin{DoxyParams}{Parameters}
+{\em field} & \\
+\hline
+{\em filter} & \\
+\hline
+{\em comparison\+Mode} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a9bd0a1010dc4d49ede4ba3210810abdc}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!add\+Field\+Filter@{add\+Field\+Filter}}
+\index{add\+Field\+Filter@{add\+Field\+Filter}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{add\+Field\+Filter}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+add\+Field\+Filter (
+\begin{DoxyParamCaption}
+\item[{String}]{field, }
+\item[{String}]{filter, }
+\item[{{\bf Filter\+Comparison}}]{comparison\+Mode, }
+\item[{{\bf Combination\+Mode}}]{combination\+Mode}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a9bd0a1010dc4d49ede4ba3210810abdc}
+Adds the field to the data filter, using the specified comparison mode and combination mode.
+
+The combination mode specifies how this filter combines with the other filter types. With the M\+U\+S\+T combination mode the filter must be satisfied by every object in the result. Using the S\+H\+O\+U\+L\+D combination mode objects do not need to satisfy the requirement U\+N\+L\+E\+S\+S it is the only filter on the object.
+
+If an Identity\+Comparator is used, items matching one or more S\+H\+O\+U\+L\+D filters will be boosted above those that do not match.
+
+
+\begin{DoxyParams}{Parameters}
+{\em field} & \\
+\hline
+{\em filter} & \\
+\hline
+{\em comparison\+Mode} & \\
+\hline
+{\em combination\+Mode} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a1525fdc6e57f4dfa34a00a84ed8475a6}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!get\+Field\+Filters@{get\+Field\+Filters}}
+\index{get\+Field\+Filters@{get\+Field\+Filters}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{get\+Field\+Filters}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Field\+Filter}$>$ com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+get\+Field\+Filters (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a1525fdc6e57f4dfa34a00a84ed8475a6}
+Returns the list of Field\+Filters that make up the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}{Data\+Filter}. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a3ae1d88c647b0783b83475b11e4dbaf7}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!get\+Max\+Results@{get\+Max\+Results}}
+\index{get\+Max\+Results@{get\+Max\+Results}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{get\+Max\+Results}]{\setlength{\rightskip}{0pt plus 5cm}Integer com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+get\+Max\+Results (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a3ae1d88c647b0783b83475b11e4dbaf7}
+Gets the maximum number of results to be returned in a single page by the filter. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ae38d28da071c8e83786b2aafb0dd76e0}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!get\+Page@{get\+Page}}
+\index{get\+Page@{get\+Page}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{get\+Page}]{\setlength{\rightskip}{0pt plus 5cm}Integer com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+get\+Page (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ae38d28da071c8e83786b2aafb0dd76e0}
+Gets the current page number of the data filter. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ac276395e60c793fba5933a83b6c8d125}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!get\+Type\+Filter@{get\+Type\+Filter}}
+\index{get\+Type\+Filter@{get\+Type\+Filter}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{get\+Type\+Filter}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Item\+Type} com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+get\+Type\+Filter (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ac276395e60c793fba5933a83b6c8d125}
+Gets the item type filter. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a501386e6b7b0e1364759a5c8449af5f3}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!set\+Max\+Results@{set\+Max\+Results}}
+\index{set\+Max\+Results@{set\+Max\+Results}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{set\+Max\+Results}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+set\+Max\+Results (
+\begin{DoxyParamCaption}
+\item[{Integer}]{max\+Results}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_a501386e6b7b0e1364759a5c8449af5f3}
+Sets the maximum number of results to be returned in a single page by the filter. 
+\begin{DoxyParams}{Parameters}
+{\em max\+Results} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_aa69d64c98292788be09b525d2e0186b7}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!set\+Page@{set\+Page}}
+\index{set\+Page@{set\+Page}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{set\+Page}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+set\+Page (
+\begin{DoxyParamCaption}
+\item[{Integer}]{page}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_aa69d64c98292788be09b525d2e0186b7}
+Sets the current page number for the data filter.
+
+Note that it is perfectly fine to use the same \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}{Data\+Filter} instance to query subsequent pages in a single query (ie the filter need not be reconstructed.)
+
+
+\begin{DoxyParams}{Parameters}
+{\em page} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ab97f07f4e7313ba3da2555c39d6c9bc3}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}!set\+Type\+Filter@{set\+Type\+Filter}}
+\index{set\+Type\+Filter@{set\+Type\+Filter}!com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter@{com\+::ualberta\+::team17\+::datamanager\+::\+Data\+Filter}}
+\subsubsection[{set\+Type\+Filter}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Data\+Filter.\+set\+Type\+Filter (
+\begin{DoxyParamCaption}
+\item[{{\bf Item\+Type}}]{type}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter_ab97f07f4e7313ba3da2555c39d6c9bc3}
+Sets the item type filter that must be satisfied. It is preferred to use this method than to query for item type using a field filter, as it will execute faster.
+
+
+\begin{DoxyParams}{Parameters}
+{\em type} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/datamanager/Data\+Filter.\+java\end{DoxyCompactItemize}

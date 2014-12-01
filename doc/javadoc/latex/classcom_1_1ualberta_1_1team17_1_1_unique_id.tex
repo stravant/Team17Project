@@ -1,0 +1,119 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id}{\section{com.\+ualberta.\+team17.\+Unique\+Id Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1_unique_id}\index{com.\+ualberta.\+team17.\+Unique\+Id@{com.\+ualberta.\+team17.\+Unique\+Id}}
+}
+
+
+Inherits Serializable.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id_a0bfa055b011aefabbd763846bae460d0}{Unique\+Id} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} context)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id_a183e1ee5f112616c444f8cc20f937661}{Unique\+Id} (String id)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id_a20a84f4917010481b9e8646303fc58d9}{Unique\+Id} ()
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_a3c2187a78ca7a94e1724e436ee4a4a92}{boolean {\bfseries equals} (Object other)}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_a3c2187a78ca7a94e1724e436ee4a4a92}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_a02be487765a56c3a96791da37652f4a9}{int {\bfseries hash\+Code} ()}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_a02be487765a56c3a96791da37652f4a9}
+
+\item 
+String \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id_a3193ac7fdbd964964355a1682cd1cd44}{to\+String} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id_a0eeff7b94e632a3688b8ec7f271cf3a8}{from\+String} (String repr)
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static String \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id_abbafafc7c21c68a0dd72f7726e905ab4}{Generate\+Random\+Id\+String} (String seed\+String)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} class, wrapper around using a hashing algorithm to create unique identifiers for pieces of content. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_a0bfa055b011aefabbd763846bae460d0}{\index{com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}!Unique\+Id@{Unique\+Id}}
+\index{Unique\+Id@{Unique\+Id}!com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}}
+\subsubsection[{Unique\+Id}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+Unique\+Id.\+Unique\+Id (
+\begin{DoxyParamCaption}
+\item[{{\bf User\+Context}}]{context}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_a0bfa055b011aefabbd763846bae460d0}
+Preferred constructor -- generates a unique id using the provided user context and other information. 
+\begin{DoxyParams}{Parameters}
+{\em context} & The user context to use in constructing the digest \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_a183e1ee5f112616c444f8cc20f937661}{\index{com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}!Unique\+Id@{Unique\+Id}}
+\index{Unique\+Id@{Unique\+Id}!com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}}
+\subsubsection[{Unique\+Id}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+Unique\+Id.\+Unique\+Id (
+\begin{DoxyParamCaption}
+\item[{String}]{id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_a183e1ee5f112616c444f8cc20f937661}
+Constructor that takes constructs a unique I\+D by digesting arbitrary data given as a string. 
+\begin{DoxyParams}{Parameters}
+{\em id} & The data to digest. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_a20a84f4917010481b9e8646303fc58d9}{\index{com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}!Unique\+Id@{Unique\+Id}}
+\index{Unique\+Id@{Unique\+Id}!com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}}
+\subsubsection[{Unique\+Id}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+Unique\+Id.\+Unique\+Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_a20a84f4917010481b9e8646303fc58d9}
+Constructor that constructs a random unique I\+D using the system's random number generator. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_a0eeff7b94e632a3688b8ec7f271cf3a8}{\index{com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}!from\+String@{from\+String}}
+\index{from\+String@{from\+String}!com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}}
+\subsubsection[{from\+String}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Unique\+Id} com.\+ualberta.\+team17.\+Unique\+Id.\+from\+String (
+\begin{DoxyParamCaption}
+\item[{String}]{repr}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_a0eeff7b94e632a3688b8ec7f271cf3a8}
+Get a \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} object from it's string representation. 
+\begin{DoxyParams}{Parameters}
+{\em repr} & The string representation of the \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id}. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} such that return\+Value.\+to\+String() is equal to repr. 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_abbafafc7c21c68a0dd72f7726e905ab4}{\index{com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}!Generate\+Random\+Id\+String@{Generate\+Random\+Id\+String}}
+\index{Generate\+Random\+Id\+String@{Generate\+Random\+Id\+String}!com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}}
+\subsubsection[{Generate\+Random\+Id\+String}]{\setlength{\rightskip}{0pt plus 5cm}static String com.\+ualberta.\+team17.\+Unique\+Id.\+Generate\+Random\+Id\+String (
+\begin{DoxyParamCaption}
+\item[{String}]{seed\+String}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_abbafafc7c21c68a0dd72f7726e905ab4}
+Generates a random string to be used as a \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} 
+\begin{DoxyParams}{Parameters}
+{\em seed\+String} & A string to be turned into a seed for the random number generator \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The random string 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1_unique_id_a3193ac7fdbd964964355a1682cd1cd44}{\index{com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}!to\+String@{to\+String}}
+\index{to\+String@{to\+String}!com\+::ualberta\+::team17\+::\+Unique\+Id@{com\+::ualberta\+::team17\+::\+Unique\+Id}}
+\subsubsection[{to\+String}]{\setlength{\rightskip}{0pt plus 5cm}String com.\+ualberta.\+team17.\+Unique\+Id.\+to\+String (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1_unique_id_a3193ac7fdbd964964355a1682cd1cd44}
+Returns a representation of the \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} hash as a hex-\/string. \begin{DoxyReturn}{Returns}
+A hex string representing this \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} hash 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/Unique\+Id.\+java\end{DoxyCompactItemize}
