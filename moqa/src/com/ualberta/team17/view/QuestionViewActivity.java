@@ -185,16 +185,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			EditText bodyText = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
 			
 			ImageButton addAttachmentButton = (ImageButton) addAttachmentView.findViewById(R.id.addAttachmentButton);
-
-			
-			// TEST STUFF
-			/*AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
-					BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_attachment)
-					);
-			AttachmentDisplayView adv = (AttachmentDisplayView) createQuestionView.findViewById(R.id.addAttachmentView);
-			
-			adv.addAttachment(testA1);*/
-			// END TEST STUFF
 			
 			submitButton.setOnClickListener(new SubmitQuestionListener(titleText, bodyText));
 			addAttachmentButton.setOnClickListener(new View.OnClickListener() {
@@ -491,16 +481,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 				attachmentsView.setVisibility(View.GONE);
 				
-				attachmentsView.clearAttachments();
-				
-				// TEST STUFF
-				/*AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
-						BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_attachment)
-						);
-				attachmentsView.addAttachment(testA1);
-				attachmentsView.setVisibility(View.VISIBLE);*/
-				// END TEST STUFF
-				
+				attachmentsView.clearAttachments();				
 				
 				for (AttachmentItem attachment: questionBody.attachments) {
 					attachmentsView.addAttachment(attachment);
