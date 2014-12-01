@@ -76,31 +76,5 @@ public class QuestionListActivityTest extends
 	        assertTrue(actString.equals(activeActivity));
 		}
 	}
-	
-	/**
-	 * Ensure QuestionViewActivity is receiving my request to create a new question.
-	 * 
-	 * @author Jared
-	 * @throws Throwable 
-	 */
-	public void test_QLA2_CreateQuestion() {
-
-		MenuItem mi = (MenuItem)mActivity.findViewById(com.ualberta.team17.R.id.action_new_question);
-    	mActivity.onOptionsItemSelected(mi);
-		/*try {
-		    Thread.sleep(1000);
-		} catch(InterruptedException ex) {
-		    Thread.currentThread().interrupt();
-		}*/
-		
-		ActivityManager activityManager = (ActivityManager) this.getActivity().getBaseContext().getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(1);
-        
-        ComponentName componentInfo = tasks.get(0).topActivity;
-        
-        String actString = "com.ualberta.team17.view.QuestionViewActivity";
-        String activeActivity = componentInfo.getClassName();
-        assertTrue(actString.equals(activeActivity));
-	}
 
 }
