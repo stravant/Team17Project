@@ -28,6 +28,7 @@ import com.ualberta.team17.R;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
+import com.ualberta.team17.datamanager.ESSearchBuilder;
 import com.ualberta.team17.datamanager.IDataItemSavedListener;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IDataLoadedListener;
@@ -35,6 +36,7 @@ import com.ualberta.team17.datamanager.IDataSourceAvailableListener;
 import com.ualberta.team17.datamanager.IDataSourceManager;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.MoreLikeThisFilter;
 import com.ualberta.team17.datamanager.NetworkDataManager;
 import com.ualberta.team17.datamanager.UserContext;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
@@ -530,6 +532,26 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 
 		assertTrue("Delete items after test", success);
 		waitForModOperation();
+	}
+
+	public void test_MoreLikeThisQuery() {
+		IItemComparator comparator = new DateComparator();
+		result = new IncrementalResult(comparator);
+		MoreLikeThisFilter mltDataFilter = new MoreLikeThisFilter();
+		mltDataFilter.addMoreLikeThisObject(UniqueId.fromString("ecf5165525f1fde44c1ebbb55a0f2d1b"));
+		mltDataFilter.setTypeFilter(ItemType.Question);
+		dataManager.query(mltDataFilter, null, result);
+		ESSearchBuilder builder = new ESSearchBuilder(mltDataFilter, null);
+		System.out.println(builder.toString());
+
+		assertTrue("Results arrived", waitForResults(result, 1));
+
+		// Verify this against the expected test dataset
+		List<QAModel> results = result.getCurrentResults();
+		assertEquals("Question count", 1, results.size());
+
+		// Ensure each item is a question
+		assertEquals(UniqueId.fromString("703a31a2bf463ab46b7eba47a4801567"), results.get(0).getUniqueId());
 	}
 }
 

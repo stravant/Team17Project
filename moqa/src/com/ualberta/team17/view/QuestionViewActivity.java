@@ -27,6 +27,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -61,14 +63,17 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IncrementalResult;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdComparator;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 
 public class QuestionViewActivity extends Activity implements IQAView {
 	public final static String QUESTION_ID_EXTRA = "question_id";
+	private final static int RELATED_QUESTIONS_FRAGMENT_ID = 356;
 	
 	private QuestionItem mQuestion;
 	private ArrayList<QABody> mQABodies;
 	protected QAController mController;	
 	protected QABodyAdapter mAdapter;
+	protected Fragment mRelatedQuestions;
 	
 	private enum Mode {
 		CREATE,
@@ -325,6 +330,27 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			return true;
 		}	
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void showRelatedQuestionsTab() {
+		FragmentManager fragmentManager = getFragmentManager();
+		if (null != mRelatedQuestions) {
+			fragmentManager.beginTransaction().show(mRelatedQuestions).commit();
+		} else {
+			mRelatedQuestions = new ListFragment();
+			Bundle fragmentArgs = new Bundle();
+			fragmentArgs.putSerializable(ListFragment.TAXONOMY_NUM, Taxonomy.RelatedQuestions);
+			fragmentArgs.putSerializable(ListFragment.QUESTION_ID_EXTRA, mQuestion.getUniqueId());
+			mRelatedQuestions.setArguments(fragmentArgs);
+			fragmentManager.beginTransaction().add(R.id.tabContent, mRelatedQuestions).commit();
+		}
+	}
+
+	private void hideRelatedQuestionsTab() {
+		if (null != mRelatedQuestions) {
+			System.out.println("Successfully hid fragment");
+			getFragmentManager().beginTransaction().hide(mRelatedQuestions).commit();
+		}
 	}
 	
 	/**
@@ -593,7 +619,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			View commentView = tabContent.findViewById(R.id.commentView);
 			View commentCButton = tabContent.findViewById(R.id.createCommentButton);
 			View attachmentView = tabContent.findViewById(R.id.attachmentView);
-			//View rqView = tabContent.findViewById(R.id.rqView);
+			Fragment rqView = getFragmentManager().findFragmentById(RELATED_QUESTIONS_FRAGMENT_ID);
 			
 			switch (tab) {
 			
@@ -601,28 +627,28 @@ public class QuestionViewActivity extends Activity implements IQAView {
 					commentView.setVisibility(View.VISIBLE);
 					commentCButton.setVisibility(View.VISIBLE);
 					attachmentView.setVisibility(View.GONE);
-					//rqView.setVisibility(View.GONE);
+					hideRelatedQuestionsTab();
 					break;
 					
 				case ATTACHMENT:
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.VISIBLE);
-					//rqView.setVisibility(View.GONE);
+					hideRelatedQuestionsTab();
 					break;
 				
 				case RQ:
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.GONE);
-					//rqView.setVisibility(View.VISIBLE);
+					showRelatedQuestionsTab();
 					break;		
 					
 				default: 
 					commentView.setVisibility(View.GONE);
 					commentCButton.setVisibility(View.GONE);
 					attachmentView.setVisibility(View.GONE);
-					//rqView.setVisibility(View.GONE);
+					hideRelatedQuestionsTab();
 					break;
 			}
 		}

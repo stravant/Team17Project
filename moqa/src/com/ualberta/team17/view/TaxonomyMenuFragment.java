@@ -2,6 +2,7 @@ package com.ualberta.team17.view;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ualberta.team17.R;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 
 public class TaxonomyMenuFragment extends Fragment {
 	private String[] myTaxonomy;
@@ -75,7 +77,7 @@ public class TaxonomyMenuFragment extends Fragment {
 		};	
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		if (savedInstanceState == null) {
-			mListener.onItemSelected(0);
+			mListener.onItemSelected(Taxonomy.AllQuestions);
 			mDrawerList.setItemChecked(0, true);
 			getActivity().setTitle(myTaxonomy[0]);
 			mDrawerLayout.closeDrawer(mDrawerList);
@@ -87,14 +89,37 @@ public class TaxonomyMenuFragment extends Fragment {
 	private class LeftDrawerItemClickListener implements ListView.OnItemClickListener {
 		@Override
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			mListener.onItemSelected(position);
+			Taxonomy selectedTaxonomy;
+
+			switch (position) {
+			case 1:
+				selectedTaxonomy = Taxonomy.MyActivity;
+				break;
+			case 2:
+				selectedTaxonomy = Taxonomy.MyFavorites;
+				break;
+			case 3:
+				selectedTaxonomy = Taxonomy.TopQuestions;
+				break;
+			case 4:
+				selectedTaxonomy = Taxonomy.TopAnswers;
+				break;
+			case 5:
+				selectedTaxonomy = Taxonomy.RecentActivity;
+				break;
+			default:
+				selectedTaxonomy = Taxonomy.AllQuestions;
+			}
+
+			mListener.onItemSelected(selectedTaxonomy);
+
 			// update selected item and title, then close the drawer
 			mDrawerList.setItemChecked(position, true);
 			mDrawerLayout.closeDrawer(mDrawerList);
 		}
 	}
 	public interface OnItemSelectedListener {
-		public void onItemSelected(int position);
+		public void onItemSelected(Taxonomy selectedTaxonomy);
 	}
 
 	@Override
