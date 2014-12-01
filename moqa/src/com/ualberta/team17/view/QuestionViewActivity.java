@@ -262,21 +262,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		mQABodies = new ArrayList<QABody>();
 	}
 	
-	private void focusRelated() {	
-		/*
-		View tabSection = mQuestionView.findViewById(R.id.tabSection);
-		View tabSelect = tabSection.findViewById(R.id.tabSelect);	
-		View tabContent = tabSection.findViewById(R.id.tabContent);
-		
-		TextView relatedTitle = (TextView) tabContent.findViewById(R.id.relatedTitle);
-		relatedTitle.setText("You may also be able to answer these questions");
-		
-		RelativeLayout rqTabButton = (RelativeLayout) tabSelect.findViewById(R.id.relatedViewHolder);
-		
-		TabSelectListener ts = new TabSelectListener(Tab.RQ);		
-		ts.onClick(rqTabButton);
-		refresh();
-		*/
+	private void focusRelated() {			
 		QuestionBody qb = (QuestionBody) this.mQABodies.get(0);
 		qb.currentTab = Tab.RQ;
 	}
@@ -564,10 +550,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				
 				titleTextView.setText(question.getTitle());
 				
+				/*
+				// does not work
 				if (qb.currentTab == Tab.RQ) {
 					rqTitle.setText("You may also be able to answer these questions");
 					rqListener.onClick(rqTabButton);
 				}
+				*/
 				
 				if(question.getReplyCount() == 1) {
 					answerCountView.setText(getString(R.string.answer_count_one));
@@ -860,8 +849,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
+			TextView tView = (TextView) v;
 			//launch intent to QLA
-			
+			Intent intent = new Intent(QuestionViewActivity.this, QuestionListActivity.class);		
+			intent.putExtra(QuestionListActivity.AUTHOR_SORT, tView.getText());
+			startActivity(intent);			
 		}
 		
 	}
@@ -870,8 +862,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
+			TextView tView = (TextView) v;
 			//launch intent to QLA
-			
+			Intent intent = new Intent(QuestionViewActivity.this, QuestionListActivity.class);		
+			intent.putExtra(QuestionListActivity.AUTHORSORT, tView.getText());
+			startActivity(intent);		
 		}
 		
 	}
