@@ -31,38 +31,13 @@ public class ESSearchBuilder {
 	}
 
 	/**
-	 * Applies the required parameters to the supplied Jest builder.
-	 * 
-	 * @param builder The builder to apply parameters to.
-	 * @return
-	 */
-	public Builder getBuilder(Builder builder) {
-		Integer maxResults = mFilter.getMaxResults();
-
-		if (null != maxResults) {
-			if (maxResults > ESSearchBuilder.MAX_ES_RESULTS) {
-				maxResults = ESSearchBuilder.MAX_ES_RESULTS;
-			}
-
-			builder.setParameter("size", maxResults);
-
-			if (null != mFilter.getPage())
-				builder.setParameter("from", maxResults * mFilter.getPage());
-		}
-
-		if (null != mFilter.getTypeFilter()) {
-			builder.addType(mFilter.getTypeFilter().toString().toLowerCase());
-		}
-
-		return builder;
-	}
-
-	/**
 	 * Gets a Jest query builder that contains all required non-query parameters.
 	 * @return
 	 */
 	public Builder getBuilder() {
-		return getBuilder(new Builder(toString()));
+		Builder builder = new Builder(toString());
+		mFilter.decorateBuilder(builder);
+		return builder;
 	}
 
 	private JsonObject getJsonObjectWithProperty(String property, JsonElement value) {
