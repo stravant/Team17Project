@@ -93,6 +93,12 @@ public class ListFragment extends Fragment {
 			}
 		}
 	}
+	
+	/* Ctor */
+	public ListFragment() {
+		mItems = new ArrayList<QAModel>();
+		mAdapter = new QuestionListAdapter(this.getActivity(), R.id.questionListView, mItems);
+	}
 
 	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
 	
