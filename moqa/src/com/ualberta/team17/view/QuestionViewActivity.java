@@ -31,8 +31,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -173,8 +175,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		Intent intent = this.getIntent();
 		mController = QAController.getInstance();		
-		
-		((Button) displayQuestionView.findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
+			
 		mAdapter = createNewAdapter();
 		
 		View addAttachmentView = createQuestionView.findViewById(R.id.addAttachmentView);
@@ -189,13 +190,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		} else {
 			setMode(Mode.CREATE);
 			
-			Button submitButton = (Button) createQuestionView.findViewById(R.id.createQuestionSubmitButton);
 			mCreateTitleView = (EditText) createQuestionView.findViewById(R.id.createQuestionTitleView);
 			mCreateBodyView = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
-
-			
-			submitButton.setOnClickListener(new SubmitQuestionListener(mCreateTitleView, mCreateBodyView));
-
 			ImageButton addAttachmentButton = (ImageButton) addAttachmentView.findViewById(R.id.addAttachmentButton);			addAttachmentButton.setOnClickListener(new View.OnClickListener() {
 
 				@Override
@@ -253,6 +249,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 */
 	public void setQuestion(QuestionItem question) {
 		resetContent();
+		question.addView(this);
 		mQuestion = question;
 		mQABodies.add(new QuestionBody(question));
 		refresh();
@@ -402,7 +399,12 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			return true;
 		}
 		if(id == R.id.action_submit_question) {
-			// pull everything out of the question submit listener.
+			QAController controller = QAController.getInstance();
+			setMode(Mode.DISPLAY);
+			setQuestion(controller.createQuestion(mCreateTitleView.getText().toString(), mCreateBodyView.getText().toString()));
+			for(AttachmentItem attachment : mAddedAttachments) {
+				controller.connectAttachment(attachment, mQuestion.mUniqueId);
+			}
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -489,8 +491,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			View qaItemView = convertView;
 			if (null == qaItemView) {
 				qaItemView = inflater.inflate(R.layout.qaitem, parent, false);
-				}		
-
+			}
+			
+			Resources res = getResources();
 			
 			View textSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.textSide);
 			View iconSideView = qaItemView.findViewById(R.id.content).findViewById(R.id.iconSide);
@@ -527,13 +530,18 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				answerCountView.setVisibility(View.VISIBLE);
 				
 				titleTextView.setText(question.getTitle());
-				upvoteTextView.setText("" + question.getUpvoteCount());
 				
 				if(question.getReplyCount() == 1) {
 					answerCountView.setText(getString(R.string.answer_count_one));
 				} else {
 					answerCountView.setText(String.format(getString(R.string.answer_count), question.getReplyCount()));
 				}
+				
+				if(question.isFavorited()) {
+					Drawable favoriteHighlighted = res.getDrawable(R.drawable.ic_action_favorite_blue);
+					favoriteButton.setImageDrawable(favoriteHighlighted);
+				}
+				
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 
 				attachmentsView.setVisibility(View.GONE);
@@ -551,6 +559,8 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				answerCountView.setVisibility(View.GONE);
 				attachmentsView.setVisibility(View.GONE);
 				
+
+				
 			} else {
 				// This should never happen. If it does, a bad object was added to the list.
 				throw new IllegalStateException();
@@ -559,7 +569,12 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			commentButton.setTag(qaBody.parent.getUniqueId());
 			commentButton.setOnClickListener(new AddCommentListener(commentButton));
 			
+			if(qaBody.parent.haveUpvoted()) {
+				Drawable highlightedUpvote = res.getDrawable(R.drawable.ic_action_collapse_blue);
+				upvoteButton.setImageDrawable(highlightedUpvote);
+			}
 			upvoteButton.setOnClickListener(new UpvoteListener(qaBody.parent));
+			upvoteTextView.setText("" + qaBody.parent.getUpvoteCount());
 			
 			bodyTextView.setText(qaBody.parent.getBody());
 			authorTextView.setText(qaBody.parent.getAuthor());

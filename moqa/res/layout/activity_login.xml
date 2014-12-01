@@ -12,10 +12,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/loginWarning"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-25dp"
+        android:layout_marginTop="0dp"
         android:ems="10"
         android:gravity="center"
-        android:text="username" >
+        android:hint="username" >
 
         <requestFocus />
     </EditText>
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/masthead"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="0dp"
         android:text="Usernames must be between 4 and 20 characters. Spaces aren&apos;t allowed." />
 
     <ImageView

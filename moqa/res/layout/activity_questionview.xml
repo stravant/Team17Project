@@ -13,22 +13,11 @@
 	    android:orientation="vertical"
 	    android:background="@color/coffee"
 	    android:visibility="gone" >
-	    
-	    <Button
-	        android:id="@+id/createAnswer"
-	        style="?android:attr/buttonStyleSmall"
-	        android:layout_alignParentBottom="true"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:background="@color/compl_blue_split1"
-	        android:text="@string/createAnswer"
-	        android:textColor="@color/white" />
 	
 	    <ListView
 	        android:id="@+id/qaItemView"
 	        android:layout_width="match_parent"
 	        android:layout_height="fill_parent"
-	        android:layout_above="@id/createAnswer"
 	        android:background="@color/milk"
 	        android:layout_margin="1sp"
 	        android:divider="@color/compl_blue_split2"
@@ -55,21 +44,21 @@
 	        android:id="@+id/addAttachmentView"
 	        android:layout_width="match_parent"
 	        android:layout_height="@dimen/attachment_view_height"
-	        android:layout_above="@+id/createQuestionSubmitButton" >
+	        android:layout_alignParentBottom="true" >
 	    
-	    <com.ualberta.team17.view.AttachmentDisplayView
-	        android:id="@+id/addAttachmentDisplayView"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:layout_toLeftOf="@+id/addAttachmentButton" />
-	    
-	    <ImageButton 
-	        android:id="@+id/addAttachmentButton"
-	        android:layout_width="wrap_content"
-	        android:layout_height="match_parent"
-	        android:layout_alignParentRight="true"
-	        android:src="@drawable/ic_action_new_attachment"
-	        android:background="?android:selectableItemBackground" />
+		    <com.ualberta.team17.view.AttachmentDisplayView
+		        android:id="@+id/addAttachmentDisplayView"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_toLeftOf="@+id/addAttachmentButton" />
+		    
+		    <ImageButton 
+		        android:id="@+id/addAttachmentButton"
+		        android:layout_width="wrap_content"
+		        android:layout_height="match_parent"
+		        android:layout_alignParentRight="true"
+		        android:src="@drawable/ic_action_new_attachment"
+		        android:background="?android:selectableItemBackground" />
 	    
 	    </RelativeLayout>
 	    
@@ -82,16 +71,6 @@
 	        android:gravity="left|top"
 	        android:background="@color/milk2"
 	        android:hint="Body" />
-	    
-	    <Button
-	        android:id="@+id/createQuestionSubmitButton"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_alignParentBottom="true"
-	        android:background="@color/compl_blue_split1"
-	        android:gravity="center"
-	        android:text="Submit"
-	        android:textColor="@color/white" />
 	
 	</RelativeLayout>
 </RelativeLayout>
