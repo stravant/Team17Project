@@ -48,6 +48,15 @@ import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
 import com.ualberta.team17.datamanager.DataFilter.FieldFilter;
 
+/**
+ * The Local Data Manager manages the reading, saving, and caching of local data on the android device.
+ * 
+ * The local data manager is also responsible for calculating all derived information such as comment and
+ * reply counts on QAModels. It does this transparently when the values are received from the Network.
+ * 
+ * @author marklangen
+ *
+ */
 public class LocalDataManager implements IDataSourceManager {
 	/**
 	 * The File Context to use
@@ -540,13 +549,6 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param filter
 	 * @param result
 	 */
-	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result) {
-		// Local data manager does not handle MLT filters.
-		if (filter instanceof MoreLikeThisFilter) {
-			return;
-		}
-	}
-
 	@Override
 	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result, final IDataSourceManager chainTo) {
 		new RunTaskHelper<List<QAModel>>() {

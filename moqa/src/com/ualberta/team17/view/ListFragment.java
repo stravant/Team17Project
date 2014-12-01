@@ -52,6 +52,15 @@ public class ListFragment extends Fragment {
 	private List<QAModel> mItems;
 	private Taxonomy mTaxonomy = Taxonomy.Search;
 
+	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
+	
+	private class UpdateOnItemUpdateListener implements IQAView {
+		@Override
+		public void update(QAModel model) {
+			mAdapter.notifyDataSetChanged();
+		}
+	}
+	
 	public enum Taxonomy {
 		Search,
 		AllQuestions,
@@ -60,6 +69,7 @@ public class ListFragment extends Fragment {
 		TopQuestions,
 		TopAnswers,
 		RecentActivity,
+		ReadLater,
 		RelatedQuestions;
 
 		public int getId() {
@@ -76,19 +86,18 @@ public class ListFragment extends Fragment {
 				return 4;
 			case RecentActivity:
 				return 5;
+			case ReadLater:
+				return 6;
 			default:
 				return -1;
 			}
 		}
 	}
-
-	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
 	
-	private class UpdateOnItemUpdateListener implements IQAView {
-		@Override
-		public void update(QAModel model) {
-			mAdapter.notifyDataSetChanged();
-		}
+	/* Ctor */
+	public ListFragment() {
+		//mItems = new ArrayList<QAModel>();
+		//mAdapter = new QuestionListAdapter(this.getActivity(), R.id.questionListView, mItems);
 	}
 
 	@Override
@@ -109,15 +118,15 @@ public class ListFragment extends Fragment {
 		int mSort = getArguments().getInt(SORT_TYPE);
 		if (mSort != 0) {
 			switch (mSort) {
-			// Show newest questions first
+			//Ascending Date
 			case 0:
 				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Descending);
+				comp.setCompareDirection(SortDirection.Ascending);
 				break;
-			// Show older questions first
+			//Descending Date	
 			case 1:
 				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Ascending);
+				comp.setCompareDirection(SortDirection.Descending);
 				break;
 			//Descending Attachments	
 			case 2:
@@ -150,14 +159,6 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			
 			break;
-		case AllQuestions:
-			if (comp == null) {
-				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Descending);
-			}	
-			datafilter.setTypeFilter(ItemType.Question);
-			mIR = QAController.getInstance().getObjects(datafilter, comp);
-			break;
 		case MyActivity:
 			if (comp == null) {
 				comp = new DateComparator();
@@ -184,6 +185,10 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getRecentItems(comp);
 			datafilter = null;
 			break;
+		case ReadLater:
+			mIR = QAController.getInstance().getViewLaterItems(comp);
+			datafilter = null;
+			break;
 		case RelatedQuestions:
 			UniqueId questionId = (UniqueId) getArguments().getSerializable(QUESTION_ID_EXTRA);
 			
@@ -197,6 +202,15 @@ public class ListFragment extends Fragment {
 			comp = new IdentityComparator();
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
+		default:
+			case AllQuestions:
+				if (comp == null) {
+					comp = new DateComparator();
+					comp.setCompareDirection(SortDirection.Descending);
+				}	
+				datafilter.setTypeFilter(ItemType.Question);
+				mIR = QAController.getInstance().getObjects(datafilter, comp);
+				break;
 		}
 		
 		addObserver(mIR);		
@@ -205,9 +219,10 @@ public class ListFragment extends Fragment {
 		mItems = new ArrayList<QAModel>();
 		if (mIR != null) {
 			mItems.addAll(mIR.getCurrentResults());
-			mAdapter = new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mItems);
-			qList.setAdapter(mAdapter);
 		}
+
+		mAdapter = new QuestionListAdapter(ListFragment.this.getActivity(), R.id.questionListView, mItems);
+		qList.setAdapter(mAdapter);
 
 		qList.setOnScrollListener(new InfiniteScoller());
 		
@@ -311,12 +326,21 @@ public class ListFragment extends Fragment {
 					if (activity == null) {
 						return;
 					}
+
 					for (QAModel item: items) {
 						item.addView(mItemUpdatedListener);
 					}
+
+					if (null == mItems) {
+						mItems = new ArrayList<QAModel>();
+					}
+
 					mItems.clear();
 					mItems.addAll(mIR.getCurrentResults());
-					mAdapter.notifyDataSetChanged();				
+					
+					if (null != mAdapter) {
+						mAdapter.notifyDataSetChanged();
+					}
 				}
 			});
 		}

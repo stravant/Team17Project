@@ -534,6 +534,9 @@ public class NetworkDataSourceTest extends DataManagerTester<NetworkDataManager>
 		waitForModOperation();
 	}
 
+	/**
+	 * Tests that the More Like This query properly retrieves items based off of similarity.
+	 */
 	public void test_MoreLikeThisQuery() {
 		IItemComparator comparator = new DateComparator();
 		result = new IncrementalResult(comparator);

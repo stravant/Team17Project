@@ -19,6 +19,9 @@ public class QuestionItemTest extends TestCase {
 		notifyCount = 0;
 	}
 	
+	/**
+	 * Tests that upvoting works properly on a question item.
+	 */
 	public void test_QI1_Upvote()
 	{
 		assertEquals( "No upvotes", testQuestion.getUpvoteCount(), 0 );
@@ -28,6 +31,9 @@ public class QuestionItemTest extends TestCase {
 		assertEquals( "One upvote", testQuestion.getUpvoteCount(), 1 );
 	}
 	
+	/**
+	 * Tests that the item notifies view when it is upvoted.
+	 */
 	public void test_QI2_UpvoteNotifiesView()
 	{
 		IQAView dummyView = new IQAView() {
@@ -41,6 +47,10 @@ public class QuestionItemTest extends TestCase {
 		assertTrue( "View was notified", notified );
 	}
 	
+	/**
+	 * Tests that views that are removed from the observer list
+	 * don't get notified.
+	 */
 	public void test_QI3_DeleteView()
 	{		
 		IQAView dummyView = new IQAView() {
@@ -54,6 +64,9 @@ public class QuestionItemTest extends TestCase {
 		assertFalse("No views were nofified", notified);		
 	}
 	
+	/**
+	 * Tests that all subscribed viewes get notified on change.
+	 */
 	public void test_QI4_NotifyViews()
 	{		
 		IQAView dummyViewA = new IQAView() {

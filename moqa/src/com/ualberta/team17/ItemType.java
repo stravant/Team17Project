@@ -1,5 +1,11 @@
 package com.ualberta.team17;
 
+/**
+ * Enumerator that is conveniently used to communicate types in the data model,
+ * and when talking to the data managers.
+ * 
+ * @author michaelblouin
+ */
 public enum ItemType {
 	Upvote,
 	Attachment,

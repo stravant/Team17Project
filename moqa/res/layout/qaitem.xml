@@ -58,7 +58,7 @@
 			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
 			        android:layout_alignParentRight="true"
-			        android:layout_alignParentTop="true"			                
+			        android:layout_alignParentBottom="true"			                
 			        android:ems="10"
 			        android:gravity="right|bottom"
 			        android:text="author"
@@ -85,7 +85,8 @@
 		        android:layout_height="wrap_content"
 		        android:layout_centerHorizontal="true"
 		        android:layout_above="@+id/upvoteCount"
-		        android:background="@drawable/ic_action_collapse" />
+		        android:src="@drawable/ic_action_collapse"
+	       		android:background="?android:selectableItemBackground" />
 
 		    <TextView
 		        android:id="@+id/upvoteCount"
@@ -104,7 +105,8 @@
 		        android:layout_below="@+id/upvoteCount"
 		        android:layout_centerHorizontal="true"		       
 		        android:layout_marginTop="4dp"
-		        android:background="@drawable/ic_action_favorite" />
+		        android:src="@drawable/ic_action_favorite"
+	        	android:background="?android:selectableItemBackground" />
 		</RelativeLayout>
 		
 	</LinearLayout>  
@@ -222,6 +224,7 @@
 		        android:layout_height="@dimen/attachment_view_height"
 		        android:layout_alignParentLeft="true"		        
 		        android:visibility="gone"/>
+       		
        		<TextView 
        		    android:id="@+id/relatedTitle"
        		    android:layout_width="fill_parent"

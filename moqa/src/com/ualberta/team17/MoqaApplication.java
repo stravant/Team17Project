@@ -9,6 +9,12 @@ import com.ualberta.team17.datamanager.UserContext;
 import android.app.Application;
 import android.content.res.Resources;
 
+/**
+ * MoqaApplication is the class that is responsible for setting up the data managers and controller
+ * when the application initially launches.
+ * 
+ * @author michaelblouin
+ */
 public class MoqaApplication extends Application {
 	@Override
 	public void onCreate() {

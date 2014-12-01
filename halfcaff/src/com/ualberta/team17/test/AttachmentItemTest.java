@@ -20,6 +20,9 @@ public class AttachmentItemTest extends TestCase {
 		notifyCount = 0;
 	}
 
+	/**
+	 * Tests that observing views are notified when required.
+	 */
 	public void test_AtI1_NotifyViews()
 	{		
 		IQAView dummyViewA = new IQAView() {
@@ -45,6 +48,10 @@ public class AttachmentItemTest extends TestCase {
 		assertEquals("All views were notified", notifyCount, 3);
 	}
 
+	/**
+	 * Tests that a view that has been removed from the observer list
+	 * is not notified on update.
+	 */
 	public void test_AtI2_DeleteView()
 	{		
 		IQAView dummyView = new IQAView() {

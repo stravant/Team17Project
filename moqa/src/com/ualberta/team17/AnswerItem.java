@@ -8,6 +8,9 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
+/**
+ * Represents a QAModel that is an answer to a question. Answers are always children of Questions.
+ */
 public class AnswerItem extends AuthoredTextItem {
 	/* Ctor */
 	public AnswerItem(UniqueId id, UniqueId parentId, String author, Date date, String body, int upvoteCount) {

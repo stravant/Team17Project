@@ -22,6 +22,11 @@ import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests the QAController by manipulating its Model-controlling functions.
+ * 
+ * @author michaelblouin
+ */
 public class QAControllerTest extends ActivityTestCase {
 	private UserContext userContext;
 	private QAController controller;
@@ -50,13 +55,19 @@ public class QAControllerTest extends ActivityTestCase {
 			add(new CommentItem(new UniqueId(), parentAnswer.getUniqueId(), userContext.getUserName(), new Date(), "ThirdComment", 0));
 		}});
 	}
-	
+
+	/**
+	 * Tests that objects can be properly retrieved from the controller by calling QAController.getObjects().
+	 */
 	public void test_QAC1_GetObjects() {
 		IncrementalResult result = controller.getObjects(new DataFilter(), new UpvoteComparator() );
 		
 		assertEquals("getObjects", dataManager.getItemCount(), result.getCurrentResults().size());
 	}
-	
+
+	/**
+	 * Tests that a questions children may be retrieved using the QAController.
+	 */
 	public void test_QAC2_GetQuestionChildren() {
 		// Question with multiple children
 		IncrementalResult questionChildren = controller.getChildren( parentQuestion, new UpvoteComparator() );
@@ -109,6 +120,9 @@ public class QAControllerTest extends ActivityTestCase {
 		}
 	}
 	
+	/**
+	 * Tests that the QAController can properly create questions using createQuestion()
+	 */
 	public void test_QAC3_CreateQuestions() {
 		QuestionItem question1 = controller.createQuestion( "title", "body" );
 		assertValidQuestion(question1, "title", "body");
@@ -126,19 +140,27 @@ public class QAControllerTest extends ActivityTestCase {
 		assertNotNull(item);
 		assertEquals(parent, item.getParentItem());
 	}
-	
+
+	/**
+	 * Tests that the QAController can properly create attachments.
+	 */
 	public void test_QAC4_CreateAttachment() {
 		AttachmentItem attachment1 = controller.createAttachment(parentQuestion.getUniqueId(), "AttachmentName", new byte[0]);
 		assertValidAttachment(attachment1, parentQuestion.getUniqueId());
 		
-		assertNull("Cant create comment without parent", controller.createAttachment(null, "AttachmentName", new byte[0]));
+		assertNull("Cant create attachment without parent", controller.createAttachment(null, "AttachmentName", new byte[0]));
 		
 		CommentItem attachment2 = controller.createComment( parentQuestion, null);
 		assertValidAuthoredTextItem(attachment2, parentQuestion.getUniqueId(), null);
 		
 		assertDifferentIds(parentQuestion, attachment1, attachment2);
 	}
-	
+
+	/**
+	 * Tests that the QAController can properly create answers in reply to a question.
+	 * 
+	 * Also asserts that you cannot create an answer without a parent.
+	 */
 	public void test_QAC5_CreateAnswers() {
 		AnswerItem answer1 = controller.createAnswer(parentQuestion, "answer1 body" );
 		assertValidAuthoredTextItem(answer1, parentQuestion.getUniqueId(), "answer1 body");
@@ -156,7 +178,12 @@ public class QAControllerTest extends ActivityTestCase {
 		
 		assertDifferentIds(parentQuestion, answer1, answer2, answer3);
 	}
-	
+
+	/**
+	 * Tests that the QAController can properly create comments in reply to a question or answer.
+	 * 
+	 * Also tests that comments cannot be created without a parent.
+	 */
 	public void test_QAC6_CreateComments() {
 		CommentItem comment1 = controller.createComment( parentQuestion, "comment1 body" );
 		assertValidAuthoredTextItem(comment1, parentQuestion.getUniqueId(), "comment1 body");

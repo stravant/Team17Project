@@ -24,6 +24,12 @@ import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 
+/**
+ * The QAController is responsible for the management of all QAModels.
+ * 
+ * It creates them and operates them (there are no delete scenarios).
+ *
+ */
 public class QAController {
 	private static QAController mControllerInstance;
 	DataManager mDataManager;
@@ -144,10 +150,14 @@ public class QAController {
 	 * most recently with QAController::markViewLater
 	 * @return An IncrementalResult that will be populated with the to be viewed later items
 	 */
-	public IncrementalResult getViewLaterItems() {
+	public IncrementalResult getViewLaterItems(IItemComparator comparator) {
+		if (null == comparator) {
+			comparator = new IdentityComparator();
+		}
+
 		return mDataManager.doQuery(
 				mDataManager.getUserContext().getViewLater(), 
-				new IdentityComparator());
+				comparator);
 	}
 	
 	/**
