@@ -489,7 +489,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				}
 				favoriteButton.setOnClickListener(new FavoriteListener(question));
 
-				attachmentsView.setVisibility(questionBody.attachments.size() > 0 ? View.VISIBLE : View.GONE);
+				attachmentsView.setVisibility(View.GONE);
 				
 				attachmentsView.clearAttachments();
 				

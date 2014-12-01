@@ -11,9 +11,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,7 +45,6 @@ public class AttachmentDisplayView extends LinearLayout {
 	}
 	
 	private void init(AttributeSet attrs, int defStyle) {
-		
 	}
 	
 	public void addAttachment(AttachmentItem item) {
@@ -52,12 +53,37 @@ public class AttachmentDisplayView extends LinearLayout {
 			ImageView imageView = new ImageView(getContext());
 			Bitmap image = item.getImage();
 			
-			imageView.setImageBitmap(image);
+			imageView.setImageBitmap(getPreviewBitmap(image));
 			imageView.setOnClickListener(new ImageViewOnClickListener());
+			LayoutParams layout = new LayoutParams(
+					LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT
+			);
+			
+			Resources res = getResources();
+			int margin = res.getDimensionPixelSize(R.dimen.attachment_margin);
+			layout.setMargins(margin, margin, margin, margin);
+			layout.gravity = Gravity.CENTER_VERTICAL;
+			imageView.setLayoutParams(layout);
 			this.addView(imageView);
 			mImageViews.add(imageView);
 			
 		}
+	}
+	
+	/**
+	 * Gets a square preview of the center of the bitmap.
+	 * @param b The bitmap to grab the preview of.
+	 * @return A preview bitmap.
+	 */
+	private Bitmap getPreviewBitmap(Bitmap b) {
+		int width = b.getWidth();
+		int height = b.getHeight();
+		
+		int previewSize = Math.min(width, height);
+		int x = (width - previewSize) / 2;
+		int y = (height - previewSize) / 2;
+		return Bitmap.createBitmap(b, x, y, previewSize, previewSize, null, false);
 	}
 	
 	public void clearAttachments() {

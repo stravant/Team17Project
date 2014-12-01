@@ -95,7 +95,7 @@ public class AttachmentView extends HorizontalScrollView {
 			ImageView imageView = new ImageView(getContext());
 			Bitmap image = item.getImage();
 
-			imageView.setImageBitmap(item.getImage());
+			imageView.setImageBitmap(getPreviewBitmap(item.getImage()));
 			/*imageView.setLayoutParams(
 					new LinearLayout.LayoutParams(
 							(int)(image.getWidth() * ((float)this.getHeight())/image.getHeight()),
@@ -107,6 +107,21 @@ public class AttachmentView extends HorizontalScrollView {
 
 			mImageViews.add(imageView);
 		}
+	}
+	
+	/**
+	 * Gets a square preview of the center of the bitmap.
+	 * @param b The bitmap to grab the preview of.
+	 * @return A preview bitmap.
+	 */
+	private Bitmap getPreviewBitmap(Bitmap b) {
+		int width = b.getWidth();
+		int height = b.getHeight();
+		
+		int previewSize = Math.min(width, height);
+		int x = (width - previewSize) / 2;
+		int y = (height - previewSize) / 2;
+		return Bitmap.createBitmap(b, x, y, previewSize, previewSize, null, false);
 	}
 
 	/**
