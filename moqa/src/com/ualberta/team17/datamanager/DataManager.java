@@ -107,8 +107,9 @@ public class DataManager {
 	 */
 	public IncrementalResult doQuery(DataFilter filter, IncrementalResult result) {
 		IItemComparator sortComparator = result.getComparator();
-		mLocalDataStore.query(filter, sortComparator, result);
-		mNetworkDataStore.query(filter, sortComparator, result);
+		// Chain to the networkDataStore, that is, after the local query completes, the
+		// network one will be done.
+		mLocalDataStore.query(filter, sortComparator, result, mNetworkDataStore);
 		return result;
 	}
 
@@ -120,8 +121,7 @@ public class DataManager {
 	 */
 	public IncrementalResult doQuery(List<UniqueId> idList, IItemComparator sortComparator) {
 		IncrementalResult result = new IncrementalResult(sortComparator);
-		mLocalDataStore.query(idList, result);
-		mNetworkDataStore.query(idList, result);
+		mLocalDataStore.query(idList, result, mNetworkDataStore);
 		return result;
 	}
 
@@ -239,7 +239,7 @@ public class DataManager {
 		});
 		
 		// Fire off the query for the local only items to save
-		mLocalDataStore.query(mUserContext.getLocalOnlyItems(), toSave);
+		mLocalDataStore.query(mUserContext.getLocalOnlyItems(), toSave, null);
 	}
 	
 	/**

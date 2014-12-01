@@ -23,6 +23,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import android.content.Context;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.JsonWriter;
@@ -273,6 +274,10 @@ public class LocalDataManager implements IDataSourceManager {
 			case Upvote:
 				newObject = gson.fromJson(obj, UpvoteItem.class);
 				break;
+				
+			case Attachment:
+				newObject = gson.fromJson(obj, AttachmentItem.class);
+				break;
 
 			default:
 				newObject = null;
@@ -509,7 +514,7 @@ public class LocalDataManager implements IDataSourceManager {
 				throw new AssertionError("LocalDataManager attempted to set mData twice, not possible.");
 			}
 			mData = result;
-			for (QAModel item: mData) {
+			for (QAModel item: mData) {			
 				mItemRefById.put(item.getUniqueId(), item);
 				mDataSetById.add(item.getUniqueId());
 			}
@@ -528,19 +533,22 @@ public class LocalDataManager implements IDataSourceManager {
 		}
 	}
 	
+	
 	/**
 	 * Query the LocalData using a given query, and a given result to put the results
 	 * into.
 	 * @param filter
 	 * @param result
 	 */
-	@Override
 	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result) {
 		// Local data manager does not handle MLT filters.
 		if (filter instanceof MoreLikeThisFilter) {
 			return;
 		}
+	}
 
+	@Override
+	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result, final IDataSourceManager chainTo) {
 		new RunTaskHelper<List<QAModel>>() {
 			@Override
 			public List<QAModel> task() {
@@ -552,6 +560,9 @@ public class LocalDataManager implements IDataSourceManager {
 			@Override
 			public void done(List<QAModel> resultList) {
 				result.addObjects(resultList);
+				if (chainTo != null) {
+					chainTo.query(filter, compare, result, null);
+				}
 			}
 		};
 	}
@@ -590,7 +601,7 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param ids
 	 */
 	@Override
-	public void query(final List<UniqueId> ids, final IncrementalResult result) {
+	public void query(final List<UniqueId> ids, final IncrementalResult result, final IDataSourceManager chainTo) {
 		// Do query async
 		new RunTaskHelper<List<QAModel>>() {
 			@Override
@@ -602,6 +613,9 @@ public class LocalDataManager implements IDataSourceManager {
 			@Override
 			public void done(List<QAModel> resultList) {
 				result.addObjects(resultList);
+				if (chainTo != null) {
+					chainTo.query(ids, result, null);
+				}
 			}
 		};
 	}

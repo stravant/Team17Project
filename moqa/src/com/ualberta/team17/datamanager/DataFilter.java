@@ -120,6 +120,11 @@ public class DataFilter {
 		boolean matchedShould = false; // Until contested
 		boolean matchedMust = false; // Until contested
 		
+		// If there are no filters, trivially accept (we already passed the item type test).
+		if (mFieldFilters.isEmpty()) {
+			return true;
+		}
+		
 		// For each filter
 		for (FieldFilter f: mFieldFilters) {
 			// Get the combination type of the filter
