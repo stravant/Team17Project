@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['iaddattachmentlistener',['IAddAttachmentListener',['../interfacecom_1_1ualberta_1_1team17_1_1view_1_1_i_add_attachment_listener.html',1,'com::ualberta::team17::view']]],
+  ['idataitemsavedlistener',['IDataItemSavedListener',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_item_saved_listener.html',1,'com::ualberta::team17::datamanager']]],
+  ['idataloadedlistener',['IDataLoadedListener',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_loaded_listener.html',1,'com::ualberta::team17::datamanager']]],
+  ['idatasourceavailablelistener',['IDataSourceAvailableListener',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_available_listener.html',1,'com::ualberta::team17::datamanager']]],
+  ['idatasourcemanager',['IDataSourceManager',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager.html',1,'com::ualberta::team17::datamanager']]],
+  ['idcomparator',['IdComparator',['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_id_comparator.html',1,'com::ualberta::team17::datamanager::comparators']]],
+  ['identitycomparator',['IdentityComparator',['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_identity_comparator.html',1,'com::ualberta::team17::datamanager::comparators']]],
+  ['iincrementalobserver',['IIncrementalObserver',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_incremental_observer.html',1,'com::ualberta::team17::datamanager']]],
+  ['iitemcomparator',['IItemComparator',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator.html',1,'com::ualberta::team17::datamanager']]],
+  ['incrementalresult',['IncrementalResult',['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result.html',1,'com::ualberta::team17::datamanager']]],
+  ['incrementalresult',['IncrementalResult',['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result.html#a11ca05c0fb2605742eee10772b5f4535',1,'com::ualberta::team17::datamanager::IncrementalResult']]],
+  ['infinitescoller',['InfiniteScoller',['../classcom_1_1ualberta_1_1team17_1_1view_1_1_list_fragment_1_1_infinite_scoller.html',1,'com::ualberta::team17::view::ListFragment']]],
+  ['iqaview',['IQAView',['../interfacecom_1_1ualberta_1_1team17_1_1view_1_1_i_q_a_view.html',1,'com::ualberta::team17::view']]],
+  ['isavailable',['isAvailable',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager.html#a2aa4868fa969b01da83cb0b24539211a',1,'com.ualberta.team17.datamanager.IDataSourceManager.isAvailable()'],['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager.html#a4d3ad2384e8a3211c250bf55e8621f93',1,'com.ualberta.team17.datamanager.LocalDataManager.isAvailable()']]],
+  ['isfavorited',['isFavorited',['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context.html#afb57b8179a35ae076453e3810f695b8a',1,'com::ualberta::team17::datamanager::UserContext']]],
+  ['isinteresting',['isInteresting',['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context.html#a5af39558040ada3195d4a33d4fbeb5c5',1,'com::ualberta::team17::datamanager::UserContext']]],
+  ['isshowingsearchbar',['isShowingSearchBar',['../classcom_1_1ualberta_1_1team17_1_1view_1_1_search_item.html#a62ee82095572655028a82b17c054267d',1,'com::ualberta::team17::view::SearchItem']]],
+  ['itemsarrived',['itemsArrived',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_incremental_observer.html#a5dc14706bd2a999bd462b2ad71e034c4',1,'com::ualberta::team17::datamanager::IIncrementalObserver']]],
+  ['itemtype',['ItemType',['../enumcom_1_1ualberta_1_1team17_1_1_item_type.html',1,'com::ualberta::team17']]]
+];

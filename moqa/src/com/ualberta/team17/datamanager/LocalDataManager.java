@@ -344,19 +344,8 @@ public class LocalDataManager implements IDataSourceManager {
 		// tally them to their parent item if it exists.
 		// That is, we call handleDerivedInfo on each of our items... elegant!
 		for (QAModel item: mData) {
-			updateParentDerivedInfo(item);
-			
-			if (mUserContext != null && (item instanceof QuestionItem)) {
-				// Also check if the item is favorited
-				if (mUserContext.isFavorited(item.getUniqueId())) {
-					((QuestionItem)item).setFavorited();
-				}
-			
-				// And check if the item is to be viewed later
-				if (mUserContext.shouldViewLater(item.getUniqueId())) {
-					((QuestionItem)item).setViewLater();
-				}
-			}
+			updateParentDerivedInfoIfHasParent(item);
+			item.calculateInitialDerivedInfo(mUserContext);
 		}
 	}
 	
@@ -366,35 +355,15 @@ public class LocalDataManager implements IDataSourceManager {
 	 * an answer, add to its parent's reply count.
 	 * @param item
 	 */
-	private void updateParentDerivedInfo(QAModel item) {
-		if (item instanceof AuthoredItem) {
-			QAModel parentItem = getItemById(((AuthoredItem)item).getParentItem());
+	private void updateParentDerivedInfoIfHasParent(QAModel item) {
+		UniqueId parentId = (UniqueId)item.getField(AuthoredTextItem.FIELD_PARENT);
+		if (parentId != null) {
+			QAModel parentItem = getItemById(parentId);
 			if (parentItem != null) {
-				if (parentItem instanceof AuthoredTextItem) {
-					if (item instanceof UpvoteItem) {
-						// Mark I have upvoted if this is an upvote of mine on an item
-						if (mUserContext != null && ((AuthoredItem)item).getAuthor().equals(mUserContext.getUserName())) {
-							((AuthoredTextItem)parentItem).setHaveUpvoted();
-						}
-						
-						// Tally upvotes
-						((AuthoredTextItem)parentItem).upvote();
-					} else if (item instanceof CommentItem) {
-						// Tally comments
-						((AuthoredTextItem)parentItem).incrementCommentCount();
-					}
-				}
-				if (parentItem instanceof QuestionItem) {
-					if (item instanceof AnswerItem) {
-						// Tally replies
-						((QuestionItem)parentItem).incrementReplyCount();
-					} else if (item instanceof AttachmentItem) {
-						// Count attachments
-						((QuestionItem)parentItem).setHasAttachments();
-					}
-				}
+				// If the item has a parent, then delegate to it to do the derived info calculation
+				item.addToParentDerivedInfo(mUserContext, parentItem);
 			}
-		} 	
+		}
 	}
 	
 	/**
@@ -405,14 +374,14 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param item
 	 */
 	private void handleDerivedInfo(QAModel item) {
-		updateParentDerivedInfo(item);
+		updateParentDerivedInfoIfHasParent(item);
 		
 		// If this is the parent of any current items, update this with those children's data
 		for (QAModel child: mData) {
 			if (child instanceof AuthoredItem) {
 				QAModel parent = getItemById(((AuthoredItem)child).getParentItem());
 				if (parent == item) {
-					updateParentDerivedInfo(child);
+					child.addToParentDerivedInfo(mUserContext, item);
 				}
 			}
 		}
