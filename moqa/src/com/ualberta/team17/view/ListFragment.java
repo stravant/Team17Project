@@ -50,8 +50,17 @@ public class ListFragment extends Fragment {
 	private DataFilter datafilter = new DataFilter();
 	private QuestionListAdapter mAdapter;
 	private List<QAModel> mItems;
-	private Taxonomy mTaxonomy = Taxonomy.Search;
+	private Taxonomy mTaxonomy = Taxonomy.Search;=
 
+	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
+	
+	private class UpdateOnItemUpdateListener implements IQAView {
+		@Override
+		public void update(QAModel model) {
+			mAdapter.notifyDataSetChanged();
+		}
+	}
+	
 	public enum Taxonomy {
 		Search,
 		AllQuestions,
@@ -109,15 +118,15 @@ public class ListFragment extends Fragment {
 		int mSort = getArguments().getInt(SORT_TYPE);
 		if (mSort != 0) {
 			switch (mSort) {
-			// Show newest questions first
+			//Ascending Date
 			case 0:
 				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Descending);
+				comp.setCompareDirection(SortDirection.Ascending);
 				break;
-			// Show older questions first
+			//Descending Date	
 			case 1:
 				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Ascending);
+				comp.setCompareDirection(SortDirection.Descending);
 				break;
 			//Descending Attachments	
 			case 2:

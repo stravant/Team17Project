@@ -382,7 +382,7 @@ import com.ualberta.team17.UpvoteItem;
 			.getBuilder()
 			.addIndex(mEsServerIndex)
 			.build();
-
+System.out.println("Search query = " + searchBuilder.toString());
 		QueryTask task = new QueryTask(search, result, new Callable<Void>() {
 			@Override
 			public Void call() throws Exception {
@@ -391,7 +391,6 @@ import com.ualberta.team17.UpvoteItem;
 			}
 			
 		});
-
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		else
