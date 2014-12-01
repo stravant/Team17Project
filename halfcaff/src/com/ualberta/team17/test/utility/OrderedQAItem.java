@@ -3,6 +3,7 @@ package com.ualberta.team17.test.utility;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.datamanager.UserContext;
 
 /**
  * A QAModel object to be used for testing ordered results and
@@ -28,5 +29,10 @@ public class OrderedQAItem extends QAModel {
 	 */
 	public int getSeq() {
 		return mSeq;
+	}
+
+	@Override
+	public void addToParentDerivedInfo(UserContext ctx, QAModel parentItem) {
+		// nothing to do
 	}
 }

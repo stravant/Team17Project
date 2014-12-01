@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
+import com.ualberta.team17.datamanager.UserContext;
 
 /**
  * A QAModel that represents a user question and all related derived info.
@@ -90,6 +91,13 @@ public class QuestionItem extends AuthoredTextItem {
 	/* Getters */
 	public String getTitle() {
 		return mTitle;
+	}
+	
+	/**
+	 * Calculate parent derived info
+	 */
+	public void addToParentDerivedInfo(UserContext ctx, QAModel parentItem) {
+		// Will never be called, QuestionItems never have a parent item
 	}
 	
 	@Override
