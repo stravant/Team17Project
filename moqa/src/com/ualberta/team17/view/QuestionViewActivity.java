@@ -399,12 +399,15 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			return true;
 		}
 		if(id == R.id.action_submit_question) {
-			QAController controller = QAController.getInstance();
 			setMode(Mode.DISPLAY);
-			setQuestion(controller.createQuestion(mCreateTitleView.getText().toString(), mCreateBodyView.getText().toString()));
+			setQuestion(mController.createQuestion(mCreateTitleView.getText().toString(), mCreateBodyView.getText().toString()));
 			for(AttachmentItem attachment : mAddedAttachments) {
-				controller.connectAttachment(attachment, mQuestion.mUniqueId);
+				mController.connectAttachment(attachment, mQuestion.mUniqueId);
 			}
+			return true;
+		}
+		if(id == R.id.action_read_later) {
+			mController.markViewLater(mQuestion);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
