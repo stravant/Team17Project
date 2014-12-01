@@ -89,7 +89,9 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		leftDrawer.mDrawerToggle.syncState();
+		if (null != leftDrawer && null != leftDrawer.mDrawerToggle) {
+			leftDrawer.mDrawerToggle.syncState();
+		}
 	}
 
 	private void selectItem(Taxonomy selectedTaxonomy) {
