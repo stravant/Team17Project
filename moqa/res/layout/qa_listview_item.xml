@@ -59,8 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/relativeLayout4" >
+                        android:layout_centerVertical="true" >
 
                         <TextView
                             android:id="@+id/userText"
@@ -75,26 +74,28 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:id="@+id/relativeLayout4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentTop="false"
-                        android:layout_centerVertical="true" >
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="@dimen/small_indent" >
 
                         <ImageView
-                            android:id="@+id/favoriteImage"
+                            android:id="@+id/commentImage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerInParent="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/small_indent"
-                            android:adjustViewBounds="true"
-                            android:contentDescription="@string/favorite"
-                            android:maxHeight="24dp"
-                            android:maxWidth="24dp"
-                            android:src="@drawable/ic_action_favorite" />
+                            android:layout_centerHorizontal="false"
+                            android:contentDescription="@string/comment"
+                            android:src="@drawable/ic_action_chat" />
 
+                        <TextView
+                            android:id="@+id/commentText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/commentImage"
+                            android:text="@string/default_num"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
                     </RelativeLayout>
 
                 </RelativeLayout>
@@ -107,14 +108,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/mini_indent"
             android:minWidth="@dimen/icon_side_bar_width"
             android:orientation="vertical" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginBottom="@dimen/small_indent" >
+                android:layout_height="fill_parent" >
 
                 <ImageView
                     android:id="@+id/upvoteImage"
@@ -122,7 +121,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:contentDescription="@string/upvotes"
-                    android:paddingLeft="1dp"
                     android:src="@drawable/ic_action_collapse" />
 
                 <TextView
@@ -131,32 +129,30 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/upvoteImage"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-10dp"
                     android:text="@string/default_num"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/compl_blue_split1"
+                    android:textSize="@dimen/extra_large_text" />
 
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/relativeLayout4"
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent" >
+                android:layout_height="wrap_content" >
 
                 <ImageView
-                    android:id="@+id/commentImage"
+                    android:id="@+id/favoriteImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="false"
-                    android:contentDescription="@string/comment"
-                    android:src="@drawable/ic_action_chat" />
-
-                <TextView
-                    android:id="@+id/commentText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerInParent="true"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/commentImage"
-                    android:text="@string/default_num"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/favorite"
+                    android:maxHeight="24dp"
+                    android:maxWidth="24dp"
+                    android:src="@drawable/ic_action_favorite" />
             </RelativeLayout>
         </LinearLayout>
 
