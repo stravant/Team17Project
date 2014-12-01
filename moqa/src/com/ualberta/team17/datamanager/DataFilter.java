@@ -1,5 +1,7 @@
 package com.ualberta.team17.datamanager;
 
+import io.searchbox.core.Search.Builder;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -345,5 +347,26 @@ public class DataFilter {
 	 */
 	public void setPage(Integer page) {
 		mResultsPage = page;
+	}
+	
+	/**
+	 * Applies the this data filter's parameters to the supplied Jest builder.
+	 */
+	public void decorateBuilder(Builder builder) {
+		Integer maxResults = getMaxResults();
+		if (null != maxResults) {
+			if (maxResults > ESSearchBuilder.MAX_ES_RESULTS) {
+				maxResults = ESSearchBuilder.MAX_ES_RESULTS;
+			}
+	
+			builder.setParameter("size", maxResults);
+	
+			if (null != getPage())
+				builder.setParameter("from", maxResults * getPage());
+		}
+	
+		if (null != getTypeFilter()) {
+			builder.addType(getTypeFilter().toString().toLowerCase());
+		}
 	}
 }
