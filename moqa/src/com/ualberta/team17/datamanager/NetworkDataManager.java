@@ -402,7 +402,7 @@ import com.ualberta.team17.UpvoteItem;
 			.type(type)
 			.id(item.getUniqueId().toString());
 
-		if (null != item.getField(AuthoredItem.FIELD_PARENT) && !(item instanceof CommentItem)) {
+		if (null != item.getField(AuthoredItem.FIELD_PARENT) && !(item instanceof CommentItem) && !(item instanceof AnswerItem)) {
 			builder.setParameter(Parameters.PARENT, item.getField(AuthoredItem.FIELD_PARENT).toString());
 		}
 
