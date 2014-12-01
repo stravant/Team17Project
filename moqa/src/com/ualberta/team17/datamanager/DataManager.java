@@ -178,7 +178,7 @@ public class DataManager {
 		}
 		
 		// We may need to update the saved-ness of this item locally
-		((LocalDataManager)mLocalDataStore).saveItemIfCached(item.getUniqueId(), mUserContext);
+		((LocalDataManager)mLocalDataStore).saveItem(item, mUserContext);
 		
 		saveUserContextData(mUserContext);
 	}
@@ -200,7 +200,7 @@ public class DataManager {
 		}
 		
 		// We may need to update the saved-ness of this item locally
-		((LocalDataManager)mLocalDataStore).saveItemIfCached(item.getUniqueId(), mUserContext);
+		((LocalDataManager)mLocalDataStore).saveItem(item, mUserContext);
 		
 		saveUserContextData(mUserContext);
 	}

@@ -79,12 +79,6 @@ public class LocalDataManager implements IDataSourceManager {
 	private HashSet<UniqueId> mDataSetById = new HashSet<UniqueId>();
 	
 	/**
-	 * Pointers to the items that we have processed, items which may or may not be
-	 * currently locally stored, but which have come our way through saveItem() calls.
-	 */
-	private HashMap<UniqueId, QAModel> mItemRefById = new HashMap<UniqueId, QAModel>();
-	
-	/**
 	 * Do we need to do a save on the data?
 	 */
 	private boolean mDataDirty = false;
@@ -150,9 +144,9 @@ public class LocalDataManager implements IDataSourceManager {
 	private ScheduledFuture<?> mCurrentSaveWorker;
 	
 	/**
-	 * Next time that the worker pool
+	 * Local object decorator
 	 */
-	private long mLastSaveTimeMillis;
+	private LocalObjectDecorator mObjectTracker = new LocalObjectDecorator();
 	
 	/**
 	 * The local data tag that the LocalDataManager uses
@@ -172,9 +166,6 @@ public class LocalDataManager implements IDataSourceManager {
 		// Availability
 		// Currently: Since Linux epoch to start
 		mLastAvailable = new Date(0);
-		
-		// Saving
-		mLastSaveTimeMillis = Calendar.getInstance().getTimeInMillis();
 	}
 	
 	/**
@@ -187,27 +178,7 @@ public class LocalDataManager implements IDataSourceManager {
 			mDataLock.unlock();
 			return;
 		}
-		// Update all of our current data items to be favorited if they are favorited in the user context
-		for (UniqueId id: ctx.getFavorites()) {
-			QAModel item = mItemRefById.get(id);
-			if (item != null && item instanceof QuestionItem) {
-				((QuestionItem)item).setFavorited();
-			}
-		}
-		// For each of our upvote items, mark hasUpvoted on it's parent
-		if (null != mData) {
-			for (QAModel item: mData) {
-				if (item instanceof UpvoteItem) {
-					UpvoteItem upvote = ((UpvoteItem)item);
-					if (upvote.getAuthor().equals(mUserContext.getUserName())) {
-						AuthoredTextItem parent = (AuthoredTextItem)mItemRefById.get(upvote.getParentItem());
-						if (parent != null) {
-							parent.setHaveUpvoted();
-						}
-					}
-				}
-			}
-		}
+		mObjectTracker.setUserContext(ctx);
 		mDataLock.unlock();
 	}
 	
@@ -329,71 +300,7 @@ public class LocalDataManager implements IDataSourceManager {
 	 * Get an item from the hashmap
 	 */
 	public QAModel getItemById(UniqueId id) {
-		return mItemRefById.get(id);
-	}
-	
-	/**
-	 * Used at startup by the Initial Data Query. Calculates the current 
-	 * derived info for all of the {@link QAModel} items that were loaded. 
-	 * Examples of derived info: Upvote Count & Reply Count
-	 */
-	private void calculateInitialDerivedInfo() {
-		// Initially all of the items will have UpvoteCount and ReplyCount = 0
-		// when they are first constructed.
-		// That means that we just have to iterate through all of the items and
-		// tally them to their parent item if it exists.
-		// That is, we call handleDerivedInfo on each of our items... elegant!
-		for (QAModel item: mData) {
-			updateParentDerivedInfoIfHasParent(item);
-			item.calculateInitialDerivedInfo(mUserContext);
-		}
-	}
-	
-	/**
-	 * Apply an item to its parent items derived info, that is, if it is
-	 * an upvote, add an upvote to its parent's derived info, and if it is
-	 * an answer, add to its parent's reply count.
-	 * @param item
-	 */
-	private void updateParentDerivedInfoIfHasParent(QAModel item) {
-		UniqueId parentId = (UniqueId)item.getField(AuthoredTextItem.FIELD_PARENT);
-		if (parentId != null) {
-			QAModel parentItem = getItemById(parentId);
-			if (parentItem != null) {
-				// If the item has a parent, then delegate to it to do the derived info calculation
-				item.addToParentDerivedInfo(mUserContext, parentItem);
-			}
-		}
-	}
-	
-	/**
-	 * Handle the derived information related to an item
-	 * that has just been added, updating it's parent's info
-	 * if it has a parent, and adding already present children's
-	 * info to this item.
-	 * @param item
-	 */
-	private void handleDerivedInfo(QAModel item) {
-		updateParentDerivedInfoIfHasParent(item);
-		
-		// If this is the parent of any current items, update this with those children's data
-		for (QAModel child: mData) {
-			if (child instanceof AuthoredItem) {
-				QAModel parent = getItemById(((AuthoredItem)child).getParentItem());
-				if (parent == item) {
-					child.addToParentDerivedInfo(mUserContext, item);
-				}
-			}
-		}
-		
-		// Check favorited
-		if (mUserContext != null) {
-			Log.i("save", "Checking derived info <" + item.getUniqueId() + ">: " + 
-					mUserContext + ", " + item.getClass().getName() + ", " + mUserContext.isFavorited(item.getUniqueId()));
-		}
-		if (mUserContext != null && (item instanceof QuestionItem) && mUserContext.isFavorited(item.getUniqueId())) {
-			((QuestionItem)item).setFavorited();
-		}
+		return mObjectTracker.get(id);
 	}
 	
 	/**
@@ -406,7 +313,7 @@ public class LocalDataManager implements IDataSourceManager {
 	}
 	
 	/**
-	 * Debug method: Dump local data
+	 * Testing method: Dump local data
 	 */
 	public String dumpLocalData() {
 		return DataManager.readLocalData(mContext, LDM_CATEGORY);
@@ -493,12 +400,11 @@ public class LocalDataManager implements IDataSourceManager {
 			}
 			mData = result;
 			for (QAModel item: mData) {			
-				mItemRefById.put(item.getUniqueId(), item);
 				mDataSetById.add(item.getUniqueId());
 			}
 			
-			// Calculate the derived info
-			calculateInitialDerivedInfo();
+			// Track initial items and calculate the derived info
+			mObjectTracker.trackInitial(mData);
 			
 			// Now available
 			mLastAvailable = Calendar.getInstance().getTime();
@@ -642,7 +548,7 @@ public class LocalDataManager implements IDataSourceManager {
 			}
 			
 			// Is our parent interesting?
-			QAModel parentItem = mItemRefById.get(authoredItem.getParentItem());
+			QAModel parentItem = mObjectTracker.get(authoredItem.getParentItem());
 			if (parentItem == null) {
 				// No parent item -> Not interesting
 				return false;
@@ -670,7 +576,7 @@ public class LocalDataManager implements IDataSourceManager {
 		mDataSetById.add(parentItem.getUniqueId());
 		
 		// See if any of the children are not saved
-		for (QAModel item: mItemRefById.values()) {
+		for (QAModel item: mObjectTracker.getAllTrackedItems()) {
 			if (item instanceof AuthoredItem) {
 				AuthoredItem authItem = (AuthoredItem)item;
 				UniqueId parentId = authItem.getParentItem();
@@ -682,19 +588,6 @@ public class LocalDataManager implements IDataSourceManager {
 					}
 				}
 			}
-		}
-	}
-	
-	/**
-	 * Save an item from a UniqueId if we have the item for that UniqueId cached
-	 * To be called on an item when an operation may promote an item from not locally 
-	 * saved to locally saved.
-	 * @param itemId The Id of the item to save, as opposed to the item itself.
-	 */
-	public void saveItemIfCached(UniqueId itemId, UserContext ctx) {
-		QAModel item = mItemRefById.get(itemId);
-		if (item != null) {
-			saveItem(item, ctx);
 		}
 	}
 	
@@ -713,15 +606,7 @@ public class LocalDataManager implements IDataSourceManager {
 		maybeDoInitialDataQuery();
 		
 		// Tracking for items, regardless of whether they are saved or not
-		if (mItemRefById.get(item.getUniqueId()) == null) {
-			Log.i("save", "LocalDataManager :: Tracked Item <" + item.getUniqueId() + ">");
-			
-			// Add the item to our item tracking if it isn't already there
-			mItemRefById.put(item.getUniqueId(), item);
-			
-			// And apply it's derived info
-			handleDerivedInfo(item);
-		}
+		mObjectTracker.track(item);
 		
 		// Saving of items that should be saved, which we haven't saved already
 		if (!mDataSetById.contains(item.getUniqueId()) && shouldSaveLocally(item, ctx)) {

@@ -394,8 +394,8 @@ public class ListFragment extends Fragment {
 			TextView repliesTextView = (TextView) convertView.findViewById(R.id.answerCountView);
 			
 			// Set the data using getField
-			if (null != item.getField(AuthoredTextItem.FIELD_COMMENTS)) {
-				commentTextView.setText(item.getField(AuthoredTextItem.FIELD_COMMENTS).toString());
+			if (null != item.getField(QuestionItem.FIELD_REPLIES)) {
+				commentTextView.setText(item.getField(QuestionItem.FIELD_REPLIES).toString());
 			}
 
 			if (null != item.getField(AuthoredTextItem.FIELD_UPVOTES)) {
