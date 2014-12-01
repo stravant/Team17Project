@@ -31,6 +31,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -73,6 +74,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	
 	// Attachment items that are added during question creation.
 	private List<AttachmentItem> mAddedAttachments;
+	private AttachmentDisplayView mAddedAttachmentsView;
 	
 	private enum Mode {
 		CREATE,
@@ -90,6 +92,7 @@ public class QuestionViewActivity extends Activity implements IQAView {
 	 */
 	public QuestionViewActivity() {
 		mQABodies = new ArrayList<QABody>();
+		mAddedAttachments = new ArrayList<AttachmentItem>();
 	}
 		
 	/**
@@ -165,6 +168,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		((Button) displayQuestionView.findViewById(R.id.createAnswer)).setOnClickListener(new AddAnswerListener());		
 		mAdapter = createNewAdapter();
 		
+		View addAttachmentView = createQuestionView.findViewById(R.id.addAttachmentView);
+		mAddedAttachmentsView = (AttachmentDisplayView) addAttachmentView.findViewById(R.id.addAttachmentDisplayView);
+		
 		if (intent.getSerializableExtra(QUESTION_ID_EXTRA) != null) {
 			setMode(Mode.DISPLAY);
 			
@@ -177,18 +183,29 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			Button submitButton = (Button) createQuestionView.findViewById(R.id.createQuestionSubmitButton);
 			EditText titleText = (EditText) createQuestionView.findViewById(R.id.createQuestionTitleView);
 			EditText bodyText = (EditText) createQuestionView.findViewById(R.id.createQuestionBodyView);
+			
+			ImageButton addAttachmentButton = (ImageButton) addAttachmentView.findViewById(R.id.addAttachmentButton);
 
 			
 			// TEST STUFF
-			AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
+			/*AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
 					BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_attachment)
 					);
 			AttachmentDisplayView adv = (AttachmentDisplayView) createQuestionView.findViewById(R.id.addAttachmentView);
 			
-			adv.addAttachment(testA1);
+			adv.addAttachment(testA1);*/
 			// END TEST STUFF
 			
 			submitButton.setOnClickListener(new SubmitQuestionListener(titleText, bodyText));
+			addAttachmentButton.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					requestImage();
+				}
+				
+			});
+			
 		}
 		
 	}
@@ -312,6 +329,28 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			}
 		}
 		return null;
+	}
+	
+	private static final int IMAGE_REQUEST = 1888;
+	
+	private void requestImage() {
+		Intent imageIntent = new Intent();
+		imageIntent.setType("image/*");
+		imageIntent.setAction(Intent.ACTION_GET_CONTENT);
+		imageIntent.addCategory(Intent.CATEGORY_OPENABLE);
+		
+		startActivityForResult(imageIntent, IMAGE_REQUEST);
+	}
+	
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == IMAGE_REQUEST && resultCode == RESULT_OK) {
+			Uri imageUri = data.getData();
+			String name = imageUri.getLastPathSegment();
+			AttachmentItem newAttachment = mController.createDetachedAttachment(name, imageUri);
+			
+			mAddedAttachments.add(newAttachment);
+			mAddedAttachmentsView.addAttachment(newAttachment);
+		}
 	}
 	
 	/**
@@ -455,11 +494,11 @@ public class QuestionViewActivity extends Activity implements IQAView {
 				attachmentsView.clearAttachments();
 				
 				// TEST STUFF
-				AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
+				/*AttachmentItem testA1 = mController.createDetachedAttachment("attachment title",
 						BitmapFactory.decodeResource(getResources(), R.drawable.ic_action_attachment)
 						);
 				attachmentsView.addAttachment(testA1);
-				attachmentsView.setVisibility(View.VISIBLE);
+				attachmentsView.setVisibility(View.VISIBLE);*/
 				// END TEST STUFF
 				
 				
@@ -587,6 +626,9 @@ public class QuestionViewActivity extends Activity implements IQAView {
 			QAController controller = QAController.getInstance();
 			setMode(Mode.DISPLAY);
 			setQuestion(controller.createQuestion(mTitleView.getText().toString(), mBodyView.getText().toString()));
+			for(AttachmentItem item : mAddedAttachments) {
+				controller.connectAttachment(item, mQuestion.mUniqueId);
+			}
 		}
 	}
 	
