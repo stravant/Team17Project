@@ -1,5 +1,6 @@
 package com.ualberta.team17;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
@@ -11,7 +12,9 @@ import com.ualberta.team17.datamanager.UserContext;
  * UniqueId class, wrapper around using a hashing algorithm to 
  * create unique identifiers for pieces of content. 
  */
-public class UniqueId {
+public class UniqueId implements Serializable {
+	private static final long serialVersionUID = -6932402662855223636L;
+
 	/**
 	 * The hashing digest algorithm to use to transform string content
 	 * into a unique ID.

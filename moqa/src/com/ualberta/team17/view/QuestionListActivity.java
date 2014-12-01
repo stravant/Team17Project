@@ -26,6 +26,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.R;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
 
 /**
@@ -91,16 +92,16 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		leftDrawer.mDrawerToggle.syncState();
 	}
 
-	private void selectItem(int position) {
+	private void selectItem(Taxonomy selectedTaxonomy) {
 		// update the main content by replacing fragments
 		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		args = new Bundle();
-		args.putInt(ListFragment.TAXONOMY_NUM, position);
+		args.putSerializable(ListFragment.TAXONOMY_NUM, selectedTaxonomy);
 		fragment = new ListFragment();
 		FragmentManager fragmentManager = getFragmentManager();
 		fragment.setArguments(args);
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-		setTitle(myTaxonomy[position]);
+		setTitle(myTaxonomy[selectedTaxonomy.getId()]);
 	}
 
 
@@ -147,7 +148,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	}
 
 	@Override
-	public void onItemSelected(int position) {
+	public void onItemSelected(Taxonomy position) {
 		selectItem(position);
 	}
 
