@@ -126,6 +126,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 
 		menu.setGroupVisible(R.id.questionlist_group, true);
 		menu.setGroupVisible(R.id.questionview_group, false);
+		menu.setGroupVisible(R.id.questioncreation_group, false);
 
 		// Get the search menu item
 		MenuItem mi = menu.findItem(R.id.action_search);
