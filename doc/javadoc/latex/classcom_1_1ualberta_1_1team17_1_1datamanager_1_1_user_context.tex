@@ -1,0 +1,276 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{\section{com.\+ualberta.\+team17.\+datamanager.\+User\+Context Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}\index{com.\+ualberta.\+team17.\+datamanager.\+User\+Context@{com.\+ualberta.\+team17.\+datamanager.\+User\+Context}}
+}
+
+
+Inherits Serializable.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a46a8cbdc5ea412704d7cba043c3fb1e8}{User\+Context} ()
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a74083c0db7c16dd0b495cc9db6ffe2a7}{User\+Context} (String username)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a51b1fab07f64a7b0976311e8b6ae4311}{load\+From\+Json} (Json\+Element elem)
+\item 
+Json\+Element \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ab218354ecbc3b136adf43b36525d62bc}{save\+To\+Json} ()
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a2130f56086cbfb3682295759dbda9c52}{get\+User\+Id} ()
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5af39558040ada3195d4a33d4fbeb5c5}{is\+Interesting} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} id)
+\item 
+String \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a8c2e497ebb83acad23be6496de037009}{get\+User\+Name} ()
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a78ba2b586b9eb6a682acf69201c0832c}{get\+Favorites} ()
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_afb57b8179a35ae076453e3810f695b8a}{is\+Favorited} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} id)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_aaac3ef334672292dbe522add7f973a17}{add\+Favorite} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item\+Id)
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ad8a2f08769cc4485101781089be5576d}{get\+View\+Later} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a0175121961123810f4ddb0166f76d38a}{add\+View\+Later} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item\+Id)
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a03be2dfe37ea0040671020891792c107}{should\+View\+Later} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a33fbf02e3abcae44e0d94891dacea5c7}{remove\+View\+Later} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item\+Id)
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5ebdcccab964fb7526ab0a2674059fc2}{get\+Replies} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a7f1dae46512c11899da0090baf7f9420}{add\+Reply} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item\+Id)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_af93297a300c0284cabc805508212826c}{add\+Recent\+Item} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item\+Id)
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_abf3d3874190591b32164e1797e77cfe0}{get\+Recent\+Items} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a87395d34624dd86804762a8cb64b3bfc}{add\+Local\+Only\+Item} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} id)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ae2dee279277866c99d58e0b1572db9ba}{remove\+Local\+Only\+Item} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} id)
+\item 
+List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} $>$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ae290070479c2b1cc1cecf957e492d215}{get\+Local\+Only\+Items} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a42ae19cf9a3e1431a723663fae746200}{clear\+Local\+Only\+Items} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5c3d11dfcca331640eb73def6f6304ee}{static final int {\bfseries M\+A\+X\+\_\+\+R\+E\+C\+E\+N\+T} = 20}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5c3d11dfcca331640eb73def6f6304ee}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a46a8cbdc5ea412704d7cba043c3fb1e8}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!User\+Context@{User\+Context}}
+\index{User\+Context@{User\+Context}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{User\+Context}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+User\+Context (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a46a8cbdc5ea412704d7cba043c3fb1e8}
+Constructor, creates a new blank user context \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a74083c0db7c16dd0b495cc9db6ffe2a7}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!User\+Context@{User\+Context}}
+\index{User\+Context@{User\+Context}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{User\+Context}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+User\+Context (
+\begin{DoxyParamCaption}
+\item[{String}]{username}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a74083c0db7c16dd0b495cc9db6ffe2a7}
+Construct a user context from the name of a user 
+\begin{DoxyParams}{Parameters}
+{\em username} & The username of the userobject \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_aaac3ef334672292dbe522add7f973a17}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!add\+Favorite@{add\+Favorite}}
+\index{add\+Favorite@{add\+Favorite}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{add\+Favorite}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+add\+Favorite (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item\+Id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_aaac3ef334672292dbe522add7f973a17}
+Add a favorite to the user's list of favorites by \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} 
+\begin{DoxyParams}{Parameters}
+{\em item\+Id} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a87395d34624dd86804762a8cb64b3bfc}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!add\+Local\+Only\+Item@{add\+Local\+Only\+Item}}
+\index{add\+Local\+Only\+Item@{add\+Local\+Only\+Item}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{add\+Local\+Only\+Item}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+add\+Local\+Only\+Item (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a87395d34624dd86804762a8cb64b3bfc}
+Add a local only item (item that has not been saved yet) For use by the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_manager}{Data\+Manager} \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_af93297a300c0284cabc805508212826c}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!add\+Recent\+Item@{add\+Recent\+Item}}
+\index{add\+Recent\+Item@{add\+Recent\+Item}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{add\+Recent\+Item}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+add\+Recent\+Item (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item\+Id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_af93297a300c0284cabc805508212826c}
+Mark an item as the most recently viewed one. 
+\begin{DoxyParams}{Parameters}
+{\em item\+Id} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a7f1dae46512c11899da0090baf7f9420}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!add\+Reply@{add\+Reply}}
+\index{add\+Reply@{add\+Reply}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{add\+Reply}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+add\+Reply (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item\+Id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a7f1dae46512c11899da0090baf7f9420}
+Add a reply that this user has authored. 
+\begin{DoxyParams}{Parameters}
+{\em item\+Id} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a0175121961123810f4ddb0166f76d38a}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!add\+View\+Later@{add\+View\+Later}}
+\index{add\+View\+Later@{add\+View\+Later}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{add\+View\+Later}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+add\+View\+Later (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item\+Id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a0175121961123810f4ddb0166f76d38a}
+Add a view later item. If the item was already marked as view later, then it will be re-\/inserted at the start of the view later list. 
+\begin{DoxyParams}{Parameters}
+{\em item\+Id} & The item to add \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a42ae19cf9a3e1431a723663fae746200}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!clear\+Local\+Only\+Items@{clear\+Local\+Only\+Items}}
+\index{clear\+Local\+Only\+Items@{clear\+Local\+Only\+Items}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{clear\+Local\+Only\+Items}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+clear\+Local\+Only\+Items (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a42ae19cf9a3e1431a723663fae746200}
+Clear the local only items For use by the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_manager}{Data\+Manager} \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a78ba2b586b9eb6a682acf69201c0832c}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!get\+Favorites@{get\+Favorites}}
+\index{get\+Favorites@{get\+Favorites}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{get\+Favorites}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Unique\+Id}$>$ com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+get\+Favorites (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a78ba2b586b9eb6a682acf69201c0832c}
+Get a list of the I\+Ds of the user's favorites \begin{DoxyReturn}{Returns}
+List of Unique\+Ids of the user's favorites 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ae290070479c2b1cc1cecf957e492d215}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!get\+Local\+Only\+Items@{get\+Local\+Only\+Items}}
+\index{get\+Local\+Only\+Items@{get\+Local\+Only\+Items}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{get\+Local\+Only\+Items}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Unique\+Id}$>$ com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+get\+Local\+Only\+Items (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ae290070479c2b1cc1cecf957e492d215}
+Get local only items For use by the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_manager}{Data\+Manager} \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_abf3d3874190591b32164e1797e77cfe0}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!get\+Recent\+Items@{get\+Recent\+Items}}
+\index{get\+Recent\+Items@{get\+Recent\+Items}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{get\+Recent\+Items}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Unique\+Id}$>$ com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+get\+Recent\+Items (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_abf3d3874190591b32164e1797e77cfe0}
+Get the recently viewed items \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5ebdcccab964fb7526ab0a2674059fc2}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!get\+Replies@{get\+Replies}}
+\index{get\+Replies@{get\+Replies}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{get\+Replies}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Unique\+Id}$>$ com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+get\+Replies (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5ebdcccab964fb7526ab0a2674059fc2}
+Get the replies content that this user has authored \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a2130f56086cbfb3682295759dbda9c52}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!get\+User\+Id@{get\+User\+Id}}
+\index{get\+User\+Id@{get\+User\+Id}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{get\+User\+Id}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Unique\+Id} com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+get\+User\+Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a2130f56086cbfb3682295759dbda9c52}
+Get a unique I\+D representing this user \begin{DoxyReturn}{Returns}
+The Unique I\+D 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a8c2e497ebb83acad23be6496de037009}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!get\+User\+Name@{get\+User\+Name}}
+\index{get\+User\+Name@{get\+User\+Name}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{get\+User\+Name}]{\setlength{\rightskip}{0pt plus 5cm}String com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+get\+User\+Name (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a8c2e497ebb83acad23be6496de037009}
+Get the user's name \begin{DoxyReturn}{Returns}
+The user's name 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ad8a2f08769cc4485101781089be5576d}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!get\+View\+Later@{get\+View\+Later}}
+\index{get\+View\+Later@{get\+View\+Later}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{get\+View\+Later}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Unique\+Id}$>$ com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+get\+View\+Later (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ad8a2f08769cc4485101781089be5576d}
+Get view later items \begin{DoxyReturn}{Returns}
+The view later items 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_afb57b8179a35ae076453e3810f695b8a}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!is\+Favorited@{is\+Favorited}}
+\index{is\+Favorited@{is\+Favorited}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{is\+Favorited}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+is\+Favorited (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_afb57b8179a35ae076453e3810f695b8a}
+Is a given item favorited? \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5af39558040ada3195d4a33d4fbeb5c5}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!is\+Interesting@{is\+Interesting}}
+\index{is\+Interesting@{is\+Interesting}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{is\+Interesting}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+is\+Interesting (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a5af39558040ada3195d4a33d4fbeb5c5}
+Is an item \char`\"{}interesting\char`\"{}, that is, is it either recently viewed, favorited, or an item that we have posted? \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a51b1fab07f64a7b0976311e8b6ae4311}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!load\+From\+Json@{load\+From\+Json}}
+\index{load\+From\+Json@{load\+From\+Json}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{load\+From\+Json}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+load\+From\+Json (
+\begin{DoxyParamCaption}
+\item[{Json\+Element}]{elem}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a51b1fab07f64a7b0976311e8b6ae4311}
+Load in the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} from a serialized copy 
+\begin{DoxyParams}{Parameters}
+{\em elem} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ae2dee279277866c99d58e0b1572db9ba}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!remove\+Local\+Only\+Item@{remove\+Local\+Only\+Item}}
+\index{remove\+Local\+Only\+Item@{remove\+Local\+Only\+Item}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{remove\+Local\+Only\+Item}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+remove\+Local\+Only\+Item (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ae2dee279277866c99d58e0b1572db9ba}
+Remove a local only item For use by the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_manager}{Data\+Manager} \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a33fbf02e3abcae44e0d94891dacea5c7}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!remove\+View\+Later@{remove\+View\+Later}}
+\index{remove\+View\+Later@{remove\+View\+Later}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{remove\+View\+Later}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+remove\+View\+Later (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item\+Id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a33fbf02e3abcae44e0d94891dacea5c7}
+Remove a view later item (To be called when it is... well, viewed later). \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ab218354ecbc3b136adf43b36525d62bc}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!save\+To\+Json@{save\+To\+Json}}
+\index{save\+To\+Json@{save\+To\+Json}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{save\+To\+Json}]{\setlength{\rightskip}{0pt plus 5cm}Json\+Element com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+save\+To\+Json (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_ab218354ecbc3b136adf43b36525d62bc}
+Write out the \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} to a serialized copy \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a03be2dfe37ea0040671020891792c107}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}!should\+View\+Later@{should\+View\+Later}}
+\index{should\+View\+Later@{should\+View\+Later}!com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context@{com\+::ualberta\+::team17\+::datamanager\+::\+User\+Context}}
+\subsubsection[{should\+View\+Later}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+datamanager.\+User\+Context.\+should\+View\+Later (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context_a03be2dfe37ea0040671020891792c107}
+Getter for view later \begin{DoxyReturn}{Returns}
+Whether the item should be viewed later 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/datamanager/User\+Context.\+java\end{DoxyCompactItemize}

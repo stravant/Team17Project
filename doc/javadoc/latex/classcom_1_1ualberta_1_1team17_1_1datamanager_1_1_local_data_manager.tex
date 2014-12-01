@@ -1,0 +1,250 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager}{\section{com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager}\index{com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager@{com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager}}
+}
+
+
+Inherits \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager}{com.\+ualberta.\+team17.\+datamanager.\+I\+Data\+Source\+Manager}.
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a0a6de01dbd7cd03de949c1d88dcda90e}{Local\+Data\+Manager} (Context context)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa439cb9bc6cf62ce036db577147420d1}{set\+User\+Context} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} ctx)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a09842996e8cd296635c16d44ed212e87}{async\+Load\+Data} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_acfffacbed9c29994e000643879d8ce09}{close} ()
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a2849e81c76ae0dc642ba4242f6b8b10f}{get\+Item\+By\+Id} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} id)
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_add01440b6993bc27b01fb149a205bb4d}{write\+Test\+Data} (String data)
+\item 
+String \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a3953f8e749d0211632963880e758d474}{dump\+Local\+Data} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a5a54365f00b1b1aa0661ef252c1a8d8e}{flush\+Data} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa3d65070cadb7b35102adf02fb94696b}{wait\+For\+Data} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a5df023f4f9dbf533e29552ebcc4bff1f}{wait\+For\+Save} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_ad5f1c3b0e7678b723975c40b8f6bd7ac}{query} (final \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}{Data\+Filter} filter, final \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} compare, final \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} result, final \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager}{I\+Data\+Source\+Manager} chain\+To)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_abefe19e3bd729c431f53c4ef2f520955}{query} (final List$<$ \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} $>$ ids, final \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} result, final \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager}{I\+Data\+Source\+Manager} chain\+To)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_af7219ff5516fe02440e1ea7cd355e1bc}{save\+Item\+If\+Cached} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item\+Id, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} ctx)
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa8e5a958332b5c8caf26e17772db1f1b}{save\+Item} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} item, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} ctx)
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a4d3ad2384e8a3211c250bf55e8621f93}{is\+Available} ()
+\item 
+Date \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a06d5f42586ed5e089f5045b90ccf0781}{get\+Last\+Data\+Source\+Available\+Time} ()
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a26c01549395e5b27b17a205932823cc1}{add\+Data\+Loaded\+Listener} (\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_loaded_listener}{I\+Data\+Loaded\+Listener} listener)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The Local Data Manager manages the reading, saving, and caching of local data on the android device.
+
+The local data manager is also responsible for calculating all derived information such as comment and reply counts on Q\+A\+Models. It does this transparently when the values are received from the Network.
+
+\begin{DoxyAuthor}{Author}
+marklangen 
+\end{DoxyAuthor}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a0a6de01dbd7cd03de949c1d88dcda90e}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!Local\+Data\+Manager@{Local\+Data\+Manager}}
+\index{Local\+Data\+Manager@{Local\+Data\+Manager}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{Local\+Data\+Manager}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+Local\+Data\+Manager (
+\begin{DoxyParamCaption}
+\item[{Context}]{context}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a0a6de01dbd7cd03de949c1d88dcda90e}
+Construct a \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager}{Local\+Data\+Manager}, doing File\+I\+O for a given user, using a given App context. 
+\begin{DoxyParams}{Parameters}
+{\em context} & The app context to use. \\
+\hline
+{\em user} & The user to do the I\+O for \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a26c01549395e5b27b17a205932823cc1}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!add\+Data\+Loaded\+Listener@{add\+Data\+Loaded\+Listener}}
+\index{add\+Data\+Loaded\+Listener@{add\+Data\+Loaded\+Listener}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{add\+Data\+Loaded\+Listener}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+add\+Data\+Loaded\+Listener (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Data\+Loaded\+Listener}}]{listener}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a26c01549395e5b27b17a205932823cc1}
+Add a listener that is notified when an item is loaded by this source. 
+\begin{DoxyParams}{Parameters}
+{\em listener} & \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager_aad54dc81d6cdb9f9f2314d91077b51ae}{com.\+ualberta.\+team17.\+datamanager.\+I\+Data\+Source\+Manager}.
+
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a09842996e8cd296635c16d44ed212e87}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!async\+Load\+Data@{async\+Load\+Data}}
+\index{async\+Load\+Data@{async\+Load\+Data}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{async\+Load\+Data}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+async\+Load\+Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a09842996e8cd296635c16d44ed212e87}
+Force a load of the local data \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_acfffacbed9c29994e000643879d8ce09}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!close@{close}}
+\index{close@{close}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{close}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+close (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_acfffacbed9c29994e000643879d8ce09}
+Close down the local data manager for the current context Closes any file handles or tasks currently open. \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a3953f8e749d0211632963880e758d474}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!dump\+Local\+Data@{dump\+Local\+Data}}
+\index{dump\+Local\+Data@{dump\+Local\+Data}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{dump\+Local\+Data}]{\setlength{\rightskip}{0pt plus 5cm}String com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+dump\+Local\+Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a3953f8e749d0211632963880e758d474}
+Debug method\+: Dump local data \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a5a54365f00b1b1aa0661ef252c1a8d8e}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!flush\+Data@{flush\+Data}}
+\index{flush\+Data@{flush\+Data}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{flush\+Data}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+flush\+Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a5a54365f00b1b1aa0661ef252c1a8d8e}
+Testing method\+: Force a flush to the file \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a2849e81c76ae0dc642ba4242f6b8b10f}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!get\+Item\+By\+Id@{get\+Item\+By\+Id}}
+\index{get\+Item\+By\+Id@{get\+Item\+By\+Id}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{get\+Item\+By\+Id}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Q\+A\+Model} com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+get\+Item\+By\+Id (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{id}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a2849e81c76ae0dc642ba4242f6b8b10f}
+Get an item from the hashmap \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a06d5f42586ed5e089f5045b90ccf0781}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!get\+Last\+Data\+Source\+Available\+Time@{get\+Last\+Data\+Source\+Available\+Time}}
+\index{get\+Last\+Data\+Source\+Available\+Time@{get\+Last\+Data\+Source\+Available\+Time}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{get\+Last\+Data\+Source\+Available\+Time}]{\setlength{\rightskip}{0pt plus 5cm}Date com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+get\+Last\+Data\+Source\+Available\+Time (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a06d5f42586ed5e089f5045b90ccf0781}
+Availability\+: When did this source last successfully return data? \begin{DoxyReturn}{Returns}
+The Date that data was last successfully returned 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager_ad80da18847572438e4a8bc7e3d14dc57}{com.\+ualberta.\+team17.\+datamanager.\+I\+Data\+Source\+Manager}.
+
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a4d3ad2384e8a3211c250bf55e8621f93}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!is\+Available@{is\+Available}}
+\index{is\+Available@{is\+Available}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{is\+Available}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+is\+Available (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a4d3ad2384e8a3211c250bf55e8621f93}
+Availability\+: Is this source currently available? \begin{DoxyReturn}{Returns}
+Whether the source is available as a boolean 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager_a2aa4868fa969b01da83cb0b24539211a}{com.\+ualberta.\+team17.\+datamanager.\+I\+Data\+Source\+Manager}.
+
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_ad5f1c3b0e7678b723975c40b8f6bd7ac}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!query@{query}}
+\index{query@{query}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{query}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+query (
+\begin{DoxyParamCaption}
+\item[{final {\bf Data\+Filter}}]{filter, }
+\item[{final {\bf I\+Item\+Comparator}}]{compare, }
+\item[{final {\bf Incremental\+Result}}]{result, }
+\item[{final {\bf I\+Data\+Source\+Manager}}]{chain\+To}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_ad5f1c3b0e7678b723975c40b8f6bd7ac}
+Query the Local\+Data using a given query, and a given result to put the results into. 
+\begin{DoxyParams}{Parameters}
+{\em filter} & \\
+\hline
+{\em result} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_abefe19e3bd729c431f53c4ef2f520955}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!query@{query}}
+\index{query@{query}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{query}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+query (
+\begin{DoxyParamCaption}
+\item[{final List$<$ {\bf Unique\+Id} $>$}]{ids, }
+\item[{final {\bf Incremental\+Result}}]{result, }
+\item[{final {\bf I\+Data\+Source\+Manager}}]{chain\+To}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_abefe19e3bd729c431f53c4ef2f520955}
+Main query implementation for this task by I\+D 
+\begin{DoxyParams}{Parameters}
+{\em ids} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa8e5a958332b5c8caf26e17772db1f1b}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!save\+Item@{save\+Item}}
+\index{save\+Item@{save\+Item}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{save\+Item}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+save\+Item (
+\begin{DoxyParamCaption}
+\item[{{\bf Q\+A\+Model}}]{item, }
+\item[{{\bf User\+Context}}]{ctx}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa8e5a958332b5c8caf26e17772db1f1b}
+Main save item method. Saves an item to the local storage. If the item already exists, do nothing. 
+\begin{DoxyParams}{Parameters}
+{\em item} & The item to save. \\
+\hline
+\end{DoxyParams}
+
+
+Implements \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager_ab1bad9920404b544ab21c5fe0db95c25}{com.\+ualberta.\+team17.\+datamanager.\+I\+Data\+Source\+Manager}.
+
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_af7219ff5516fe02440e1ea7cd355e1bc}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!save\+Item\+If\+Cached@{save\+Item\+If\+Cached}}
+\index{save\+Item\+If\+Cached@{save\+Item\+If\+Cached}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{save\+Item\+If\+Cached}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+save\+Item\+If\+Cached (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item\+Id, }
+\item[{{\bf User\+Context}}]{ctx}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_af7219ff5516fe02440e1ea7cd355e1bc}
+Save an item from a \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} if we have the item for that \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} cached To be called on an item when an operation may promote an item from not locally saved to locally saved. 
+\begin{DoxyParams}{Parameters}
+{\em item\+Id} & The Id of the item to save, as opposed to the item itself. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa439cb9bc6cf62ce036db577147420d1}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!set\+User\+Context@{set\+User\+Context}}
+\index{set\+User\+Context@{set\+User\+Context}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{set\+User\+Context}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+set\+User\+Context (
+\begin{DoxyParamCaption}
+\item[{{\bf User\+Context}}]{ctx}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa439cb9bc6cf62ce036db577147420d1}
+Set the current \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa3d65070cadb7b35102adf02fb94696b}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!wait\+For\+Data@{wait\+For\+Data}}
+\index{wait\+For\+Data@{wait\+For\+Data}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{wait\+For\+Data}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+wait\+For\+Data (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_aa3d65070cadb7b35102adf02fb94696b}
+Testing method\+: Wait for the local data to be ready \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a5df023f4f9dbf533e29552ebcc4bff1f}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!wait\+For\+Save@{wait\+For\+Save}}
+\index{wait\+For\+Save@{wait\+For\+Save}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{wait\+For\+Save}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+wait\+For\+Save (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_a5df023f4f9dbf533e29552ebcc4bff1f}
+Testing method, wait for a save to complete \hypertarget{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_add01440b6993bc27b01fb149a205bb4d}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}!write\+Test\+Data@{write\+Test\+Data}}
+\index{write\+Test\+Data@{write\+Test\+Data}!com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager@{com\+::ualberta\+::team17\+::datamanager\+::\+Local\+Data\+Manager}}
+\subsubsection[{write\+Test\+Data}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+datamanager.\+Local\+Data\+Manager.\+write\+Test\+Data (
+\begin{DoxyParamCaption}
+\item[{String}]{data}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager_add01440b6993bc27b01fb149a205bb4d}
+Testing method\+: Write a test set of data to the file \begin{DoxyReturn}{Returns}
+Whether the write was successful 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/datamanager/Local\+Data\+Manager.\+java\end{DoxyCompactItemize}

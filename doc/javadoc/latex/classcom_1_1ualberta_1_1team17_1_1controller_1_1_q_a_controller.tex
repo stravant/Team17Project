@@ -1,0 +1,479 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller}{\section{com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller}\index{com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller@{com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a2de23e7026d66c03fcbb5f1e1c51616f}{Q\+A\+Controller} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_manager}{Data\+Manager} model)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a98fbe420f8061f86226a1d2547d1fc0e}{login} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} ctx)
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a332d2728d057b7706d4ee6109ac323b9}{\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_user_context}{User\+Context} {\bfseries get\+User\+Context} ()}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a332d2728d057b7706d4ee6109ac323b9}
+
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aabc6dca07db602e67cad34affbe6b195}{get\+Objects} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}{Data\+Filter} filter, \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} sort)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a2d62be985938dd30c94de1d59e2009db}{get\+Objects\+With\+Result} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_data_filter}{Data\+Filter} filter, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} result)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a8ba8a8fc245a6af90bf21484f76482a5}{get\+Children} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} item, \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} sort)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a34118a5831ce0b057235ad0fd2fe86b9}{get\+Children} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} item, \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} sort)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a4bed3722c1029ec93c78aa25df041b4d}{get\+Favorites} (\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} comparator)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ab4df1ccf8a3b7fc6a76858a9b0780570}{add\+Favorite} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} item)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aa16a7e70dc1343a020aa017e015c1e50}{get\+Recent\+Items} (\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} comparator)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af35da5e96f2c397c58c184c43a728964}{get\+View\+Later\+Items} (\hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} comparator)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a6edb6edbd1fc60da1ed95852c71b7225}{mark\+Recently\+Viewed} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} item)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ad2d7c7672a64d36d25c948935c8d6fc0}{mark\+View\+Later} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} item)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aedad001a4453442123bdae57759bccf6}{upvote} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} target)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_question_item}{Question\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a696d71d48a5a4393df7784e6ec881f78}{create\+Question} (String title, String body)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_answer_item}{Answer\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aebdc84174e0eb63105c8791f2d275a5a}{create\+Answer} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_question_item}{Question\+Item} parent, String body)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_answer_item}{Answer\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a96f652dc6c848957826887376ab1427e}{create\+Answer} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent, String body)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_comment_item}{Comment\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aa826cc983511fa9ae88a091e31999c9a}{create\+Comment} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_authored_text_item}{Authored\+Text\+Item} parent, String body)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_comment_item}{Comment\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aee8d4ff3ca64c2cf04ecb5e391a0414a}{create\+Comment} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent, String body)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ac9c034b0b27dae371c9bfebb0cd61708}{create\+Attachment} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent, String name, byte\mbox{[}$\,$\mbox{]} data)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a7a44973b43bfd9fcdc3f81825b727a9d}{create\+Attachment} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent, String name, Bitmap image)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af6cad2a53d6097c43a35e5974fbb1ca6}{create\+Attachment} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent, String name, Uri image\+Uri)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a6a91029b3fd2ae584e3dd87cd325fc0c}{create\+Detached\+Attachment} (String name, Bitmap image)
+\item 
+\hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_afb53de811965811217c1c7c96609f610}{create\+Detached\+Attachment} (String name, Uri image)
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_adc0e511dc666c0d874145251f5f5f4c7}{connect\+Attachment} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} item, \hyperlink{classcom_1_1ualberta_1_1team17_1_1_unique_id}{Unique\+Id} parent)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af0e7990c1448ffdc649a9dcd185d98ec}{static \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller}{Q\+A\+Controller} {\bfseries get\+Instance} ()}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af0e7990c1448ffdc649a9dcd185d98ec}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller}{Q\+A\+Controller} is responsible for the management of all Q\+A\+Models.
+
+It creates them and operates them (there are no delete scenarios). 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a2de23e7026d66c03fcbb5f1e1c51616f}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!Q\+A\+Controller@{Q\+A\+Controller}}
+\index{Q\+A\+Controller@{Q\+A\+Controller}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{Q\+A\+Controller}]{\setlength{\rightskip}{0pt plus 5cm}com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+Q\+A\+Controller (
+\begin{DoxyParamCaption}
+\item[{{\bf Data\+Manager}}]{model}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a2de23e7026d66c03fcbb5f1e1c51616f}
+Constructor, from a Data\+Manager to act on 
+\begin{DoxyParams}{Parameters}
+{\em model} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ab4df1ccf8a3b7fc6a76858a9b0780570}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!add\+Favorite@{add\+Favorite}}
+\index{add\+Favorite@{add\+Favorite}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{add\+Favorite}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+add\+Favorite (
+\begin{DoxyParamCaption}
+\item[{{\bf Q\+A\+Model}}]{item}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ab4df1ccf8a3b7fc6a76858a9b0780570}
+Adds an item to the user's favorites 
+\begin{DoxyParams}{Parameters}
+{\em item} & The item to favorite \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_adc0e511dc666c0d874145251f5f5f4c7}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!connect\+Attachment@{connect\+Attachment}}
+\index{connect\+Attachment@{connect\+Attachment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{connect\+Attachment}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+connect\+Attachment (
+\begin{DoxyParamCaption}
+\item[{{\bf Attachment\+Item}}]{item, }
+\item[{{\bf Unique\+Id}}]{parent}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_adc0e511dc666c0d874145251f5f5f4c7}
+Connects a detached attachment to a specified parent and saves it.
+
+
+\begin{DoxyParams}{Parameters}
+{\em item} & The item to attach. \\
+\hline
+{\em parent} & The Id of the parent to connect to. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aebdc84174e0eb63105c8791f2d275a5a}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Answer@{create\+Answer}}
+\index{create\+Answer@{create\+Answer}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Answer}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Answer\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Answer (
+\begin{DoxyParamCaption}
+\item[{{\bf Question\+Item}}]{parent, }
+\item[{String}]{body}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aebdc84174e0eb63105c8791f2d275a5a}
+Create an answer with the given parent. A parent must be supplied. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & The object to use as the parent \\
+\hline
+{\em body} & The body text to apply to the answer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The answer if it was created, or null if invalid. 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a96f652dc6c848957826887376ab1427e}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Answer@{create\+Answer}}
+\index{create\+Answer@{create\+Answer}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Answer}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Answer\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Answer (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{parent, }
+\item[{String}]{body}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a96f652dc6c848957826887376ab1427e}
+Create an answer with the given parent. A parent must be supplied. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & The id of the object to use as parent \\
+\hline
+{\em body} & The body text to apply to the answer \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The answer if it was created, or null if invalid. 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ac9c034b0b27dae371c9bfebb0cd61708}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Attachment@{create\+Attachment}}
+\index{create\+Attachment@{create\+Attachment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Attachment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Attachment\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Attachment (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{parent, }
+\item[{String}]{name, }
+\item[{byte\mbox{[}$\,$\mbox{]}}]{data}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ac9c034b0b27dae371c9bfebb0cd61708}
+Create an \hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} from compressed image data 
+\begin{DoxyParams}{Parameters}
+{\em parent} & The Id of the \hyperlink{classcom_1_1ualberta_1_1team17_1_1_question_item}{Question\+Item} to have the attachment \\
+\hline
+{\em name} & The name of the attachment \\
+\hline
+{\em data} & The data contained in the attachment, compressed image data in some supported image format should be passed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The created and saved attachment item 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a7a44973b43bfd9fcdc3f81825b727a9d}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Attachment@{create\+Attachment}}
+\index{create\+Attachment@{create\+Attachment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Attachment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Attachment\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Attachment (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{parent, }
+\item[{String}]{name, }
+\item[{Bitmap}]{image}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a7a44973b43bfd9fcdc3f81825b727a9d}
+Create an Attachment\+Itew from a bitmap image. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & The Id of the \hyperlink{classcom_1_1ualberta_1_1team17_1_1_question_item}{Question\+Item} to have the attachment \\
+\hline
+{\em name} & The name of the attachment \\
+\hline
+{\em image} & The image to attach \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The created and saved attachment item 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af6cad2a53d6097c43a35e5974fbb1ca6}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Attachment@{create\+Attachment}}
+\index{create\+Attachment@{create\+Attachment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Attachment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Attachment\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Attachment (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{parent, }
+\item[{String}]{name, }
+\item[{Uri}]{image\+Uri}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af6cad2a53d6097c43a35e5974fbb1ca6}
+Create an \hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} from a U\+R\+I of an image on the device. The image will be synchronously loaded in. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & The Id of the \hyperlink{classcom_1_1ualberta_1_1team17_1_1_question_item}{Question\+Item} to have the attachment \\
+\hline
+{\em name} & The name of the attachment \\
+\hline
+{\em uri} & The U\+R\+I of the image to attach \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The created and saved attachment item 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aa826cc983511fa9ae88a091e31999c9a}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Comment@{create\+Comment}}
+\index{create\+Comment@{create\+Comment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Comment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Comment\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Comment (
+\begin{DoxyParamCaption}
+\item[{{\bf Authored\+Text\+Item}}]{parent, }
+\item[{String}]{body}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aa826cc983511fa9ae88a091e31999c9a}
+Create a comment with the given parent. A parent must be supplied. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & The object to use as the parent \\
+\hline
+{\em body} & The body text to apply to the comment \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The comment if it was created, or null if invalid. 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aee8d4ff3ca64c2cf04ecb5e391a0414a}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Comment@{create\+Comment}}
+\index{create\+Comment@{create\+Comment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Comment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Comment\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Comment (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{parent, }
+\item[{String}]{body}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aee8d4ff3ca64c2cf04ecb5e391a0414a}
+Create a comment with the given parent. A parent must be supplied. 
+\begin{DoxyParams}{Parameters}
+{\em parent} & The id of the object to use as parent \\
+\hline
+{\em body} & The body text to apply to the comment \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The comment if it was created, or null if invalid. 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a6a91029b3fd2ae584e3dd87cd325fc0c}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Detached\+Attachment@{create\+Detached\+Attachment}}
+\index{create\+Detached\+Attachment@{create\+Detached\+Attachment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Detached\+Attachment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Attachment\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Detached\+Attachment (
+\begin{DoxyParamCaption}
+\item[{String}]{name, }
+\item[{Bitmap}]{image}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a6a91029b3fd2ae584e3dd87cd325fc0c}
+Creates an \hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} from a bitmap of an image.
+
+The attachment is not saved by the data manager yet, as it's possible the user will change their mind and not create the question.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the attachment. \\
+\hline
+{\em image} & The image to attach. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_afb53de811965811217c1c7c96609f610}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Detached\+Attachment@{create\+Detached\+Attachment}}
+\index{create\+Detached\+Attachment@{create\+Detached\+Attachment}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Detached\+Attachment}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Attachment\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Detached\+Attachment (
+\begin{DoxyParamCaption}
+\item[{String}]{name, }
+\item[{Uri}]{image}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_afb53de811965811217c1c7c96609f610}
+Creates an \hyperlink{classcom_1_1ualberta_1_1team17_1_1_attachment_item}{Attachment\+Item} from a Uri of an image on the device. The image will be synchronously loaded in.
+
+The attachment is not saved by the data manager yet, as it's possible the user will change their mind and not create the question.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the attachment. \\
+\hline
+{\em image} & The U\+R\+I of the image to attach. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a696d71d48a5a4393df7784e6ec881f78}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!create\+Question@{create\+Question}}
+\index{create\+Question@{create\+Question}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{create\+Question}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Question\+Item} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+create\+Question (
+\begin{DoxyParamCaption}
+\item[{String}]{title, }
+\item[{String}]{body}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a696d71d48a5a4393df7784e6ec881f78}
+Create a question object, from a creator context, title, and body 
+\begin{DoxyParams}{Parameters}
+{\em title} & \\
+\hline
+{\em body} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The item created 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a8ba8a8fc245a6af90bf21484f76482a5}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!get\+Children@{get\+Children}}
+\index{get\+Children@{get\+Children}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{get\+Children}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Incremental\+Result} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+get\+Children (
+\begin{DoxyParamCaption}
+\item[{{\bf Q\+A\+Model}}]{item, }
+\item[{{\bf I\+Item\+Comparator}}]{sort}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a8ba8a8fc245a6af90bf21484f76482a5}
+Get all of the children of a given item 
+\begin{DoxyParams}{Parameters}
+{\em question} & \\
+\hline
+{\em sort} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An incremental result that will be populated with the results 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a34118a5831ce0b057235ad0fd2fe86b9}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!get\+Children@{get\+Children}}
+\index{get\+Children@{get\+Children}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{get\+Children}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Incremental\+Result} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+get\+Children (
+\begin{DoxyParamCaption}
+\item[{{\bf Unique\+Id}}]{item, }
+\item[{{\bf I\+Item\+Comparator}}]{sort}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a34118a5831ce0b057235ad0fd2fe86b9}
+Get all of the children of the item with the given I\+D 
+\begin{DoxyParams}{Parameters}
+{\em question} & \\
+\hline
+{\em sort} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An incremental result that will be populated with the results 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a4bed3722c1029ec93c78aa25df041b4d}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!get\+Favorites@{get\+Favorites}}
+\index{get\+Favorites@{get\+Favorites}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{get\+Favorites}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Incremental\+Result} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+get\+Favorites (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Item\+Comparator}}]{comparator}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a4bed3722c1029ec93c78aa25df041b4d}
+Gets the current users favorites 
+\begin{DoxyParams}{Parameters}
+{\em comparator} & A comparator specifying the order to sort the items in. If the comparator is null, then the items will be returned with the most recently posted items first. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An incremental result that will be populated with the users favorites. 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aabc6dca07db602e67cad34affbe6b195}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!get\+Objects@{get\+Objects}}
+\index{get\+Objects@{get\+Objects}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{get\+Objects}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Incremental\+Result} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+get\+Objects (
+\begin{DoxyParamCaption}
+\item[{{\bf Data\+Filter}}]{filter, }
+\item[{{\bf I\+Item\+Comparator}}]{sort}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aabc6dca07db602e67cad34affbe6b195}
+Access existing objects via an arbitrary Filter \& Sort 
+\begin{DoxyParams}{Parameters}
+{\em filter} & \\
+\hline
+{\em sort} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An Incremental\+Result 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a2d62be985938dd30c94de1d59e2009db}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!get\+Objects\+With\+Result@{get\+Objects\+With\+Result}}
+\index{get\+Objects\+With\+Result@{get\+Objects\+With\+Result}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{get\+Objects\+With\+Result}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+get\+Objects\+With\+Result (
+\begin{DoxyParamCaption}
+\item[{{\bf Data\+Filter}}]{filter, }
+\item[{{\bf Incremental\+Result}}]{result}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a2d62be985938dd30c94de1d59e2009db}
+Access existing objects via an arbitrary Filter \& Sort, and load them into an existing result 
+\begin{DoxyParams}{Parameters}
+{\em filter} & \\
+\hline
+{\em sort} & \\
+\hline
+{\em result} & The result to place new results into \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An Incremental\+Result 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aa16a7e70dc1343a020aa017e015c1e50}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!get\+Recent\+Items@{get\+Recent\+Items}}
+\index{get\+Recent\+Items@{get\+Recent\+Items}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{get\+Recent\+Items}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Incremental\+Result} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+get\+Recent\+Items (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Item\+Comparator}}]{comparator}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aa16a7e70dc1343a020aa017e015c1e50}
+Get the recently items that have been marked as recently viewed most recently with \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a6edb6edbd1fc60da1ed95852c71b7225}{Q\+A\+Controller\+::mark\+Recently\+Viewed} 
+\begin{DoxyParams}{Parameters}
+{\em comparator} & A comparator specifying the order to sort the items in. If the comparator is null, then the items will be left in the order \char`\"{}most recently viewed first\char`\"{}. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+An Incremental\+Result that will be populated with the recently viewed items 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af35da5e96f2c397c58c184c43a728964}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!get\+View\+Later\+Items@{get\+View\+Later\+Items}}
+\index{get\+View\+Later\+Items@{get\+View\+Later\+Items}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{get\+View\+Later\+Items}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Incremental\+Result} com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+get\+View\+Later\+Items (
+\begin{DoxyParamCaption}
+\item[{{\bf I\+Item\+Comparator}}]{comparator}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_af35da5e96f2c397c58c184c43a728964}
+Get the items that have been marked as to be viewed later most recently with \hyperlink{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ad2d7c7672a64d36d25c948935c8d6fc0}{Q\+A\+Controller\+::mark\+View\+Later} \begin{DoxyReturn}{Returns}
+An Incremental\+Result that will be populated with the to be viewed later items 
+\end{DoxyReturn}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a98fbe420f8061f86226a1d2547d1fc0e}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!login@{login}}
+\index{login@{login}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{login}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+login (
+\begin{DoxyParamCaption}
+\item[{{\bf User\+Context}}]{ctx}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a98fbe420f8061f86226a1d2547d1fc0e}
+Log in using a given user context 
+\begin{DoxyParams}{Parameters}
+{\em ctx} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a6edb6edbd1fc60da1ed95852c71b7225}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!mark\+Recently\+Viewed@{mark\+Recently\+Viewed}}
+\index{mark\+Recently\+Viewed@{mark\+Recently\+Viewed}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{mark\+Recently\+Viewed}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+mark\+Recently\+Viewed (
+\begin{DoxyParamCaption}
+\item[{{\bf Q\+A\+Model}}]{item}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_a6edb6edbd1fc60da1ed95852c71b7225}
+Mark an item as recently viewed Mainly to be used for questions. 
+\begin{DoxyParams}{Parameters}
+{\em item} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ad2d7c7672a64d36d25c948935c8d6fc0}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!mark\+View\+Later@{mark\+View\+Later}}
+\index{mark\+View\+Later@{mark\+View\+Later}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{mark\+View\+Later}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+mark\+View\+Later (
+\begin{DoxyParamCaption}
+\item[{{\bf Q\+A\+Model}}]{item}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_ad2d7c7672a64d36d25c948935c8d6fc0}
+Mark an item as to be viewed later Mainly to be used for questions 
+\begin{DoxyParams}{Parameters}
+{\em item} & The item to mark as to be viewed later \\
+\hline
+\end{DoxyParams}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aedad001a4453442123bdae57759bccf6}{\index{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}!upvote@{upvote}}
+\index{upvote@{upvote}!com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller@{com\+::ualberta\+::team17\+::controller\+::\+Q\+A\+Controller}}
+\subsubsection[{upvote}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+controller.\+Q\+A\+Controller.\+upvote (
+\begin{DoxyParamCaption}
+\item[{{\bf Q\+A\+Model}}]{target}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller_aedad001a4453442123bdae57759bccf6}
+Upvote a given question or answer 
+\begin{DoxyParams}{Parameters}
+{\em target} & The item to upvote \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/controller/Q\+A\+Controller.\+java\end{DoxyCompactItemize}

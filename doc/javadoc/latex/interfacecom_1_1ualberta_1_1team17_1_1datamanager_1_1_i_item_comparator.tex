@@ -1,0 +1,72 @@
+\hypertarget{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{\section{com.\+ualberta.\+team17.\+datamanager.\+I\+Item\+Comparator Interface Reference}
+\label{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}\index{com.\+ualberta.\+team17.\+datamanager.\+I\+Item\+Comparator@{com.\+ualberta.\+team17.\+datamanager.\+I\+Item\+Comparator}}
+}
+
+
+Inherits Comparator$<$ Q\+A\+Model $>$.
+
+
+
+Inherited by \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_attachment_comparator}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Attachment\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_date_comparator}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Date\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_id_comparator}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Id\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_identity_comparator}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Identity\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_reply_comparator}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Reply\+Comparator}, and \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_upvote_comparator}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Upvote\+Comparator}.
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_1_1_sort_direction}{Sort\+Direction}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a0b9d08c968368f999963587a519d71e1}{set\+Compare\+Direction} (\hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_1_1_sort_direction}{Sort\+Direction} direction)
+\item 
+\hypertarget{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a89f62fd2e381e30f6e50d1404afe71c9}{\hyperlink{enumcom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_1_1_sort_direction}{Sort\+Direction} {\bfseries get\+Compare\+Direction} ()}\label{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a89f62fd2e381e30f6e50d1404afe71c9}
+
+\item 
+String \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a1d812269d1723e876e7b8d75912acd65}{get\+Filter\+Field} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+An interface that defines a comparator that can be used to sort a query and an \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_incremental_result}{Incremental\+Result}.
+
+\begin{DoxyAuthor}{Author}
+michaelblouin 
+\end{DoxyAuthor}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a1d812269d1723e876e7b8d75912acd65}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator@{com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator}!get\+Filter\+Field@{get\+Filter\+Field}}
+\index{get\+Filter\+Field@{get\+Filter\+Field}!com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator@{com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator}}
+\subsubsection[{get\+Filter\+Field}]{\setlength{\rightskip}{0pt plus 5cm}String com.\+ualberta.\+team17.\+datamanager.\+I\+Item\+Comparator.\+get\+Filter\+Field (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a1d812269d1723e876e7b8d75912acd65}
+Gets the field of an object on which the \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator}{I\+Item\+Comparator} operates. \begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_date_comparator_a5ef897a9cc18591863074689a9a493dd}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Date\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_upvote_comparator_a1e898949ac2d3480c575417ca4792b83}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Upvote\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_attachment_comparator_ab4ad6032b2f883180b82beb68231cb3d}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Attachment\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_reply_comparator_a51895d0cb0cc64ad90082f71ac836aa9}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Reply\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_id_comparator_aa5e692f8250f50126f90398b9a44eea9}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Id\+Comparator}, and \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_identity_comparator_a169860bedfc7ed03fe398b6fbbd0e369}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Identity\+Comparator}.
+
+\hypertarget{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a0b9d08c968368f999963587a519d71e1}{\index{com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator@{com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator}!set\+Compare\+Direction@{set\+Compare\+Direction}}
+\index{set\+Compare\+Direction@{set\+Compare\+Direction}!com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator@{com\+::ualberta\+::team17\+::datamanager\+::\+I\+Item\+Comparator}}
+\subsubsection[{set\+Compare\+Direction}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+datamanager.\+I\+Item\+Comparator.\+set\+Compare\+Direction (
+\begin{DoxyParamCaption}
+\item[{{\bf Sort\+Direction}}]{direction}
+\end{DoxyParamCaption}
+)}}\label{interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_item_comparator_a0b9d08c968368f999963587a519d71e1}
+Sets the compare direction (Ascending or Descending) on the comparator. 
+\begin{DoxyParams}{Parameters}
+{\em direction} & \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_date_comparator_afa1ad74316c3ba235614ae7c3f0f1568}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Date\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_upvote_comparator_a1ca9dfc9b43463beb1c3115b3f9a462c}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Upvote\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_attachment_comparator_ade646a37c9740c7c778f2e3369128649}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Attachment\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_reply_comparator_ac307250b5edbcda0bceadcc6298c69ac}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Reply\+Comparator}, \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_id_comparator_a8d5e6fbea7247298bf756e54a9d5b6ec}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Id\+Comparator}, and \hyperlink{classcom_1_1ualberta_1_1team17_1_1datamanager_1_1comparators_1_1_identity_comparator_a01ba49589fee430522d3370d74e5cdba}{com.\+ualberta.\+team17.\+datamanager.\+comparators.\+Identity\+Comparator}.
+
+
+
+The documentation for this interface was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/datamanager/I\+Item\+Comparator.\+java\end{DoxyCompactItemize}

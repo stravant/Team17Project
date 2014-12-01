@@ -1,0 +1,89 @@
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity}{\section{com.\+ualberta.\+team17.\+view.\+Question\+List\+Activity Class Reference}
+\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity}\index{com.\+ualberta.\+team17.\+view.\+Question\+List\+Activity@{com.\+ualberta.\+team17.\+view.\+Question\+List\+Activity}}
+}
+
+
+Inherits Activity, \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1view_1_1_on_item_selected_listener}{com.\+ualberta.\+team17.\+view.\+On\+Item\+Selected\+Listener}, and \hyperlink{interfacecom_1_1ualberta_1_1team17_1_1view_1_1_i_q_a_view}{com.\+ualberta.\+team17.\+view.\+I\+Q\+A\+View}.
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_1_1_sort_menu_fragment}{Sort\+Menu\+Fragment}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a4bc38f204e00b42094ec82ad3fda1ea4}{on\+Create\+Options\+Menu} (Menu menu)
+\item 
+boolean \hyperlink{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a07e0d04a9438127ae397906c792c584f}{on\+Options\+Item\+Selected} (Menu\+Item item)
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a995f61fcc138fd5cab78157c4a38a662}{void {\bfseries on\+Item\+Selected} (\hyperlink{enumcom_1_1ualberta_1_1team17_1_1view_1_1_list_fragment_1_1_taxonomy}{Taxonomy} position)}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a995f61fcc138fd5cab78157c4a38a662}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aeaede3abed5877db3b64840af90c0516}{void {\bfseries update} (\hyperlink{classcom_1_1ualberta_1_1team17_1_1_q_a_model}{Q\+A\+Model} model)}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aeaede3abed5877db3b64840af90c0516}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aae0d72f41f03bbb4f2d7891a4f02a0de}{static final String {\bfseries S\+E\+A\+R\+C\+H\+\_\+\+T\+E\+R\+M} = \char`\"{}search\+\_\+term\char`\"{}}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aae0d72f41f03bbb4f2d7891a4f02a0de}
+
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_ae67f2ebfe85d429d7558abb81721394c}{static final String {\bfseries S\+O\+R\+T\+\_\+\+T\+Y\+P\+E} = \char`\"{}sort\+\_\+type\char`\"{}}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_ae67f2ebfe85d429d7558abb81721394c}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aa8f4f9e5120f231fceb3cab22a99bc6d}{on\+Create} (Bundle saved\+Instance\+State)
+\item 
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aaa9990a39b72c47e3034b20a238ae8e8}{void {\bfseries on\+Post\+Create} (Bundle saved\+Instance\+State)}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aaa9990a39b72c47e3034b20a238ae8e8}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This class displays the list of requested questions and answers. It receives an intent from Question\+Taxonomy\+Activity and sends intents to \hyperlink{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_view_activity}{Question\+View\+Activity}. It also supports sorting of the data on display. Search functionality is also present, although it is not implemented in this class.
+
+\begin{DoxyAuthor}{Author}
+Jared 
+\end{DoxyAuthor}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aa8f4f9e5120f231fceb3cab22a99bc6d}{\index{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity@{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity}!on\+Create@{on\+Create}}
+\index{on\+Create@{on\+Create}!com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity@{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity}}
+\subsubsection[{on\+Create}]{\setlength{\rightskip}{0pt plus 5cm}void com.\+ualberta.\+team17.\+view.\+Question\+List\+Activity.\+on\+Create (
+\begin{DoxyParamCaption}
+\item[{Bundle}]{saved\+Instance\+State}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_aa8f4f9e5120f231fceb3cab22a99bc6d}
+Initializes data depending on what is passed in the intent. Creates adapters and listeners for all data interactions that will happen.
+
+\begin{DoxyAuthor}{Author}
+Jared 
+\end{DoxyAuthor}
+\hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a4bc38f204e00b42094ec82ad3fda1ea4}{\index{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity@{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity}!on\+Create\+Options\+Menu@{on\+Create\+Options\+Menu}}
+\index{on\+Create\+Options\+Menu@{on\+Create\+Options\+Menu}!com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity@{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity}}
+\subsubsection[{on\+Create\+Options\+Menu}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+view.\+Question\+List\+Activity.\+on\+Create\+Options\+Menu (
+\begin{DoxyParamCaption}
+\item[{Menu}]{menu}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a4bc38f204e00b42094ec82ad3fda1ea4}
+Creates the toolbar at the top of the app. \hypertarget{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a07e0d04a9438127ae397906c792c584f}{\index{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity@{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity}!on\+Options\+Item\+Selected@{on\+Options\+Item\+Selected}}
+\index{on\+Options\+Item\+Selected@{on\+Options\+Item\+Selected}!com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity@{com\+::ualberta\+::team17\+::view\+::\+Question\+List\+Activity}}
+\subsubsection[{on\+Options\+Item\+Selected}]{\setlength{\rightskip}{0pt plus 5cm}boolean com.\+ualberta.\+team17.\+view.\+Question\+List\+Activity.\+on\+Options\+Item\+Selected (
+\begin{DoxyParamCaption}
+\item[{Menu\+Item}]{item}
+\end{DoxyParamCaption}
+)}}\label{classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity_a07e0d04a9438127ae397906c792c584f}
+This handles the menus at the top and bottom of this view.
+
+\begin{DoxyAuthor}{Author}
+Jared 
+\end{DoxyAuthor}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+C\+:/\+Users/\+Corey/git/\+Team17\+Project/moqa/src/com/ualberta/team17/view/Question\+List\+Activity.\+java\end{DoxyCompactItemize}

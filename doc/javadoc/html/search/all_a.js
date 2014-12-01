@@ -1,0 +1,11 @@
+var searchData=
+[
+  ['qacontroller',['QAController',['../classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller.html',1,'com::ualberta::team17::controller']]],
+  ['qacontroller',['QAController',['../classcom_1_1ualberta_1_1team17_1_1controller_1_1_q_a_controller.html#a2de23e7026d66c03fcbb5f1e1c51616f',1,'com::ualberta::team17::controller::QAController']]],
+  ['qamodel',['QAModel',['../classcom_1_1ualberta_1_1team17_1_1_q_a_model.html',1,'com::ualberta::team17']]],
+  ['query',['query',['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager.html#ac7a879658eeee8d593f2485cca1eb0dc',1,'com.ualberta.team17.datamanager.IDataSourceManager.query(DataFilter filter, IItemComparator comparator, IncrementalResult result, IDataSourceManager chainTo)'],['../interfacecom_1_1ualberta_1_1team17_1_1datamanager_1_1_i_data_source_manager.html#a1d0ac508e9d0f33b291b8be46c2a2f96',1,'com.ualberta.team17.datamanager.IDataSourceManager.query(List&lt; UniqueId &gt; ids, IncrementalResult result, IDataSourceManager chainTo)'],['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager.html#ad5f1c3b0e7678b723975c40b8f6bd7ac',1,'com.ualberta.team17.datamanager.LocalDataManager.query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result, final IDataSourceManager chainTo)'],['../classcom_1_1ualberta_1_1team17_1_1datamanager_1_1_local_data_manager.html#abefe19e3bd729c431f53c4ef2f520955',1,'com.ualberta.team17.datamanager.LocalDataManager.query(final List&lt; UniqueId &gt; ids, final IncrementalResult result, final IDataSourceManager chainTo)']]],
+  ['questionitem',['QuestionItem',['../classcom_1_1ualberta_1_1team17_1_1_question_item.html',1,'com::ualberta::team17']]],
+  ['questionlistactivity',['QuestionListActivity',['../classcom_1_1ualberta_1_1team17_1_1view_1_1_question_list_activity.html',1,'com::ualberta::team17::view']]],
+  ['questionviewactivity',['QuestionViewActivity',['../classcom_1_1ualberta_1_1team17_1_1view_1_1_question_view_activity.html',1,'com::ualberta::team17::view']]],
+  ['questionviewactivity',['QuestionViewActivity',['../classcom_1_1ualberta_1_1team17_1_1view_1_1_question_view_activity.html#a04ef1b8ecce98fe926a20c1fbf034603',1,'com::ualberta::team17::view::QuestionViewActivity']]]
+];
