@@ -849,11 +849,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
+			/*
 			TextView tView = (TextView) v;
 			//launch intent to QLA
 			Intent intent = new Intent(QuestionViewActivity.this, QuestionListActivity.class);		
 			intent.putExtra(QuestionListActivity.AUTHOR_SORT, tView.getText());
-			startActivity(intent);			
+			startActivity(intent);		
+			*/	
 		}
 		
 	}
@@ -862,11 +864,13 @@ public class QuestionViewActivity extends Activity implements IQAView {
 
 		@Override
 		public void onClick(View v) {
+			/*
 			TextView tView = (TextView) v;
 			//launch intent to QLA
 			Intent intent = new Intent(QuestionViewActivity.this, QuestionListActivity.class);		
 			intent.putExtra(QuestionListActivity.AUTHORSORT, tView.getText());
 			startActivity(intent);		
+			*/
 		}
 		
 	}
