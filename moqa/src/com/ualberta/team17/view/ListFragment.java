@@ -63,15 +63,15 @@ public class ListFragment extends Fragment {
 		int mSort = getArguments().getInt(SORT_TYPE);
 		if (mSort != 0) {
 			switch (mSort) {
-			//Ascending Date
+			// Show newest questions first
 			case 0:
 				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Ascending);
+				comp.setCompareDirection(SortDirection.Descending);
 				break;
-			//Descending Date	
+			// Show older questions first
 			case 1:
 				comp = new DateComparator();
-				comp.setCompareDirection(SortDirection.Descending);
+				comp.setCompareDirection(SortDirection.Ascending);
 				break;
 			//Descending Attachments	
 			case 2:
@@ -107,6 +107,7 @@ public class ListFragment extends Fragment {
 		case 0:
 			if (comp == null) {
 				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Descending);
 			}	
 			datafilter.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
