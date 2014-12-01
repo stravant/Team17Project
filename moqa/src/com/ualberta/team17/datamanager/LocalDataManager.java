@@ -549,13 +549,6 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param filter
 	 * @param result
 	 */
-	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result, final IDataSourceManager chainTo) {
-		// Local data manager does not handle MLT filters.
-		if (filter instanceof MoreLikeThisFilter) {
-			return;
-		}
-	}
-
 	@Override
 	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result, final IDataSourceManager chainTo) {
 		new RunTaskHelper<List<QAModel>>() {
