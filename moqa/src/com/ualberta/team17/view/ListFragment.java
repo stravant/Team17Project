@@ -50,7 +50,7 @@ public class ListFragment extends Fragment {
 	private DataFilter datafilter = new DataFilter();
 	private QuestionListAdapter mAdapter;
 	private List<QAModel> mItems;
-	private Taxonomy mTaxonomy = Taxonomy.Search;=
+	private Taxonomy mTaxonomy = Taxonomy.Search;
 
 	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
 	
@@ -98,15 +98,6 @@ public class ListFragment extends Fragment {
 	public ListFragment() {
 		//mItems = new ArrayList<QAModel>();
 		//mAdapter = new QuestionListAdapter(this.getActivity(), R.id.questionListView, mItems);
-	}
-
-	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
-	
-	private class UpdateOnItemUpdateListener implements IQAView {
-		@Override
-		public void update(QAModel model) {
-			mAdapter.notifyDataSetChanged();
-		}
 	}
 
 	@Override
