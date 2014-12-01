@@ -1,14 +1,11 @@
 package com.ualberta.team17.view;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -16,14 +13,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -110,7 +104,11 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		leftDrawer.mDrawerToggle.syncState();
 	}
-
+	/**
+	 * Refreshes item list when taxonomy is selected
+	 * 
+	 * @author Divyank
+	 */
 	private void selectItem(int position) {
 		// update the main content by replacing fragments
 		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
@@ -144,15 +142,17 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	}
 
 	/**
-	 * This handles the menu at the top of this view.
+	 * This handles the menus at the top and bottom of this view.
 	 * 
 	 * @author Jared
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (leftDrawer.mDrawerToggle.onOptionsItemSelected(item)) {
-			return true;
+		if(!rightDrawerLayout.isDrawerOpen(Gravity.END)) {
+			if (leftDrawer.mDrawerToggle.onOptionsItemSelected(item)) {
+				return true;
+			}
 		}
 		if (id == R.id.action_new_question) {
 			fragment.createNewQuestion();
@@ -160,7 +160,9 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	/***
+	 * Called by taxonomy fragment when an item is selected 
+	 */
 	@Override
 	public void onItemSelected(int position) {
 		selectItem(position);
@@ -170,7 +172,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 			rightDrawerList.setItemChecked(2, false);
 		}
 	}
-
+	
 	/**
 	 * Recreates the ListFragment with the previous bundle.
 	 */
@@ -178,7 +180,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		if (args == null) {
 			return;
 		}
-
 		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
 		int taxonomy = args.getInt(ListFragment.TAXONOMY_NUM);
 
@@ -188,7 +189,12 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 		setTitle(myTaxonomy[taxonomy]);
 	}
-
+	/**
+	 * UI fragment used by QuestionListActivity to display the Sort Menu Drawer
+	 * on the right
+	 * 
+	 * @author Divyank 
+	 */
 	public class SortMenuFragment extends Fragment {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -218,7 +224,6 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 					return;
 				}
 				refresh();
-
 			}
 		}
 		@Override
@@ -228,10 +233,8 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		}
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
-
 			return super.onOptionsItemSelected(item);
 		}	
-
 	}
 
 	/**

@@ -8,7 +8,6 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ualberta.team17.R;
-
+/**
+ * UI fragment used to display taxonomy menu drawer
+ * 
+ * @author divyank
+ *
+ */
 public class TaxonomyMenuFragment extends Fragment {
 	private String[] myTaxonomy;
 	private DrawerLayout mDrawerLayout;
