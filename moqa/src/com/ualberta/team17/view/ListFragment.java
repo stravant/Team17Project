@@ -25,6 +25,7 @@ import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.R;
+import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.controller.QAController;
 import com.ualberta.team17.datamanager.DataFilter;
 import com.ualberta.team17.datamanager.DataFilter.FilterComparison;
@@ -32,19 +33,52 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.MoreLikeThisFilter;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
 import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 
 public class ListFragment extends Fragment {
 	public static final String TAXONOMY_NUM = "taxonomy_number";
+	public static final String QUESTION_ID_EXTRA = "QUESTION_ID";
 	public static final String FILTER_EXTRA = "FILTER";
-	
+
 	private IncrementalResult mIR;
 	private DataFilter datafilter = new DataFilter();
 	private QuestionListAdapter mAdapter;
 	private List<QAModel> mItems;
+	private Taxonomy mTaxonomy = Taxonomy.Search;
 	
+	public enum Taxonomy {
+		Search,
+		AllQuestions,
+		MyActivity,
+		MyFavorites,
+		TopQuestions,
+		TopAnswers,
+		RecentActivity,
+		RelatedQuestions;
+
+		public int getId() {
+			switch (this) {
+			case AllQuestions:
+				return 0;
+			case MyActivity:
+				return 1;
+			case MyFavorites:
+				return 2;
+			case TopQuestions:
+				return 3;
+			case TopAnswers:
+				return 4;
+			case RecentActivity:
+				return 5;
+			default:
+				return -1;
+			}
+		}
+	}
+
 	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -54,12 +88,15 @@ public class ListFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_question_list, container, false);
-	    int mTaxonomy = getArguments().getInt(TAXONOMY_NUM, -1);
+	    Taxonomy intentTaxonomy = (Taxonomy) getArguments().getSerializable(TAXONOMY_NUM);
+	    if (null != intentTaxonomy) {
+	    	mTaxonomy = intentTaxonomy;
+	    }
 	    
 		IItemComparator comp;
 		
 		switch (mTaxonomy) {
-		case -1:
+		case Search:
 			// This means it wasn't sent by a taxonomy.
 			// Must be a search.
 			String searchTerm = getArguments().getString(QuestionListActivity.SEARCH_TERM);
@@ -78,34 +115,47 @@ public class ListFragment extends Fragment {
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			
 			break;
-		case 0:
+		case AllQuestions:
 			comp = new DateComparator();
 			datafilter.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
-		case 1:
+		case MyActivity:
 			comp = new DateComparator();
 			comp.setCompareDirection(SortDirection.Descending);
 			datafilter.addFieldFilter(AuthoredItem.FIELD_AUTHOR, QAController.getInstance().getUserContext().getUserName(), FilterComparison.EQUALS);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
-		case 2:
-			mIR = QAController.getInstance().getFavorites();
+		case MyFavorites:
+			mIR = QAController.getInstance().getFavorites(null);
 			datafilter = null;
 			break;
-		case 3:
+		case TopQuestions:
 			comp = new UpvoteComparator();
 			datafilter.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;	
-		case 4:
+		case TopAnswers:
 			comp = new UpvoteComparator();
 			datafilter.setTypeFilter(ItemType.Answer);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
-		case 5:
-			mIR = QAController.getInstance().getRecentItems();
+		case RecentActivity:
+			mIR = QAController.getInstance().getRecentItems(null);
 			datafilter = null;
+			break;
+		case RelatedQuestions:
+			UniqueId questionId = (UniqueId) getArguments().getSerializable(QUESTION_ID_EXTRA);
+			
+			if (questionId == null) {
+				break;
+			}
+			
+			MoreLikeThisFilter mltFilter = new MoreLikeThisFilter();
+			datafilter = mltFilter;
+			mltFilter.addMoreLikeThisObject(questionId, ItemType.Question);
+			comp = new IdentityComparator();
+			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		}
 		

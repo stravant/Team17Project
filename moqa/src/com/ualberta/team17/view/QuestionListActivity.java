@@ -24,7 +24,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.ualberta.team17.QAModel;
 import com.ualberta.team17.R;
+import com.ualberta.team17.view.ListFragment.Taxonomy;
 import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
 
 /**
@@ -36,7 +38,7 @@ import com.ualberta.team17.view.TaxonomyMenuFragment.OnItemSelectedListener;
  * @author Jared
  *
  */
-public class QuestionListActivity extends Activity implements OnItemSelectedListener{
+public class QuestionListActivity extends Activity implements OnItemSelectedListener, IQAView {
 	public final static String SEARCH_TERM = "search_term";
 	
 	private String[] sortOptions;
@@ -46,6 +48,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	TaxonomyMenuFragment leftDrawer = new TaxonomyMenuFragment();
 	SortMenuFragment rightDrawer = new SortMenuFragment();
 	ListFragment fragment = new ListFragment();
+	Bundle args;
 
 	/**
 	 * Initializes data depending on what is passed in the intent. Creates adapters and
@@ -72,7 +75,7 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 		if (intent.getSerializableExtra(SEARCH_TERM) != null) {
 			String searchValue = (String) intent.getSerializableExtra(SEARCH_TERM);	
 			
-			Bundle args = new Bundle();
+			args = new Bundle();
 			args.putString(SEARCH_TERM, searchValue);
 			fragment = new ListFragment();
 			FragmentManager fragmentManager = getFragmentManager();
@@ -86,26 +89,26 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
-		leftDrawer.mDrawerToggle.syncState();
+		if (null != leftDrawer && null != leftDrawer.mDrawerToggle) {
+			leftDrawer.mDrawerToggle.syncState();
+		}
 	}
 
-	private void selectItem(int position) {
+	private void selectItem(Taxonomy selectedTaxonomy) {
 		// update the main content by replacing fragments
 		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
-		Bundle args = new Bundle();
-		args.putInt(ListFragment.TAXONOMY_NUM, position);
+		args = new Bundle();
+		args.putSerializable(ListFragment.TAXONOMY_NUM, selectedTaxonomy);
 		fragment = new ListFragment();
 		FragmentManager fragmentManager = getFragmentManager();
 		fragment.setArguments(args);
 		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-		setTitle(myTaxonomy[position]);
-		//this.getActionBar().setTitle(myTaxonomy[position]);
+		setTitle(myTaxonomy[selectedTaxonomy.getId()]);
 	}
 
 
 	/**
-	 * Creates the toolbar at the top of the app. This is temporary.
-	 * TODO change all actions to be triggered by buttons and remove this toolbar.
+	 * Creates the toolbar at the top of the app.
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -147,10 +150,28 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
 	}
 
 	@Override
-	public void onItemSelected(int position) {
+	public void onItemSelected(Taxonomy position) {
 		selectItem(position);
 	}
 
+	/**
+	 * Recreates the ListFragment with the previous bundle.
+	 */
+	private void refresh() {
+		if (args == null) {
+			return;
+		}
+		
+		String[] myTaxonomy = getResources().getStringArray(R.array.taxonomies);
+		int taxonomy = args.getInt(ListFragment.TAXONOMY_NUM);
+		
+		fragment = new ListFragment();
+		FragmentManager fragmentManager = getFragmentManager();
+		fragment.setArguments(args);
+		fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+		setTitle(myTaxonomy[taxonomy]);
+	}
+	
 	public class SortMenuFragment extends Fragment {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -234,4 +255,9 @@ public class QuestionListActivity extends Activity implements OnItemSelectedList
             return false;
         }
     }
+
+	@Override
+	public void update(QAModel model) {
+		refresh();
+	}
 }
