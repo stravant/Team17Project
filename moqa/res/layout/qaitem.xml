@@ -230,7 +230,7 @@
        		    android:layout_width="fill_parent"
 		        android:layout_height="wrap_content"
 		        android:gravity="center"
-		        android:text="Checkout these related questions"	
+		        android:text="Check out these related questions"	
 		        style="@style/bodyText4"	
 		        android:textStyle="bold"        
 		        android:visibility="gone"
@@ -239,7 +239,7 @@
        		<RelativeLayout
        		    android:id="@+id/relatedView"
        		    android:layout_width="fill_parent"
-		        android:layout_height="445dp"
+		        android:layout_height="455dp"
 		        android:layout_alignParentLeft="true"	
 		        android:layout_below="@+id/relatedTitle"	        
 		        android:visibility="gone"		        	 
