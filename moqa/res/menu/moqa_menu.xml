@@ -14,12 +14,6 @@
 	        android:icon="@android:drawable/ic_menu_add"
 	        android:showAsAction="always"/>
         
-        <item 
-	        android:id="@+id/action_sort"
-	        android:title="@string/action_sort"
-	        android:icon="@android:drawable/ic_menu_sort_by_size"
-	        android:showAsAction="always"/>
-        
     </group>
     <group android:id="@+id/questionview_group">
 	    

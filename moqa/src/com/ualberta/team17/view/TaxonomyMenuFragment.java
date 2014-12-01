@@ -23,7 +23,7 @@ import com.ualberta.team17.view.ListFragment.Taxonomy;
 public class TaxonomyMenuFragment extends Fragment {
 	private String[] myTaxonomy;
 	private DrawerLayout mDrawerLayout;
-	private ListView mDrawerList;
+	ListView mDrawerList;
 	ActionBarDrawerToggle mDrawerToggle;
 	OnItemSelectedListener mListener;
 	@Override
@@ -128,11 +128,7 @@ public class TaxonomyMenuFragment extends Fragment {
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 	
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getActivity().getMenuInflater().inflate(R.menu.question_list_actions, menu);
-		return true;
-	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	

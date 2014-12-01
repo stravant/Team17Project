@@ -115,7 +115,7 @@
 	    android:layout_height="1dp"	    
 	    android:background="@android:color/darker_gray"
 	    android:layout_below="@+id/content" />
-	
+
 	<RelativeLayout 
 	    android:id="@+id/tabSection"
 	    android:layout_width="fill_parent"	   
@@ -216,7 +216,7 @@
 	                style="@style/subtleButton"
        			/>  
        			
-       		<com.ualberta.team17.view.AttachmentView
+       		<com.ualberta.team17.view.AttachmentDisplayView
 			    android:id="@+id/attachmentView"
 		        android:layout_width="fill_parent"
 		        android:layout_height="@dimen/attachment_view_height"

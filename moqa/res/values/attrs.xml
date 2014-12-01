@@ -3,5 +3,9 @@
 
     <declare-styleable name="SearchItem">
     </declare-styleable>
+    
+    <declare-styleable name="AttachmentView">
+        <attr name="adding_enabled" format="boolean" />
+    </declare-styleable>
 
 </resources>

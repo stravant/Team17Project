@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,22 +34,24 @@ import com.ualberta.team17.datamanager.IIncrementalObserver;
 import com.ualberta.team17.datamanager.IItemComparator;
 import com.ualberta.team17.datamanager.IItemComparator.SortDirection;
 import com.ualberta.team17.datamanager.IncrementalResult;
+import com.ualberta.team17.datamanager.TopUpvotedDataFilter;
 import com.ualberta.team17.datamanager.MoreLikeThisFilter;
 import com.ualberta.team17.datamanager.comparators.DateComparator;
 import com.ualberta.team17.datamanager.comparators.IdentityComparator;
-import com.ualberta.team17.datamanager.comparators.UpvoteComparator;
 
 public class ListFragment extends Fragment {
 	public static final String TAXONOMY_NUM = "taxonomy_number";
 	public static final String QUESTION_ID_EXTRA = "QUESTION_ID";
 	public static final String FILTER_EXTRA = "FILTER";
 
+	public final static String SORT_TYPE = "sort_type";
+
 	private IncrementalResult mIR;
 	private DataFilter datafilter = new DataFilter();
 	private QuestionListAdapter mAdapter;
 	private List<QAModel> mItems;
 	private Taxonomy mTaxonomy = Taxonomy.Search;
-	
+
 	public enum Taxonomy {
 		Search,
 		AllQuestions,
@@ -79,6 +82,15 @@ public class ListFragment extends Fragment {
 		}
 	}
 
+	private UpdateOnItemUpdateListener mItemUpdatedListener = new UpdateOnItemUpdateListener();
+	
+	private class UpdateOnItemUpdateListener implements IQAView {
+		@Override
+		public void update(QAModel model) {
+			mAdapter.notifyDataSetChanged();
+		}
+	}
+
 	@Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -93,7 +105,30 @@ public class ListFragment extends Fragment {
 	    	mTaxonomy = intentTaxonomy;
 	    }
 	    
-		IItemComparator comp;
+		IItemComparator comp = null;
+		int mSort = getArguments().getInt(SORT_TYPE);
+		if (mSort != 0) {
+			switch (mSort) {
+			// Show newest questions first
+			case 0:
+				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Descending);
+				break;
+			// Show older questions first
+			case 1:
+				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Ascending);
+				break;
+			//Descending Attachments	
+			case 2:
+				/*
+				 * TODO set comp to AttachmentComparator()
+				 * 
+				 */
+				break;
+			}
+			
+		}
 		
 		switch (mTaxonomy) {
 		case Search:
@@ -116,32 +151,37 @@ public class ListFragment extends Fragment {
 			
 			break;
 		case AllQuestions:
-			comp = new DateComparator();
+			if (comp == null) {
+				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Descending);
+			}	
 			datafilter.setTypeFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case MyActivity:
-			comp = new DateComparator();
-			comp.setCompareDirection(SortDirection.Descending);
+			if (comp == null) {
+				comp = new DateComparator();
+				comp.setCompareDirection(SortDirection.Descending);
+			}	
 			datafilter.addFieldFilter(AuthoredItem.FIELD_AUTHOR, QAController.getInstance().getUserContext().getUserName(), FilterComparison.EQUALS);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case MyFavorites:
-			mIR = QAController.getInstance().getFavorites(null);
+			mIR = QAController.getInstance().getFavorites(comp);
 			datafilter = null;
 			break;
 		case TopQuestions:
-			comp = new UpvoteComparator();
-			datafilter.setTypeFilter(ItemType.Question);
+			comp = new IdentityComparator();
+			datafilter = new TopUpvotedDataFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;	
 		case TopAnswers:
-			comp = new UpvoteComparator();
-			datafilter.setTypeFilter(ItemType.Answer);
+			comp = new IdentityComparator();
+			datafilter = new TopUpvotedDataFilter(ItemType.Answer);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;
 		case RecentActivity:
-			mIR = QAController.getInstance().getRecentItems(null);
+			mIR = QAController.getInstance().getRecentItems(comp);
 			datafilter = null;
 			break;
 		case RelatedQuestions:
@@ -191,8 +231,7 @@ public class ListFragment extends Fragment {
 		
 		if (qaModel instanceof AnswerItem) {
 			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, ((AnswerItem) qaModel).getParentItem().toString());
-		}
-		else {
+		} else {
 			intent.putExtra(QuestionViewActivity.QUESTION_ID_EXTRA, qaModel.getUniqueId().toString());
 		}
 		startActivity(intent);
@@ -266,14 +305,15 @@ public class ListFragment extends Fragment {
 	private void addObserver(IncrementalResult ir) {
 		if (ir != null) {
 			ir.addObserver(new IIncrementalObserver() {
-	
 				@Override
-				public void itemsArrived(List<QAModel> item, int index) {
+				public void itemsArrived(List<QAModel> items, int index) {
 					Activity activity = ListFragment.this.getActivity();
 					if (activity == null) {
 						return;
 					}
-
+					for (QAModel item: items) {
+						item.addView(mItemUpdatedListener);
+					}
 					mItems.clear();
 					mItems.addAll(mIR.getCurrentResults());
 					mAdapter.notifyDataSetChanged();				
@@ -327,6 +367,7 @@ public class ListFragment extends Fragment {
 			TextView commentTextView = (TextView) convertView.findViewById(R.id.commentText);
 			TextView upvoteTextView = (TextView) convertView.findViewById(R.id.upvoteText);
 			TextView userTextView = (TextView) convertView.findViewById(R.id.userText);
+			TextView repliesTextView = (TextView) convertView.findViewById(R.id.answerCountView);
 			
 			// Set the data using getField
 			if (null != item.getField(AuthoredTextItem.FIELD_COMMENTS)) {

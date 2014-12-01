@@ -94,7 +94,8 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		return new UpvoteItem(new UniqueId(Integer.toString(id)), 
 				target, 
 				userContext.getUserName(), 
-				new Date(0));
+				new Date(0),
+				ItemType.Question);
 	}
 	
 	/**
@@ -109,7 +110,7 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		
 		// Query for it with a filter
 		dataFilter.addFieldFilter(QuestionItem.FIELD_TITLE, "testTitle", FilterComparison.EQUALS);
-		dataManager.query(dataFilter, new IdComparator(), result);
+		dataManager.query(dataFilter, new IdComparator(), result, null);
 		
 		// Wait for the results
 		Log.i("app", "========= waiting... ==============");
@@ -163,7 +164,7 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		dataManager.writeTestData(TEST_DATA);
 		
 		// Get the items
-		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result, null);
 		assertTrue("Didn't get a result", waitForResults(result, 1));
 		QuestionItem item = (QuestionItem)result.getCurrentResults().get(0);
 		assertEquals("c4ca4238a0b923820dcc509a6f75849b", item.getUniqueId().toString());
@@ -187,12 +188,12 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		dataManager.writeTestData(TEST_DATA);
 		
 		// Get the items
-		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result, null);		
 		dataManager.query(new ArrayList<UniqueId>(){{
 			add(new UniqueId(Integer.toString(2)));
 			add(new UniqueId(Integer.toString(3)));
 			add(new UniqueId(Integer.toString(4)));
-		}}, result);
+		}}, result, null);
 
 		// Check result count
 		assertTrue("Didn't get 4 results", waitForResults(result, 4));
@@ -224,7 +225,7 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		dataManager.writeTestData(TEST_DATA);
 		
 		// Get the items
-		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result, null);		
 
 		// Check result count
 		assertTrue("Didn't get 1 results", waitForResults(result, 1));
@@ -249,7 +250,7 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		dataManager.writeTestData(TEST_DATA);
 		
 		// Get the items
-		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result, null);		
 
 		// Check result count
 		assertTrue("Didn't get 1 results", waitForResults(result, 1));
@@ -276,7 +277,7 @@ public class LocalDataSourceTest extends DataManagerTester<LocalDataManager> {
 		dataManager.writeTestData(TEST_DATA);
 		
 		// Get the items
-		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result);		
+		dataManager.query(new ArrayList<UniqueId>(){{add(new UniqueId(Integer.toString(1)));}}, result, null);		
 
 		// Check result count
 		assertTrue("Didn't get 1 results", waitForResults(result, 1));

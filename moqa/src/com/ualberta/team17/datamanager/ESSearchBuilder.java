@@ -146,7 +146,15 @@ public class ESSearchBuilder {
 			}
 		}
 
-		if (mFilter instanceof MoreLikeThisFilter) {
+		if (mFilter instanceof TopUpvotedDataFilter) {
+			TopUpvotedDataFilter filter = (TopUpvotedDataFilter)mFilter;
+			JsonObject queryObj = getJsonObjectWithProperty("type", filter.getChildFilterType());
+			queryObj.add("query", getJsonObjectWithProperty("match_all", new JsonObject()));
+			queryObj.addProperty("score", filter.getScoringType());
+			queryObj.addProperty("factor", filter.getScoringFactor());
+			filteredQueryObj.add("query", getJsonObjectWithProperty("top_children", queryObj));
+
+		} else if (mFilter instanceof MoreLikeThisFilter) {
 			MoreLikeThisFilter mltFilter = (MoreLikeThisFilter)mFilter;
 			Gson gson = DataManager.getGsonObject();
 			JsonObject mlt = new JsonObject();
@@ -165,6 +173,7 @@ public class ESSearchBuilder {
 			mlt.addProperty("min_doc_freq", MoreLikeThisFilter.MLTMinDocFreq);
 			mlt.addProperty("min_term_freq", MoreLikeThisFilter.MLTMinTermFreq);
 			filteredQueryObj.add("query", getJsonObjectWithProperty("more_like_this", mlt));
+
 		} else if (!filteredQueryObj.has("query")) {
 			filteredQueryObj.add("query", getJsonObjectWithProperty("match_all", new JsonObject()));
 		}

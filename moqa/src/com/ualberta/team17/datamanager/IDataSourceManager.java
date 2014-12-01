@@ -17,14 +17,14 @@ public interface IDataSourceManager {
 	 * @param comparator
 	 * @param result The IncrementalResult to put the results in
 	 */
-	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result);
+	public void query(DataFilter filter, IItemComparator comparator, IncrementalResult result, IDataSourceManager chainTo);
 	
 	/**
 	 * Query for specific known items using a list of IDs of those items.
 	 * @param ids The ids to get 
 	 * @param result The IncrementalResult to put the results in.
 	 */
-	public void query(List<UniqueId> ids, IncrementalResult result);
+	public void query(List<UniqueId> ids, IncrementalResult result, IDataSourceManager chainTo);
 	
 	/**
 	 * Save an item to our source. Note: This is a SYNCHRONOUS method, which
