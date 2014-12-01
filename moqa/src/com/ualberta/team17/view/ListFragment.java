@@ -153,7 +153,7 @@ public class ListFragment extends Fragment {
 			
 			MoreLikeThisFilter mltFilter = new MoreLikeThisFilter();
 			datafilter = mltFilter;
-			mltFilter.addMoreLikeThisObject(questionId);
+			mltFilter.addMoreLikeThisObject(questionId, ItemType.Question);
 			comp = new IdentityComparator();
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
 			break;

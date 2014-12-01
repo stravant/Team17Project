@@ -350,8 +350,6 @@ public class QuestionViewActivity extends Activity implements IQAView {
 		if (null != mRelatedQuestions) {
 			System.out.println("Successfully hid fragment");
 			getFragmentManager().beginTransaction().hide(mRelatedQuestions).commit();
-		} else {
-			System.out.println("Did not hide fragment");
 		}
 	}
 	

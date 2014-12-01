@@ -365,7 +365,7 @@ import com.ualberta.team17.UpvoteItem;
 			.getBuilder()
 			.addIndex(mEsServerIndex)
 			.build();
-
+System.out.println("Search query = " + searchBuilder.toString());
 		QueryTask task = new QueryTask(search, result);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

@@ -150,7 +150,17 @@ public class ESSearchBuilder {
 			MoreLikeThisFilter mltFilter = (MoreLikeThisFilter)mFilter;
 			Gson gson = DataManager.getGsonObject();
 			JsonObject mlt = new JsonObject();
-			mlt.add("ids", gson.toJsonTree(mltFilter.getMoreLikeThisIds(), List.class));
+
+			List<JsonObject> documents = mltFilter.getMoreLikeThisDocs();
+			if (null != documents) {
+				mlt.add("docs", gson.toJsonTree(documents));
+			}
+
+			List<String> ids = mltFilter.getMoreLikeThisIds();
+			if (null != ids) {
+				mlt.add("ids", gson.toJsonTree(mltFilter.getMoreLikeThisIds(), List.class));
+			}
+
 			mlt.add("fields", gson.toJsonTree(mltFilter.getMLTFields(), List.class));
 			mlt.addProperty("min_doc_freq", MoreLikeThisFilter.MLTMinDocFreq);
 			mlt.addProperty("min_term_freq", MoreLikeThisFilter.MLTMinTermFreq);
