@@ -105,6 +105,11 @@ public class LocalObjectDecorator {
 			
 			// Apply derived info
 			handleDerivedInfo(item);
+		} else {
+			// Copy derived info
+			if (mItemRefById.get(item.getUniqueId()) != item) {
+				item.copyDerivedInfo(mItemRefById.get(item.getUniqueId()));
+			}
 		}
 	}
 	

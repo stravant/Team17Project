@@ -462,6 +462,7 @@ public class LocalDataManager implements IDataSourceManager {
 			System.out.println("Skipping filter!");
 			return new ArrayList<QAModel>();
 		}
+		Log.i("qq", "");
 		// Create an array for the results
 		List<QAModel> packedItem = new ArrayList<QAModel>();
 		
@@ -498,6 +499,7 @@ public class LocalDataManager implements IDataSourceManager {
 				Log.i("app", "LocalDataManager :: Id query finished with " + result.getCurrentResults().size() + " results.");
 				return resultList;
 			}
+			
 			@Override
 			public void done(List<QAModel> resultList) {
 				result.addObjects(resultList);
@@ -526,9 +528,13 @@ public class LocalDataManager implements IDataSourceManager {
 		
 		//Log.i("lock", "doIdListQuery Lock");
 		for (UniqueId id: ids) {
+			Log.i("qq", "Id list query looking for item:" + id.hashCode());
 			QAModel item = getItemById(id);
 			if (item != null) {
+				Log.i("qq", " -> found");
 				packedResult.add(item);
+			} else {
+				Log.i("qq", " -> not found");
 			}
 		}
 		//Log.i("lock", "doIdListQuery Unlock");

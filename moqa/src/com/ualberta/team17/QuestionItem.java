@@ -93,6 +93,18 @@ public class QuestionItem extends AuthoredTextItem {
 		return mTitle;
 	}
 	
+	@Override
+	public void copyDerivedInfo(QAModel other) {
+		super.copyDerivedInfo(other);
+		QuestionItem otherq = (QuestionItem)other;
+		mReplyCount = otherq.mReplyCount;
+		mIsFavorited = otherq.mIsFavorited;
+		mShouldViewLater = otherq.mShouldViewLater;
+		mIsAttached = otherq.mIsAttached;
+		notifyViews();
+		
+	}
+	
 	/**
 	 * Calculate parent derived info
 	 */

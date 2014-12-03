@@ -40,4 +40,10 @@ public class UpvoteItem extends AuthoredItem {
 			return readInto(new UpvoteItem(null, null, null, null, null), reader);
 		}
 	}
+
+	@Override
+	public void copyDerivedInfo(QAModel other) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -81,6 +81,7 @@ public class DataManager {
 			@Override
 			public void dataItemLoaded(IDataSourceManager manager, QAModel item) {
 				if (mUserContext != null) {
+					Log.i("qq", "Item <" + item.name() + "> arrived on network... going");
 					mLocalDataStore.saveItem(item, mUserContext);
 				}
 			}
@@ -121,6 +122,7 @@ public class DataManager {
 	 * @return An IncrementalResult to which the items will be added as they arrive
 	 */
 	public IncrementalResult doQuery(List<UniqueId> idList, IItemComparator sortComparator) {
+		Log.i("qq", "Do IdList Query");
 		IncrementalResult result = new IncrementalResult(sortComparator);
 		mLocalDataStore.query(idList, result, mNetworkDataStore);
 		return result;

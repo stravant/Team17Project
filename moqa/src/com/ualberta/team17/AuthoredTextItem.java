@@ -74,6 +74,15 @@ public abstract class AuthoredTextItem extends AuthoredItem {
 		++mCommentCount;
 		notifyViews();
 	}
+	
+	@Override
+	public void copyDerivedInfo(QAModel other) {
+		mCommentCount = ((AuthoredTextItem)other).getCommentCount();
+		mUpvoteCount = ((AuthoredTextItem)other).getUpvoteCount();
+		mHasUpvoted = ((AuthoredTextItem)other).haveUpvoted();
+		Log.i("qq", "Notifying views: UpvoteCount=" + mUpvoteCount + " on(" + name() + ")");
+		notifyViews();
+	}
 
 	
 	@Override

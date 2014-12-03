@@ -28,6 +28,7 @@ public abstract class QAModel {
 	public QAModel(ItemType type, UniqueId id) {
 		mType = type;
 		mUniqueId = id;
+		gid = gidgen++;
 	}
 	
 	/* Model update notification behavior */
@@ -52,6 +53,9 @@ public abstract class QAModel {
 	public final ItemType getItemType() {
 		return mType;
 	}
+	
+	/* Copy derived info */
+	public abstract void copyDerivedInfo(QAModel other);
 
 	@Override
 	public boolean equals(Object other) {
@@ -65,6 +69,16 @@ public abstract class QAModel {
 	@Override
 	public int hashCode() {
 		return getUniqueId().hashCode();
+	}
+	
+	private static int gidgen = 0;
+	private int gid;
+	public String name() {
+		return getClass().getSimpleName() + "<" + gid + ">[" + getUniqueId().hashCode() + "]";
+	}
+	public boolean is() {
+		return (this instanceof QuestionItem) &&
+				((QuestionItem)this).getTitle().contains("oilers");
 	}
 	
 	/**

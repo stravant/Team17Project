@@ -149,4 +149,10 @@ public class AttachmentItem extends AuthoredItem {
 			writer.value(item.getName());
 		}
 	}
+
+	@Override
+	public void copyDerivedInfo(QAModel other) {
+		// TODO Auto-generated method stub
+		
+	}
 }
