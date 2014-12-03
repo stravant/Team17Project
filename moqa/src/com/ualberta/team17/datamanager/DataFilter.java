@@ -89,7 +89,8 @@ public class DataFilter {
 
 	public enum DataFilterType {
 		QUERY,
-		MORE_LIKE_THIS
+		MORE_LIKE_THIS,
+		MOST_UPVOTED
 	}
 
 	/**

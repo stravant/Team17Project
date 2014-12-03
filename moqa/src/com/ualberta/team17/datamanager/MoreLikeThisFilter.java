@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.ualberta.team17.ItemType;
 import com.ualberta.team17.QAModel;
 import com.ualberta.team17.UniqueId;
+import com.ualberta.team17.datamanager.DataFilter.DataFilterType;
 
 /**
  * This filter is used to implement a MoreLikeThis query on the Elastic Search server.
@@ -15,13 +16,13 @@ import com.ualberta.team17.UniqueId;
  * @author michaelblouin
  */
 public class MoreLikeThisFilter extends DataFilter {
-	public static final Integer MLTMinDocFreq = 2;
+	public static final Integer MLTMinDocFreq = 1;
 	public static final Integer MLTMinTermFreq = 1;
 	private List<String> mMoreLikeThisItems;
 	private List<JsonObject> mMoreLikeThisDocs;
 	private List<String> mMLTFields = new ArrayList<String>(){{
 		add("title");
-		add("body");
+//		add("body");
 	}};
 
 	/**
@@ -91,5 +92,9 @@ public class MoreLikeThisFilter extends DataFilter {
 	 */
 	public List<String> getMLTFields() {
 		return mMLTFields;
+	}
+	
+	public DataFilterType getDataFilterType() {
+		return DataFilterType.MORE_LIKE_THIS;
 	}
 }

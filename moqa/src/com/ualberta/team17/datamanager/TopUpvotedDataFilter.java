@@ -1,6 +1,7 @@
 package com.ualberta.team17.datamanager;
 
 import com.ualberta.team17.ItemType;
+import com.ualberta.team17.datamanager.DataFilter.DataFilterType;
 
 /**
  * Represents a data filter for a top upvoted items query.
@@ -27,5 +28,9 @@ public class TopUpvotedDataFilter extends DataFilter {
 
 	public Integer getScoringFactor() {
 		return SCORING_FACTOR;
+	}
+	
+	public DataFilterType getDataFilterType() {
+		return DataFilterType.MOST_UPVOTED;
 	}
 }

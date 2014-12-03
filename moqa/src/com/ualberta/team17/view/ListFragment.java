@@ -172,6 +172,7 @@ public class ListFragment extends Fragment {
 			datafilter = null;
 			break;
 		case TopQuestions:
+			System.out.println("Top Questions");
 			comp = new IdentityComparator();
 			datafilter = new TopUpvotedDataFilter(ItemType.Question);
 			mIR = QAController.getInstance().getObjects(datafilter, comp);
@@ -190,6 +191,7 @@ public class ListFragment extends Fragment {
 			datafilter = null;
 			break;
 		case RelatedQuestions:
+			System.out.println("Related Questions");
 			UniqueId questionId = (UniqueId) getArguments().getSerializable(QUESTION_ID_EXTRA);
 			
 			if (questionId == null) {

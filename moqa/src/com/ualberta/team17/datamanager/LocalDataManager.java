@@ -46,6 +46,7 @@ import com.ualberta.team17.QAModel;
 import com.ualberta.team17.QuestionItem;
 import com.ualberta.team17.UniqueId;
 import com.ualberta.team17.UpvoteItem;
+import com.ualberta.team17.datamanager.DataFilter.DataFilterType;
 import com.ualberta.team17.datamanager.DataFilter.FieldFilter;
 
 /**
@@ -426,6 +427,12 @@ public class LocalDataManager implements IDataSourceManager {
 	 */
 	@Override
 	public void query(final DataFilter filter, final IItemComparator compare, final IncrementalResult result, final IDataSourceManager chainTo) {
+		if (filter.getDataFilterType() != DataFilterType.QUERY) {
+			if (null != chainTo) {
+				chainTo.query(filter,  compare,  result, null);
+				return;
+			}
+		}
 		new RunTaskHelper<List<QAModel>>() {
 			@Override
 			public List<QAModel> task() {
@@ -450,7 +457,11 @@ public class LocalDataManager implements IDataSourceManager {
 	 * @param compare
 	 * @return The list of items found to insert
 	 */
-	private List<QAModel> doFilterQuery(DataFilter filter, IItemComparator compare) {		
+	private List<QAModel> doFilterQuery(DataFilter filter, IItemComparator compare) {	
+		if (filter instanceof MoreLikeThisFilter || filter instanceof TopUpvotedDataFilter) {
+			System.out.println("Skipping filter!");
+			return new ArrayList<QAModel>();
+		}
 		// Create an array for the results
 		List<QAModel> packedItem = new ArrayList<QAModel>();
 		
