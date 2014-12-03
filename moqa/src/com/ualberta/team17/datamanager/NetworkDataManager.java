@@ -189,7 +189,7 @@ public class NetworkDataManager implements IDataSourceManager {
 
 					String source = obj.getAsJsonObject("_source").toString();
 					QAModel newObject = null;
-					switch (ItemType.fromString(obj.getAsJsonPrimitive("_type").getAsString())) {
+					switch (ItemType.fromString(obj.getAsJsonObject("_source").getAsJsonPrimitive("type").getAsString())) {
 						case Question:
 							newObject = gson.fromJson(source, QuestionItem.class);
 							break;
